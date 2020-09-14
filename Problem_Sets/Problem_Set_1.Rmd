@@ -64,7 +64,7 @@ d. Prove that that the transpose of an inverse is equal to the inverse of the tr
 
 >**Solution:**    
 \begin{align*}
-(A^{-1})' = (A')^{-1}
+(A^{-1})' = & (A')^{-1}\\
 \end{align*}
 
 ### Question 3
