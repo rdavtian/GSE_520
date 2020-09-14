@@ -123,5 +123,5 @@ d. Many airline routes are only served by a single carrier, giving them potentia
 
 >**Solution:**   
 >```{r}
-print(round(nrow(data[data$concen > 0.9,]) / nrow(data), 4))
+print(round(nrow(data[data$bmktshr > 0.9,]) / nrow(data), 4))
 ```
