@@ -1,0 +1,179 @@
+---
+title: 'GSE 520: Problem Set #2'
+author:
+- Student Name 1
+- Student Name 2 (delete if only one student or add more if more than two)
+output: html_document
+---
+
+### Question 1
+
+Suppose someone proposes that the quantity of movies demanded is related to price and income by the linear equation, 
+$$quantity = 120 - 9.8 price + .03 income$$
+
+a. What is the interpretation of the number $120$ in the equation above?
+
+**Solution:**  
+
+b. What is the interpretation of the number $9.8$ in the equation above?  Is this a marginal effect?  If so, of what?
+
+**Solution:**  
+
+c. What is the demand for movies if $price=15$ and $income=200$?  What does this suggest about using linear functions to describe demand curves?
+
+**Solution:**  
+
+### Question 2
+
+Let $prate$ be the fraction of employees participating in a 401K plan (401K's are employer sponsored retirement savings plans).  Let $mrate$ be the match rate, for example if a person's salary is \$100K and the match rate is 4.07, then the employer will match the employees 401K contribution up to the amount of \$4,070.  Suppose the function relating $mrate$ to $prate$ is described by 
+$$prate = 83.1 + 5.9(mrate)$$
+
+a. How do you interpret the intercept?
+  
+**Solution:**  
+
+b. Do the parameters of this function appear to be the `right' sign, i.e. would it make more sense if the coefficient on $mrate$ was negative?
+
+**Solution:**  
+
+c. Consider a quadratic function 
+$$prate = 78.6 + 17(mrate) - 3.2(mrate^2)$$
+Take the derivative of this function with respect to $mrate$ and show that the marginal effect of $mrate$ on $prate$ depends on the current level of $mrate$.
+
+**Solution:**  
+
+d. Sketch the general shape of the quadratic function with $prate$ on the y-axis and $mrate$ on the x-axis.  Use the code below (see what it looks like in the HTML) to upload your sketch.
+
+````
+```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}`r ''`
+knitr::include_graphics("temp.png")
+```
+````
+
+**Solution:**  
+
+e. Given the quadratic function above, at what value of $mrate$ does increasing $mrate$ actually begin decreasing $prate$?
+
+**Solution:**  
+
+### Question 3
+
+Next let's consider interpreting functions with the natural log.  Suppose that the one way ticket price, $fare$, for an airline ticket is a function of distance (in 100 miles), $dist$, through the equation:
+$$\ln(fare) = a + b \cdot dist$$
+with
+$$\ln(fare) = 4.666 +  0.043(dist)$$
+
+a. How do you interpret the intercept?  Is it of any use?
+
+**Solution:**  
+
+b. Compute the $\ln(fare)$ of a flight that is 100 miles (i.e., $dist=1$).  What is the price in dollars for a flight that is 100 miles?
+
+**Solution:**  
+
+c. Compute the actual fare in dollars for a flight that is 200 miles.  What unit increase in distance is this compared to the previous question.  What percent increase is this in the fare?  Is this approximately 4.3\%?
+
+**Solution:**  
+
+d. Let's formalize this with calculus.  Re-write $fare = \exp(4.666  + 0.043 dist)$.  Take the derivative of this with respect to $dist$ and divide both sides by $fare$.  Show 
+$$0.043 = \dfrac{\partial fare/ fare}{\partial dist} = \dfrac{\Delta fare/ fare}{\Delta dist} = \dfrac{\%\Delta fare}{\Delta dist}$$
+In a log-level function the coefficient on $dist$ indicates the percentage change in $fare$ given a unit change in distance.  Thus if $dist$ increases by 1 unit (100 miles) the fare will increase by (approximately) 4.3\%
+
+**Solution:**  
+
+### Question 4
+
+Here is an alternative function with natural logs that relates one way ticket price, $fare$, for an airline ticket to distance (in 100 miles), $dist$, through the equation:
+$$fare = a + b \cdot \ln(dist)$$
+where
+$$fare = 41 + 66\ln(dist)$$
+a. How does this function differ from the one in the previous problem
+
+**Solution:**  
+
+b. Let $fare =  41+66\ln(dist)$.  We would like to understand how to interpret the coefficient on $\ln(dist)$ (i.e., 66).  Take the derivative of the equation with respect to $dist$ and divide both sides by $1/dist$, show 
+$$66 = \dfrac{\partial fare}{\partial dist/dist}= \dfrac{\Delta fare}{\Delta dist/dist} = \dfrac{\Delta fare}{\% \Delta dist}$$
+This reads, if the denominator changes by 1 unit (a 100\% increase in distance), the dependent variable $fare$ will increase (approximately) by \$66.  This is a level-log function
+
+**Solution:**  
+
+c. Your calculation above suggests that if $dist$ increases by 100\%, $fare$ should increase by \$66.  Check to see if this is true by comparing the actual $fare$ of a flight that is 400 miles to a flight that is 200 miles.
+
+**Solution:**  
+
+d. If a 100\% change in $dist$ leads to an approximate increase in fare of \$66, what would you expect the approximate increase in $fare$ to be if $dist$ increased by 10\%? Check to see if this is a good approximation by comparing the actual fare difference for a flight that is 220 miles to a flight that is 200 miles?
+
+**Solution:**  
+
+e. If a 100\% change in $dist$ leads to an approximate increase in fare of \$66, what would you expect the approximate increase in $fare$ to be if $dist$ increased by 1\%? Check to see if this is a good approximation by comparing the actual fare difference for a flight that is 202 miles to a flight that is 200 miles?
+
+**Solution:**  
+
+f. What can you conclude about the percentage change interpretation on the coefficient on a natural log variable.  When is it a good approximation, when considering small percentage changes or large percentage changes?
+
+**Solution:**  
+
+### Question 5
+
+Consider the log-log function where $fare$, for an airline ticket relates to distance (in 100 miles), $dist$, through the equation:
+$$\ln(fare) = a + b \cdot \ln(dist)$$
+Where
+$$\ln(fare) = 4.25 + 0.40 \ln(dist)$$
+We would like to understand how to interpret the coefficient on $\ln(dist)$ (i.e., 0.40). Prove that this function can be interpreted as a 10\% increase in $dist$ leads to a 4\% increase in fare.
+
+a. Begin by writing $fare = e^{4.25}dist^{0.40}$ and taking the derivative with respect $dist$ and reworking to show that 
+$$.40 = \dfrac{\partial fare/fare}{\partial dist/dist} = \dfrac{\Delta fare/fare}{\Delta dist/dist} = \dfrac{\% \Delta fare}{\% \Delta dist}$$
+
+**Solution:**  
+
+b. Since the log-log function is about percentages, let's now show that this implies that the units do not matter.  Suppose that instead of letting $dist$ taking units of 100 miles, we wrote the same function except that $dist$ takes units of miles.  Is it surprising that this function takes the form:
+$$\ln(fare) = 2.40 + 0.40 \ln(dist)$$
+Show that if we have $\ln(y) = a + b \ln(x)$ and $\ln(y) = a' + b' \ln(100 \times x)$ that $b=b'$ however $a \neq a'$.  (hint: you need to use the properties of $\ln$ that $\ln(a \times x) = \ln(a) + \ln(x)$)
+
+**Solution:**  
+
+### Question 6
+
+There are two types of apples, organic (eco) and conventional (reg).  An individual demand equation relating the amount of eco apples purchased in pounds ($ecolbs$) as a determined by the individual's education ($educ$) and price of eco apples and regular apples is 
+$$ecolbs = 1.34 + 0.04(educ) + 3.00(regprc) -2.87(ecoprc)$$
+
+a. Is it surprising that if the price of regular apples increases that the demand for eco apples increases?
+
+**Solution:**  
+
+b. What is the marginal effect of education on demand for eco apples?  Would you say individuals with more education purchase more eco apples compared to people with lower levels of education holding fixed price?
+
+**Solution:**  
+
+c. Consider an alternative function that includes an interaction
+$$ecolbs = 2.16 - 0.02(educ) + 3.00(regprc) -3.64(ecoprc) + 0.05(educ\times ecoprc)$$
+Show that with this function the marginal effect of price depends on the level of education.  Who is more responsive to price, individuals with high or low levels of educations?
+
+**Solution:**  
+
+d. Given the function with interactions.  Holding fixed the price of regular apples, find the range of prices for eco apples where a person with 12 years of education will buy more eco apples than a person with 13 years of education.
+
+**Solution:**  
+
+e. Using this function, plot the relationship between eco pounds demanded and education for low price of eco-apples \$0.90 and a high price of eco-apples \$1.30, assuming the price of regular apples is \$0.90 in both situations.  Hint: here you are plotting $ecolbs$ on the y-axis against $educ$ on the x-axis holding fixed eco-price and regular apple price.  Does this plot illustrate which group of buyers, high education v. low education are most sensitive to price changes of eco-apples?
+
+**Solution:**  
+
+### Question 7
+
+a. Suppose the number of applicants to a university ($apps$) is a function of whether in the previous year the University participated in a bowl game ($bowl$), whether the mens' basketball team was conference champs, $btitle$, or whether the mens' basketball team was in the final four $finfour$.  Each of these variables $bowl$, $btitle$, and $finfour$ is an indicator variable, taking a value of 1 if true and zero otherwise.
+
+    What is the meaning of the intercept in the function below
+$$apps = 9677.14 + 1423.23(bowl) + 410.16(btitle) + 2952.49(finfour)$$
+
+**Solution:**  
+
+b. Monthly US presidential approval ratings for the years 2001 to 2007 can be described by the following equation
+$$ approve = b_0 + b_1 rgasprice + b_2 katrina + b_3 iraqinvade + b_4 sep11$$
+Where $rgasprice$ is real gas price, $katrina$ is an indicator variable if it was the month of hurricane Katrina, $iraqinvade$ is an indicator if it was the month the US invaded Iraq, and $sep11$ is an indicator if the month was September 2001.
+
+    In fact assume the relationship can be precisely defined as
+$$ approve = 101.25 - 0.50 rgasprice + 14.76 katrina + 6.75 iraqinvade + 22.54 sep11$$
+What is the meaning of the intercept in the function above?
+
+**Solution:**  
