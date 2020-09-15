@@ -2,7 +2,8 @@
 title: 'GSE 520: Problem Set #1'
 author: 
   - "Rus Adamovics-Davtian"
-  - "Student Name 2 (delete if only one student or add more if more than two)"
+  - "Adam Gockel"
+  - "Russell Mcintosh"
 output: html_document
 ---
 
@@ -56,6 +57,7 @@ x_t_inv <- solve(t(x))
 print(x_t_inv)
 x_inv_t <- t(solve(x)) 
 print(x_inv_t)
+print("Yes, the inverse of the transpose is equal to the transpose of the inverse.", quote =F)
 ```
 \
 
