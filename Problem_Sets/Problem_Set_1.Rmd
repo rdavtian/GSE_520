@@ -45,8 +45,8 @@ b. What is the inverse of the matrix above?
 
 >**Solution:**    
 >```{r}
-x_t <- t(x) 
-print(x_t)
+x_inv <- solve(x) 
+print(x_inv)
 ```
 
 c. Is the inverse of the transpose of this matrix equal to the transpose of the inverse of this matrix?
