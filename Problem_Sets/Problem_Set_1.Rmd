@@ -14,12 +14,12 @@ Consider the equation $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2$
 a. Add an additional variable $x_3$ multiplied by $\beta_3$ to the equation (write the entire expression below).
 
 >**Solution:**  
-$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_2$
+$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3$
 
 b. Change the $\beta$'s in the equation above to $\alpha$'s (write the new expression below).
 
 >**Solution:**   
-$y = \alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \alpha x_2$
+$y = \alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \alpha_3 x_3$
 
 ### Question 2
 
