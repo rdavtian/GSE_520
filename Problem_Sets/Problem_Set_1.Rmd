@@ -64,9 +64,13 @@ print("Yes, the inverse of the transpose is equal to the transpose of the invers
 d. Prove that that the transpose of an inverse is equal to the inverse of the transpose (i.e., $(A^{-1})' = (A')^{-1}$).  You should use the align environment to show each step of your proof.
 
 
->**Solution:**    
+**Solution:** 
+Since A is an invertible matrix, 
 \begin{align*}
-(A^{-1})' = & (A')^{-1}\\
+A^{-1}*A = & A*A^{-1} = I\\   
+(A^{-1}*A)^T = & (A*A^{-1})^T = I^T = I\\
+A^T*(A^{-1})^T = & (A^{-1})^T*A^T = I\\
+(A^{-1})^T = & (A^T)^{-1}
 \end{align*}
 
 ### Question 3
