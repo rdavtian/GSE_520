@@ -103,7 +103,8 @@ c. Compute the actual fare in dollars for a flight that is 200 miles.  What unit
 >**Solution:**
 \begin{align*}
 \ln(fare) = & 4.666 +  0.043(2) = 4.752\\
-fare = & e^(4.752) = $115.82
+fare = & e^(4.752) = $115.82\\
+increase = & (115.82 - 110.94) / (110.94) = 0.044\\
 \end{align*}
 
 d. Let's formalize this with calculus.  Re-write $fare = \exp(4.666  + 0.043 dist)$.  Take the derivative of this with respect to $dist$ and divide both sides by $fare$.  Show 
