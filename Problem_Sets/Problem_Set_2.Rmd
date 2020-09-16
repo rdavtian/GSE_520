@@ -18,7 +18,7 @@ We can interpret the intecept $120$ as the expected mean quantity given that bot
 
 b. What is the interpretation of the number $9.8$ in the equation above?  Is this a marginal effect?  If so, of what?
 
->Adjusting for income, we can expect quantity to decrease 9.8 units on average for every additional dollar increase in price. 
+>Adjusting for income, we can expect on average a 9.8 unit decrease in quantity for every additional dollar increase in price. Yes, this is a marginal effect. We are finding the marginal effect of a one unit increase in price on quantity, treating income as a constant (held fixed). 
 
 **Solution:**  
 
@@ -31,7 +31,7 @@ price = & 120 - 9.8*(15) + 0.03*(200)\\
 price = & -21
 \end{align*}
 
->Clearly, demand cannot be negative. Using linear functions to describe demand curves can yield outputs (quantity) values that are not in the range of possible values given some input values (price, income). 
+>Clearly, demand cannot be negative. Using linear functions to describe demand curves can yield outputs (quantity) values that are not in the range of possible values given input values (price, income). 
 
 ### Question 2
 
@@ -41,12 +41,12 @@ $$prate = 83.1 + 5.9(mrate)$$
 a. How do you interpret the intercept?
   
 >**Solution:**
-We can interpret the intercept $83.1$ as the expected mean proportion of employees partcipating in a 401k given that the employer's match rate is 0.
+We can interpret the intercept $83.1$ as the expected mean percentage of employees participating in a 401k given that the employer's match rate is 0.
 
 b. Do the parameters of this function appear to be the `right' sign, i.e. would it make more sense if the coefficient on $mrate$ was negative?
 
 >**Solution:**  
-Yes, it makes sense that the coefficient on $mrate$ is positive. As the match rate increases, we expect more people to participate in a 401k. Companies matching a higher percentage of salary means employees will have more money in their 401k which would entice people to join.   
+Yes, it makes sense that the coefficient on $mrate$ is positive, not negative. As the match rate increases, we expect more people to participate in a 401k. Companies matching a higher percentage of salary means employees will have more money in their 401k which would entice people to join.   
 
 c. Consider a quadratic function 
 $$prate = 78.6 + 17(mrate) - 3.2(mrate^2)$$
