@@ -59,11 +59,15 @@ Take the derivative of this function with respect to $mrate$ and show that the m
 
 d. Sketch the general shape of the quadratic function with $prate$ on the y-axis and $mrate$ on the x-axis.  Use the code below (see what it looks like in the HTML) to upload your sketch.
 
-````
-```{r pressure, echo=FALSE, fig.cap="A caption", out.width = '100%'}`r ''`
-knitr::include_graphics("temp.png")
+
+>```{r pressure, echo=FALSE, fig.cap="Quadratic Formula", out.width = '50%'}
+library(ggplot2)
+mrate <- seq(0, 8, 0.1)
+prate <- 78.6 + 17*(mrate) - 3.2*(mrate^2)
+df <- data.frame(seq(0, 8, 0.1), 78.6 + 17*(mrate) - 3.2*(mrate^2))
+ggplot(data = df, aes(x = mrate, y = prate)) + geom_line(size = 2) + 
+  ggtitle("Plot of Y = 78.6 + 17*(mrate) - 3.2*(mrate^2)")
 ```
-````
 
 **Solution:**  
 
