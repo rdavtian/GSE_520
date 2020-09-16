@@ -14,7 +14,7 @@ $$quantity = 120 - 9.8 price + .03 income$$
 a. What is the interpretation of the number $120$ in the equation above?
 
 >**Solution:**  
-We can interpret the intecept $120$ as the expected mean quantity given that both price and income are zero.
+We can interpret the intercept $120$ as the expected mean quantity given that both price and income are zero.
 
 b. What is the interpretation of the number $9.8$ in the equation above?  Is this a marginal effect?  If so, of what?
 
@@ -78,22 +78,33 @@ mrate = & 17/6.4 = 2.65625
 
 ### Question 3
 
-Next let's consider interpreting functions with the natural log.  Suppose that the one way ticket price, $fare$, for an airline ticket is a function of distance (in 100 miles), $dist$, through the equation:
+Next let's consider interpreting functions with the natural log. Suppose that the one way ticket price, $fare$, for an airline ticket is a function of distance (in 100 miles), $dist$, through the equation:
 $$\ln(fare) = a + b \cdot dist$$
 with
 $$\ln(fare) = 4.666 +  0.043(dist)$$
 
 a. How do you interpret the intercept?  Is it of any use?
 
-**Solution:**  
+>**Solution:**  
+We can interpret the intercept as the expected mean ticket price for a one-way flight when the distance traveled is zero miles. However, it is not of any use since flights are never zero miles long. In this case, we would expect the ticket price on average to be... 
+$$e^(4.666) = $106.27$$
+
 
 b. Compute the $\ln(fare)$ of a flight that is 100 miles (i.e., $dist=1$).  What is the price in dollars for a flight that is 100 miles?
 
-**Solution:**  
+>**Solution:** 
+\begin{align*}
+\ln(fare) = & 4.666 +  0.043(1) = 4.709\\
+fare = & e^(4.709) = $110.94
+\end{align*}
 
 c. Compute the actual fare in dollars for a flight that is 200 miles.  What unit increase in distance is this compared to the previous question.  What percent increase is this in the fare?  Is this approximately 4.3\%?
 
-**Solution:**  
+>**Solution:**
+\begin{align*}
+\ln(fare) = & 4.666 +  0.043(2) = 4.752\\
+fare = & e^(4.752) = $115.82
+\end{align*}
 
 d. Let's formalize this with calculus.  Re-write $fare = \exp(4.666  + 0.043 dist)$.  Take the derivative of this with respect to $dist$ and divide both sides by $fare$.  Show 
 $$0.043 = \dfrac{\partial fare/ fare}{\partial dist} = \dfrac{\Delta fare/ fare}{\Delta dist} = \dfrac{\%\Delta fare}{\Delta dist}$$
