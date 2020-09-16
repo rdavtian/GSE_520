@@ -41,7 +41,7 @@ $$prate = 83.1 + 5.9(mrate)$$
 a. How do you interpret the intercept?
   
 >**Solution:**
-We can interpret the intercept $83.1$ as the expected mean percentage of employees participating in a 401k given that the employer's match rate is 0.
+We can interpret the intercept $83.1$ as the expected mean percentage of employees participating in a 401k given that the employer's match rate is zero.
 
 b. Do the parameters of this function appear to be the `right' sign, i.e. would it make more sense if the coefficient on $mrate$ was negative?
 
