@@ -228,7 +228,24 @@ ecoprc < & $0.40
 
 e. Using this function, plot the relationship between eco pounds demanded and education for low price of eco-apples \$0.90 and a high price of eco-apples \$1.30, assuming the price of regular apples is \$0.90 in both situations.  Hint: here you are plotting $ecolbs$ on the y-axis against $educ$ on the x-axis holding fixed eco-price and regular apple price.  Does this plot illustrate which group of buyers, high education v. low education are most sensitive to price changes of eco-apples?
 
-**Solution:**  
+>**Solution:**  
+```{r, echo=FALSE, out.width = '50%'}
+regprc <- 0.9
+educ <- 0:100
+ecoprc_low <- 0.9
+ecoprc_high <- 1.3
+ecolbs_low <- 2.16 - 0.02*(educ) + 3*(regprc) -3.64*(ecoprc_low) + 0.05*(educ*ecoprc_low)
+ecolbs_high <- 2.16 - 0.02*(educ) + 3*(regprc) -3.64*(ecoprc_high) + 0.05*(educ*ecoprc_high)
+low <- data.frame(regprc, educ, ecoprc_low, ecolbs_low)
+high <- data.frame(regprc, educ, ecoprc_high, ecolbs_high)
+
+ggplot() + 
+  geom_line(data = low, aes(educ, ecolbs_low, color = "Low"), size = 1.5) + 
+  geom_line(data = high, aes(educ, ecolbs_high, color = "High"), size = 1.5) + xlab("Years of Education") + ylab("Ecolbs (Demand)") + 
+  scale_color_manual(name = "EcoPrc", values = c("Low" = "blue", "High" = "red")) + ggtitle("Red: 2.16 - .02(educ) + 3(0.9) -3.64(1.3) + .05(educ*1.3)\nBlue: 2.16 - .02(educ) + 3(0.9) -3.64(0.9) + .05(educ*0.9)")
+```
+
+Holding fixed the regular price of apples, it seems that the effect of education on demand of organic apples depends on the (low or high) price of organic apples. Individuals with lower education are even more sensitive to price changes (from low to high) than individuala with higher levels of education. That is seen by the red line being steeper (larger slope) than the blue line (smaller slope).      
 
 ### Question 7
 
