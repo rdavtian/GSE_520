@@ -94,9 +94,9 @@ Use **R** to calculate the value of $(X'X)^{-1}X'Y$.
 
 >**Solution:**  
 >```{r}
-x_inv_x <- matrix(c(4, 46, 46, 534), ncol = 2, nrow = 2)
-x_inv_y <- matrix(c(12.7, 146.4), ncol = 1, nrow = 2)
-print(solve(x_inv_x) %*% x_inv_y)
+x_t_x <- matrix(c(4, 46, 46, 534), ncol = 2, nrow = 2)
+x_t_y <- matrix(c(12.7, 146.4), ncol = 1, nrow = 2)
+print(solve(x_t_x) %*% x_t_y)
 ```
 
 ### Question 4
