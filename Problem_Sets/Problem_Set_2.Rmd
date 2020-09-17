@@ -90,7 +90,7 @@ a. How do you interpret the intercept?  Is it of any use?
 
 >**Solution:**  
 We can interpret the intercept as the expected mean ticket price for a one-way flight when the distance traveled is zero miles. However, it is not of any use since flights are never zero miles long. In this case, we would expect the ticket price on average to be... 
-$$\exp(4.666) = $106.27$$
+$$e^{4.666} = $106.27$$
 
 
 b. Compute the $\ln(fare)$ of a flight that is 100 miles (i.e., $dist=1$).  What is the price in dollars for a flight that is 100 miles?
@@ -98,7 +98,7 @@ b. Compute the $\ln(fare)$ of a flight that is 100 miles (i.e., $dist=1$).  What
 >**Solution:** 
 \begin{align*}
 \ln(fare) = & 4.666 +  0.043(1) = 4.709\\
-fare = & \exp(4.709) = $110.94
+fare = & e^{4.709} = $110.94
 \end{align*}
 
 c. Compute the actual fare in dollars for a flight that is 200 miles.  What unit increase in distance is this compared to the previous question.  What percent increase is this in the fare?  Is this approximately 4.3\%?
@@ -106,7 +106,7 @@ c. Compute the actual fare in dollars for a flight that is 200 miles.  What unit
 >**Solution:**
 \begin{align*}
 \ln(fare) = & 4.666 +  0.043(2) = 4.752\\
-fare = & \exp(4.752) = $115.82\\
+fare = & e^{4.752} = $115.82\\
 increase = & (115.82 - 110.94) / (110.94) = 0.044\\
 \end{align*}
 
@@ -118,8 +118,8 @@ In a log-level function the coefficient on $dist$ indicates the percentage chang
 
 >**Solution:** 
 \begin{align*}
-fare = & \exp(4.666  + 0.043 dist)\\ 
-\frac{dfare}{ddist} = & \exp(4.666  + 0.043 dist) * 0.043\\
+fare = & e^{4.666  + 0.043 dist}\\ 
+\frac{dfare}{ddist} = & e^{4.666  + 0.043 dist} * 0.043\\
 \frac{dfare}{ddist} = & fare * 0.043\\
 0.043 = & \frac{dfare / fare}{dist} = \dfrac{\Delta fare/ fare}{\Delta dist} = \dfrac{\%\Delta fare}{\Delta dist}
 \end{align*}
@@ -180,7 +180,11 @@ We would like to understand how to interpret the coefficient on $\ln(dist)$ (i.e
 a. Begin by writing $fare = e^{4.25}dist^{0.40}$ and taking the derivative with respect $dist$ and reworking to show that 
 $$.40 = \dfrac{\partial fare/fare}{\partial dist/dist} = \dfrac{\Delta fare/fare}{\Delta dist/dist} = \dfrac{\% \Delta fare}{\% \Delta dist}$$
 
-**Solution:**  
+>**Solution:**  
+\begin{align*}
+fare = & e^{4.25}*dist^{0.4}\\
+\frac{dfare}{ddist} = & \frac{0.4*e^{4.25}}{dist^{0.6}}\\
+\end{align*}
 
 b. Since the log-log function is about percentages, let's now show that this implies that the units do not matter.  Suppose that instead of letting $dist$ taking units of 100 miles, we wrote the same function except that $dist$ takes units of miles.  Is it surprising that this function takes the form:
 $$\ln(fare) = 2.40 + 0.40 \ln(dist)$$
@@ -195,21 +199,32 @@ $$ecolbs = 1.34 + 0.04(educ) + 3.00(regprc) -2.87(ecoprc)$$
 
 a. Is it surprising that if the price of regular apples increases that the demand for eco apples increases?
 
-**Solution:**  
+>**Solution:**  
 
 b. What is the marginal effect of education on demand for eco apples?  Would you say individuals with more education purchase more eco apples compared to people with lower levels of education holding fixed price?
 
-**Solution:**  
+>**Solution:**  
+$$ \frac{\partial ecolbs}{\partial educ} = 0.04$$
+Adjusting for price of organic and regular apples, we can expect on average a constant 0.04 lb increase in quantity demanded of eco apples for every one additional year of education. Which means individuals with more education on average purchase slightly more eco apples than individuals with less education. 
 
 c. Consider an alternative function that includes an interaction
 $$ecolbs = 2.16 - 0.02(educ) + 3.00(regprc) -3.64(ecoprc) + 0.05(educ\times ecoprc)$$
 Show that with this function the marginal effect of price depends on the level of education.  Who is more responsive to price, individuals with high or low levels of educations?
 
-**Solution:**  
+>**Solution:**  
+$$ \frac{\partial ecolbs}{\partial ecoprc} = -3.64 + 0.05(educ)$$
+Individuals with lower levels of education are more responsive to the price of organic apples. 
 
 d. Given the function with interactions.  Holding fixed the price of regular apples, find the range of prices for eco apples where a person with 12 years of education will buy more eco apples than a person with 13 years of education.
 
-**Solution:**  
+>**Solution:**  
+\begin{align*}
+-0.02*(12) - 3.64*(ecoprc) + 0.05*(12*ecoprc) > & -0.02*(13) - 3.64*(ecoprc) + 0.05*(13*ecoprc)\\
+-0.24 - 3.64*(ecoprc) + 0.6*(ecoprc) > & -0.26 - 3.64*(ecoprc) + 0.65*(ecoprc)\\
+0.02 > & 0.05*(ecoprc)\\
+\frac{0.02}{0.05} > & \frac{ecoprc}{0.05}\\
+ecoprc < & $0.40
+\end{align*}
 
 e. Using this function, plot the relationship between eco pounds demanded and education for low price of eco-apples \$0.90 and a high price of eco-apples \$1.30, assuming the price of regular apples is \$0.90 in both situations.  Hint: here you are plotting $ecolbs$ on the y-axis against $educ$ on the x-axis holding fixed eco-price and regular apple price.  Does this plot illustrate which group of buyers, high education v. low education are most sensitive to price changes of eco-apples?
 
