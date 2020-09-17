@@ -18,9 +18,8 @@ We can interpret the intercept $120$ as the expected mean quantity given that bo
 
 b. What is the interpretation of the number $9.8$ in the equation above?  Is this a marginal effect?  If so, of what?
 
->Adjusting for income, we can expect on average a 9.8 unit decrease in quantity for every additional dollar increase in price. Yes, this is a marginal effect. We are finding the marginal effect of a one unit increase in price on quantity, treating income as a constant (held fixed). 
-
-**Solution:**  
+>**Solution:** 
+Adjusting for income, we can expect on average a 9.8 unit decrease in quantity for every additional dollar increase in price. Yes, this is a marginal effect. We are finding the marginal effect of a one unit increase in price on quantity, treating income as a constant (held fixed). 
 
 c. What is the demand for movies if $price=15$ and $income=200$?  What does this suggest about using linear functions to describe demand curves?
 
@@ -60,7 +59,7 @@ Take the derivative of this function with respect to $mrate$ and show that the m
 d. Sketch the general shape of the quadratic function with $prate$ on the y-axis and $mrate$ on the x-axis.  Use the code below (see what it looks like in the HTML) to upload your sketch.
 
 
->```{r pressure, echo=FALSE, fig.cap="Quadratic Formula", out.width = '50%'}
+>```{r pressure, echo=FALSE, out.width = '50%'}
 library(ggplot2)
 mrate <- seq(0, 8, 0.1)
 prate <- 78.6 + 17*(mrate) - 3.2*(mrate^2)
@@ -91,7 +90,7 @@ a. How do you interpret the intercept?  Is it of any use?
 
 >**Solution:**  
 We can interpret the intercept as the expected mean ticket price for a one-way flight when the distance traveled is zero miles. However, it is not of any use since flights are never zero miles long. In this case, we would expect the ticket price on average to be... 
-$$e^(4.666) = $106.27$$
+$$\exp(4.666) = $106.27$$
 
 
 b. Compute the $\ln(fare)$ of a flight that is 100 miles (i.e., $dist=1$).  What is the price in dollars for a flight that is 100 miles?
@@ -99,7 +98,7 @@ b. Compute the $\ln(fare)$ of a flight that is 100 miles (i.e., $dist=1$).  What
 >**Solution:** 
 \begin{align*}
 \ln(fare) = & 4.666 +  0.043(1) = 4.709\\
-fare = & e^(4.709) = $110.94
+fare = & \exp(4.709) = $110.94
 \end{align*}
 
 c. Compute the actual fare in dollars for a flight that is 200 miles.  What unit increase in distance is this compared to the previous question.  What percent increase is this in the fare?  Is this approximately 4.3\%?
@@ -107,15 +106,23 @@ c. Compute the actual fare in dollars for a flight that is 200 miles.  What unit
 >**Solution:**
 \begin{align*}
 \ln(fare) = & 4.666 +  0.043(2) = 4.752\\
-fare = & e^(4.752) = $115.82\\
+fare = & \exp(4.752) = $115.82\\
 increase = & (115.82 - 110.94) / (110.94) = 0.044\\
 \end{align*}
+
+> This represents a one unit increase in distance compared to the previous question. Yes, each additional one unit increase in distance results in approximately a 4.3% change increase in fare price.   
 
 d. Let's formalize this with calculus.  Re-write $fare = \exp(4.666  + 0.043 dist)$.  Take the derivative of this with respect to $dist$ and divide both sides by $fare$.  Show 
 $$0.043 = \dfrac{\partial fare/ fare}{\partial dist} = \dfrac{\Delta fare/ fare}{\Delta dist} = \dfrac{\%\Delta fare}{\Delta dist}$$
 In a log-level function the coefficient on $dist$ indicates the percentage change in $fare$ given a unit change in distance.  Thus if $dist$ increases by 1 unit (100 miles) the fare will increase by (approximately) 4.3\%
 
-**Solution:**  
+>**Solution:** 
+\begin{align*}
+fare = & \exp(4.666  + 0.043 dist)\\ 
+\frac{dfare}{ddist} = & \exp(4.666  + 0.043 dist) * 0.043\\
+\frac{dfare}{ddist} = & fare * 0.043\\
+0.043 = & \frac{dfare / fare}{dist} = \dfrac{\Delta fare/ fare}{\Delta dist} = \dfrac{\%\Delta fare}{\Delta dist}
+\end{align*}
 
 ### Question 4
 
@@ -125,29 +132,42 @@ where
 $$fare = 41 + 66\ln(dist)$$
 a. How does this function differ from the one in the previous problem
 
-**Solution:**  
+>**Solution:**  
+The function previously was a log-level function (natural log transformation on response variable fare, no transformation on explanatory variable distance), where a level change in distance corresponds to a constant 100*(distance coefficient) percent change in fare. This function differs in that it is a level-log function (no transformation on fare, natural log transformation on distance). In this case, a 1% change in distance corresponds to a (distance coefficient) / 100 level change in fare.  
 
 b. Let $fare =  41+66\ln(dist)$.  We would like to understand how to interpret the coefficient on $\ln(dist)$ (i.e., 66).  Take the derivative of the equation with respect to $dist$ and divide both sides by $1/dist$, show 
 $$66 = \dfrac{\partial fare}{\partial dist/dist}= \dfrac{\Delta fare}{\Delta dist/dist} = \dfrac{\Delta fare}{\% \Delta dist}$$
 This reads, if the denominator changes by 1 unit (a 100\% increase in distance), the dependent variable $fare$ will increase (approximately) by \$66.  This is a level-log function
 
-**Solution:**  
+>**Solution:**  
+\begin{align*}
+fare = & 41+66\ln(dist)\\
+\frac{dfare}{ddist} = & \frac{66}{dist}\\
+\frac{dist}{1} * \frac{dfare}{ddist} = & \frac{66}{dist} * \frac{dist}{1}\\
+66 = & \frac{dfare}{ddist / dist} = \dfrac{\Delta fare}{\Delta dist / dist} = \dfrac{\Delta fare}{\%\Delta dist}
+\end{align*}
 
 c. Your calculation above suggests that if $dist$ increases by 100\%, $fare$ should increase by \$66.  Check to see if this is true by comparing the actual $fare$ of a flight that is 400 miles to a flight that is 200 miles.
 
-**Solution:**  
+>**Solution:**  
+$$ fare_d = [44 + 66*\ln(400)] - [44 + 66*\ln(200)] = $45.75 $$
 
 d. If a 100\% change in $dist$ leads to an approximate increase in fare of \$66, what would you expect the approximate increase in $fare$ to be if $dist$ increased by 10\%? Check to see if this is a good approximation by comparing the actual fare difference for a flight that is 220 miles to a flight that is 200 miles?
 
-**Solution:**  
+>**Solution:**
+A 10% change in distance corresponds to a ((distance coefficient) / 10) level change in fare where distance coefficient equals 66. Therefore, we would expect a 10% change in distance to lead to an approximate increase in fare of $66/10 = $6.6$   
+$$fare_d = [44 + 66*\ln(220)] - [44 + 66*\ln(200)] = $6.29$$
 
 e. If a 100\% change in $dist$ leads to an approximate increase in fare of \$66, what would you expect the approximate increase in $fare$ to be if $dist$ increased by 1\%? Check to see if this is a good approximation by comparing the actual fare difference for a flight that is 202 miles to a flight that is 200 miles?
 
-**Solution:**  
+>**Solution:**
+A 1% change in distance corresponds to a ((distance coefficient) / 100) level change in fare where distance coefficient equals 66. Therefore, we would expect a 1% change in distance to lead to an approximate increase in fare of $66/100 = $0.66$   
+$$fare_d = [44 + 66*\ln(202)] - [44 + 66*\ln(200)] = $0.657$$
 
 f. What can you conclude about the percentage change interpretation on the coefficient on a natural log variable.  When is it a good approximation, when considering small percentage changes or large percentage changes?
 
-**Solution:**  
+>**Solution:**
+It is a good approximation when considering small percentage changes, not large percentage changes. 
 
 ### Question 5
 
