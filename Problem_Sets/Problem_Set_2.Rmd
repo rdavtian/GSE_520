@@ -199,7 +199,8 @@ $$ecolbs = 1.34 + 0.04(educ) + 3.00(regprc) -2.87(ecoprc)$$
 
 a. Is it surprising that if the price of regular apples increases that the demand for eco apples increases?
 
->**Solution:**  
+>**Solution:**
+No, since regular apples and organic apples are considered substitute goods. If the price of one good increases, then the demand of that good's substitute increases.   
 
 b. What is the marginal effect of education on demand for eco apples?  Would you say individuals with more education purchase more eco apples compared to people with lower levels of education holding fixed price?
 
@@ -254,7 +255,8 @@ a. Suppose the number of applicants to a university ($apps$) is a function of wh
     What is the meaning of the intercept in the function below
 $$apps = 9677.14 + 1423.23(bowl) + 410.16(btitle) + 2952.49(finfour)$$
 
-**Solution:**  
+>**Solution:**  
+We can interpret the intercept as the expected mean number of applicants to university (apps) this year given that the university last year did not participate in a bowl game, did not participate in the men's basketball final four, and were not men's basketball conference champions.
 
 b. Monthly US presidential approval ratings for the years 2001 to 2007 can be described by the following equation
 $$ approve = b_0 + b_1 rgasprice + b_2 katrina + b_3 iraqinvade + b_4 sep11$$
@@ -264,4 +266,5 @@ Where $rgasprice$ is real gas price, $katrina$ is an indicator variable if it wa
 $$ approve = 101.25 - 0.50 rgasprice + 14.76 katrina + 6.75 iraqinvade + 22.54 sep11$$
 What is the meaning of the intercept in the function above?
 
-**Solution:**  
+>**Solution:**  
+We can interpret the intercept as the average monthly US presidential approval rating (101.25) when the time of the year is not September 2001, and the month of the year is not the same month as when the US invaded Iraq, and the month of the year is not the same month as when Hurrican Katrina occured, and that the gas price at the time is zero. 
