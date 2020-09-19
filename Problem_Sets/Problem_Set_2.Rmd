@@ -2,7 +2,7 @@
 title: 'GSE 520: Problem Set #2'
 author:
 - Rus Adamovics-Davtian
-- Student Name 2 (delete if only one student or add more if more than two)
+- Christopher Almacen
 output: html_document
 ---
 
@@ -118,10 +118,10 @@ In a log-level function the coefficient on $dist$ indicates the percentage chang
 
 >**Solution:** 
 \begin{align*}
-fare = & e^{4.666  + 0.043 dist}\\ 
-\frac{dfare}{ddist} = & e^{4.666  + 0.043 dist} * 0.043\\
-\frac{dfare}{ddist} = & fare * 0.043\\
-0.043 = & \frac{dfare / fare}{dist} = \dfrac{\Delta fare/ fare}{\Delta dist} = \dfrac{\%\Delta fare}{\Delta dist}
+0.043 = & \frac{dfare / fare}{ddist} = \dfrac{\Delta fare/ fare}{\Delta dist} = \dfrac{\%\Delta fare}{\Delta dist}\\
+0.043 = & \frac{e^{4.666  + 0.043*dist} * 0.043}{fare}\\
+0.043 = & \frac{fare * 0.043}{fare}\\
+0.043 = & 0.043
 \end{align*}
 
 ### Question 4
@@ -182,15 +182,21 @@ $$.40 = \dfrac{\partial fare/fare}{\partial dist/dist} = \dfrac{\Delta fare/fare
 
 >**Solution:**  
 \begin{align*}
-fare = & e^{4.25}*dist^{0.4}\\
-\frac{dfare}{ddist} = & \frac{0.4*e^{4.25}}{dist^{0.6}}\\
+\epsilon_{fare, dist} = & \frac{dfare}{ddist} * \frac{dist}{fare}\\
+\epsilon_{fare, dist} = & (0.4e^{4.25} * dist^{-0.6}) * \frac{dist}{(e^{4.25} * dist^{0.4})}\\
+\epsilon_{fare, dist} = & \frac{0.4e^{4.25}*dist^{0.4}}{e^{4.25}*dist^{0.4}}\\
+\epsilon_{fare, dist} = & 0.4
 \end{align*}
 
 b. Since the log-log function is about percentages, let's now show that this implies that the units do not matter.  Suppose that instead of letting $dist$ taking units of 100 miles, we wrote the same function except that $dist$ takes units of miles.  Is it surprising that this function takes the form:
 $$\ln(fare) = 2.40 + 0.40 \ln(dist)$$
 Show that if we have $\ln(y) = a + b \ln(x)$ and $\ln(y) = a' + b' \ln(100 \times x)$ that $b=b'$ however $a \neq a'$.  (hint: you need to use the properties of $\ln$ that $\ln(a \times x) = \ln(a) + \ln(x)$)
 
-**Solution:**  
+>**Solution:**
+\begin{align*}
+a + b\ln(x) = & a^{'} + b^{'}\ln(100 + x)\\
+a + b\ln(x) = & a^{'} + b^{'}\ln(100) + b^{'}\ln(x)
+\end{align*}
 
 ### Question 6
 
