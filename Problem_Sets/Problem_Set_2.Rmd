@@ -26,11 +26,11 @@ c. What is the demand for movies if $price=15$ and $income=200$?  What does this
 >**Solution:**  
 If price = 15 and income = 200, then 
 \begin{align*}
-price = & 120 - 9.8*(15) + 0.03*(200)\\
-price = & -21
+demand = & 120 - 9.8*(15) + 0.03*(200)\\
+demand = & -21
 \end{align*}
 
->Clearly, demand cannot be negative. Using linear functions to describe demand curves can yield outputs (quantity) values that are not in the range of possible values given input values (price, income). 
+>Using linear functions to describe demand curves suggest that the effect of only price or only income on demand is always constant. This is typically not the case in the real world as individuals with large income may demand exponentially more than individuals with low income keeping price constant. 
 
 ### Question 2
 
@@ -89,7 +89,7 @@ $$\ln(fare) = 4.666 +  0.043(dist)$$
 a. How do you interpret the intercept?  Is it of any use?
 
 >**Solution:**  
-We can interpret the intercept as the expected mean ticket price for a one-way flight when the distance traveled is zero miles. However, it is not of any use since flights are never zero miles long. In this case, we would expect the ticket price on average to be... 
+We can interpret the intercept as the expected mean log of ticket price for a one-way flight when the distance traveled is zero miles. However, it is not of any use since it is on a log scale and flights are never zero miles long. In this case, we would expect the ticket price on average to be... 
 $$e^{4.666} = $106.27$$
 
 
@@ -149,7 +149,8 @@ fare = & 41+66\ln(dist)\\
 
 c. Your calculation above suggests that if $dist$ increases by 100\%, $fare$ should increase by \$66.  Check to see if this is true by comparing the actual $fare$ of a flight that is 400 miles to a flight that is 200 miles.
 
->**Solution:**  
+>**Solution:**
+A 100% change in distance corresponds to a ((distance coefficient) / 1) level change in fare where distance coefficient equals 66. Therefore, we would expect a 100% change in distance to lead to an approximate increase in fare of $66/1 = $66.0$  
 $$ fare_d = [44 + 66*\ln(400)] - [44 + 66*\ln(200)] = $45.75 $$
 
 d. If a 100\% change in $dist$ leads to an approximate increase in fare of \$66, what would you expect the approximate increase in $fare$ to be if $dist$ increased by 10\%? Check to see if this is a good approximation by comparing the actual fare difference for a flight that is 220 miles to a flight that is 200 miles?
