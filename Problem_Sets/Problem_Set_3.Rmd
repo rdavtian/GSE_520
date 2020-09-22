@@ -91,6 +91,7 @@ b. What is the model fit you were able to achieve with the variable you created.
 
 >**Solution:**  
 >```{r}
+# Tried creating b1, b2, ..., etc. separately using cov(x,y) / var(x) but wasn't getting the correct beta coefficients. We created a covariance matrix of predictors and a covariance matrix of the prdictors with the response variable and solved the matrix equation Ax = b to get the beta coefficients (b1, b2, ...)
 cov_matrix_X <- cov(data[, c("lsales","lmktval","comtensq","ceoten")])
 cov_X_y <- cov(data[, c("lsales","lmktval","comtensq","ceoten")], data$lsalary)
 coefs <- solve(cov_matrix_X, cov_X_y)
