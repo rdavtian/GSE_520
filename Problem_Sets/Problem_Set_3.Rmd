@@ -114,7 +114,7 @@ cat(' b0: ', round(b0, 3),'\n',
     'R^2: ', round(R_2, 3))
 ```
 
->In Question 2 part c, we used the model lsalary = a + b(lmktval) as a linear regression model that gave an $R^{2}$ value of 0.232. In this problem, we used the multiple linear regression model lsalary = a + b(lsales) + c(lmktval) + d(comtensq) + e(ceoten) which gave an $R^{2}$ value of 0.35. These four variables together explain more of the variation in log of salary than the previous one variable model.     
+>In Question 2 part c, we used the model lsalary = a + b(lmktval) as a linear regression model that gave an $R^{2}$ value of 0.232. In this problem, we used the regression model lsalary = a + b(lsales) + c(lmktval) + d(comtensq) + e(ceoten) which gave an $R^{2}$ value of 0.35. These four variables together explain more of the variation in log of salary than the previous one variable model.     
 
 ### Question 4
 
