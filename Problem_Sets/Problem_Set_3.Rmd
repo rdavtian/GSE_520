@@ -25,9 +25,9 @@ The data set in CEOSAL2 contains salary information on chief executive officers 
 
 a. What variable did you choose for $x$?
 
->**Solution:**  
+>**Solution:**
 ```{r}
-options(scipen=999)
+options(scipen=999) # changing options in R to not display decimals in scientific notation. 
 ceo <- load("C:/Users/rusla/OneDrive/GSE_520/R Data/ceosal2.RData")
 round(sort(cor(data)[,1], decreasing = T),3)
 ```
@@ -41,7 +41,7 @@ b. Using ```R``` and the formulas we derived in class, predict $y$ with $x$.  Ho
 b <- cov(data$salary, data$lmktval) / var(data$lmktval)
 a <- mean(data$salary) - b*mean(data$lmktval)
 y_hat <- a + b*(data$lmktval)
-SST <- sum((data$salary - mean(y_hat))^2)
+SST <- sum((data$salary - mean(data$salary))^2)
 SSE <- sum((data$salary - y_hat)^2)
 R_2 <- 1 - (SSE / SST)
 cat(' a: ', round(a, 3),'\n',
@@ -65,7 +65,7 @@ ggplot(data = df, aes(x = value)) + geom_histogram() + facet_wrap(~type, scales 
 b <- cov(data$lsalary, data$lmktval) / var(data$lmktval)
 a <- mean(data$lsalary) - b*mean(data$lmktval)
 y_hat <- a + b*(data$lmktval)
-SST <- sum((data$lsalary - mean(y_hat))^2)
+SST <- sum((data$lsalary - mean(data$lsalary))^2)
 SSE <- sum((data$lsalary - y_hat)^2)
 R_2 <- 1 - (SSE / SST)
 cat(' a: ', round(a, 3),'\n',
@@ -83,19 +83,25 @@ Using the same data set as Question 2, next consider predicting $\ln(salary)$, u
 
 a. What variable did you choose for $x$?
 
+>**Solution:**
+Including all independent variables maximizes the R^2 value but we would run the risk of overfitting the model. Instead, we chose to start by including the best 1 variable predictor (log of market value) and exhaustively searching for the next few best variables until the R^2 value stopped increasing. We came up with the following variables of x (lsales, lmktval, profmarg, comtensq, ceoten)
+
+b. What is the model fit you were able to achieve with the variable you created. How does your model fit compare to your answer in Question 2, Part C above?
+
 >**Solution:**  
 ```{r}
 cov_matrix_X <- cov(data[, c("lsales","lmktval","profmarg","comtensq","ceoten")])
 cov_X_y <- cov(data[, c("lsales","lmktval","profmarg","comtensq","ceoten")],
 data$lsalary)
-b1 <- solve(cov_matrix_X, cov_X_y)[1]
-b2 <- solve(cov_matrix_X, cov_X_y)[2]
-b3 <- solve(cov_matrix_X, cov_X_y)[3]
-b4 <- solve(cov_matrix_X, cov_X_y)[4]
-b5 <- solve(cov_matrix_X, cov_X_y)[5]
+coefs <- solve(cov_matrix_X, cov_X_y)
+b1 <- coefs[1]
+b2 <- coefs[2]
+b3 <- coefs[3]
+b4 <- coefs[4]
+b5 <- coefs[5]
 b0 <- mean(data$lsalary) - b1*mean(data$lsales) - b2*mean(data$lmktval) - b3*mean(data$profmarg) - b4*mean(data$comtensq) - b5*mean(data$ceoten)
 y_hat <- b0 + b1*(data$lsales) + b2*(data$lmktval) + b3*(data$profmarg) + b4*(data$comtensq) + b5*(data$ceoten)
-SST <- sum((data$lsalary - mean(y_hat))^2)
+SST <- sum((data$lsalary - mean(data$lsalary))^2)
 SSE <- sum((data$lsalary - y_hat)^2)
 R_2 <- 1 - (SSE / SST)
 cat(' b0: ', round(b0, 3),'\n',
@@ -109,11 +115,7 @@ cat(' b0: ', round(b0, 3),'\n',
     'R^2: ', round(R_2, 3))
 ```
 
-
-b. What is the model fit you were able to achieve with the variable you created. How does your model fit compare to your answer in Question 2, Part C above?
-
->**Solution:**  
-
+>In Question 2 part c, we used the model lsalary = a + b(lmktval) as a linear regression model that gave an $R^{2}$ value of 0.232. In this problem, we used the multiple linear regression model lsalary = a + b(lsales) + c(lmktval) + d(profmarg) + e(comtensq) + f(ceoten) which gave an $R^{2}$ value of 0.354. These five variables together explain more of the variation in log of salary than the previous one variable model.     
 
 ### Question 4
 
