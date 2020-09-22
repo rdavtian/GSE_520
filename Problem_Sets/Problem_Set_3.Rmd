@@ -27,18 +27,18 @@ The data set in CEOSAL2 contains salary information on chief executive officers 
 a. What variable did you choose for $x$?
 
 >**Solution:**
-```{r}
+>```{r}
 options(scipen=999) # changing options in R to not display decimals in scientific notation. 
 ceo <- load("C:/Users/rusla/OneDrive/GSE_520/R Data/ceosal2.RData")
-round(sort(cor(data)[,1], decreasing = T),3)
+round(sort(cor(data)[,"salary"], decreasing = T),3)
 ```
 
-> Based on calculating the correlation $(R)$ value between the response variable and all other variables, I choose lmktval (log of market value) as the variable that explains as much of the variation in salary as possible since it is the independent variable with the largest linear correlation to salary.
+> Based on calculating the correlation $(R)$ value between the response variable and all other variables, we chose lmktval (log of market value) as the variable that explains as much of the variation in salary as possible since it is the independent variable with the largest linear correlation to salary.
 
 b. Using ```R``` and the formulas we derived in class, predict $y$ with $x$.  How much of the variation in $salary$ are you able to explain with $x$?  Report your calculation of $a$, $b$, the $SST$, the $SSE$, and the $R^2$.
 
 >**Solution:**
-```{r}
+>```{r}
 b <- cov(data$salary, data$lmktval) / var(data$lmktval)
 a <- mean(data$salary) - b*mean(data$lmktval)
 y_hat <- a + b*(data$lmktval)
@@ -51,13 +51,13 @@ cat(' a: ', round(a, 3),'\n',
     'SST: ', SST, '\n',
     'R^2: ', round(R_2, 3))
 ```
-
+>We are able to explain 19.5% of the variation in salary with lmktval. 
 
 c. Instead, define $y=\ln(salary)$ and using the same formulas, predict $y$ with $x$.  In what sense are you better able to predict $salary$?
   
 >**Solution:** 
-```{r}
-round(sort(cor(data)[,10], decreasing = T),3)
+>```{r}
+round(sort(cor(data)[,"lsalary"], decreasing = T),3)
 library(ggplot2)
 library(tidyr)
 df <- data %>% dplyr::select(salary, lsalary) %>% 
@@ -76,7 +76,7 @@ cat(' a: ', round(a, 3),'\n',
     'R^2: ', round(R_2, 3))
 ```
 
-> As seen above, performing a natural log transformation on salary changes the distribution of the data from right skewed to a distribution closer to normal. This transformation allows for higher magnitudes of linear correlations among other predictors which is reflected in the correlation matrix. Since the predictor variables are more linearly correlated with log salary as opposed to salary, we are better able to predict salary from the transformation model than the non-transformation model (Shown from the same predictor getting a larger R^2 than before).     
+> As seen above, performing a natural log transformation on salary changes the distribution of the data from right skewed to a distribution closer to normal. This transformation allows for higher magnitudes of linear correlations among other predictors which is reflected in the correlation matrix. Since the predictor variables are more linearly correlated with log salary as opposed to salary, we are better able to predict salary from the transformation model than the non-transformation model when only using a linear model. (Shown from the same predictor getting a larger $R^{2}$ than before [0.232 vs 0.195]).     
 
 ### Question 3
 
@@ -85,46 +85,70 @@ Using the same data set as Question 2, next consider predicting $\ln(salary)$, u
 a. What variable did you choose for $x$?
 
 >**Solution:**
-Including all independent variables maximizes the R^2 value but we would run the risk of overfitting the model. Instead, we chose to start by including the best 1 variable predictor (log of market value) and exhaustively searching for the next few best variables until the R^2 value stopped increasing. We came up with the following variables of x (lsales, lmktval, profmarg, comtensq, ceoten)
+Including all independent variables maximizes the $R^{2}$ value but we would run the risk of overfitting the model. Instead, we chose to start by including the best 1 variable predictor (lsales) to model lsalary and exhaustively search for the next few best variables until the $R^{2}$ value stopped increasing significantly. We came up with the following variables of x (lsales, lmktval, comtensq, ceoten)
 
 b. What is the model fit you were able to achieve with the variable you created. How does your model fit compare to your answer in Question 2, Part C above?
 
 >**Solution:**  
-```{r}
-cov_matrix_X <- cov(data[, c("lsales","lmktval","profmarg","comtensq","ceoten")])
-cov_X_y <- cov(data[, c("lsales","lmktval","profmarg","comtensq","ceoten")],
+>```{r}
+cov_matrix_X <- cov(data[, c("lsales","lmktval","comtensq","ceoten")])
+cov_X_y <- cov(data[, c("lsales","lmktval","comtensq","ceoten")],
 data$lsalary)
 coefs <- solve(cov_matrix_X, cov_X_y)
 b1 <- coefs[1]
 b2 <- coefs[2]
 b3 <- coefs[3]
 b4 <- coefs[4]
-b5 <- coefs[5]
-b0 <- mean(data$lsalary) - b1*mean(data$lsales) - b2*mean(data$lmktval) - b3*mean(data$profmarg) - b4*mean(data$comtensq) - b5*mean(data$ceoten)
-y_hat <- b0 + b1*(data$lsales) + b2*(data$lmktval) + b3*(data$profmarg) + b4*(data$comtensq) + b5*(data$ceoten)
+b0 <- mean(data$lsalary) - b1*mean(data$lsales) - b2*mean(data$lmktval) -  b3*mean(data$comtensq) - b4*mean(data$ceoten)
+y_hat <- b0 + b1*(data$lsales) + b2*(data$lmktval) + b3*(data$comtensq) + b4*(data$ceoten)
 SST <- sum((data$lsalary - mean(data$lsalary))^2)
 SSE <- sum((data$lsalary - y_hat)^2)
 R_2 <- 1 - (SSE / SST)
 cat(' b0: ', round(b0, 3),'\n',
     'b1: ', round(b1, 3), '\n',
     'b2: ', round(b2, 3), '\n',
-    'b3: ', round(b3, 3), '\n',
-    'b4: ', round(b4, 5), '\n',
-    'b5: ', round(b5, 3), '\n',
+    'b3: ', round(b3, 5), '\n',
+    'b4: ', round(b4, 3), '\n',
     'SSE: ', SSE, '\n',
     'SST: ', SST, '\n',
     'R^2: ', round(R_2, 3))
 ```
 
->In Question 2 part c, we used the model lsalary = a + b(lmktval) as a linear regression model that gave an $R^{2}$ value of 0.232. In this problem, we used the multiple linear regression model lsalary = a + b(lsales) + c(lmktval) + d(profmarg) + e(comtensq) + f(ceoten) which gave an $R^{2}$ value of 0.354. These five variables together explain more of the variation in log of salary than the previous one variable model.     
+>In Question 2 part c, we used the model lsalary = a + b(lmktval) as a linear regression model that gave an $R^{2}$ value of 0.232. In this problem, we used the multiple linear regression model lsalary = a + b(lsales) + c(lmktval) + d(comtensq) + e(ceoten) which gave an $R^{2}$ value of 0.35. These four variables together explain more of the variation in log of salary than the previous one variable model.     
 
 ### Question 4
 
 a. Consider the prediction function $\hat{y}_i = a$.  Given a sample $y = \{y_1,y_2,\ldots,y_n\}$, show how to use this data to find the value of $a$ that minimizes the prediction error (i.e., what value of $a$, a function of the data makes $\sum_{i=1}^n (y_i -\hat{y}_i)^2$ as small as possible.)
 
-**Solution:**  
+>**Solution:**  
+Since each $\hat{y}_i$ = a,
+\begin{align*}
+SSE = & \sum_{i=1}^n (y_i -\hat{y}_i)^2\\
+SSE = & \sum_{i=1}^n (y_i - a)^2\\
+\frac{dSSE}{da} = & -2*\sum_{i=1}^n (y_i - a)\\
+0 = & -2*\sum_{i=1}^n (y_i - a)\\
+0 = & \sum_{i=1}^n (y_i - a)\\
+0 = & (\sum_{i=1}^n y_i) - (n*a)\\
+(n*a) = & (\sum_{i=1}^n (y_i)\\
+a = & \frac{1}{n} \sum_{i=1}^n y_i = \bar{y}
+\end{align*}
+
+> Take the mean of sample data $y = \{y_1,y_2,\ldots,y_n\}$ and use that as the value of a that minimizes the prediction error. 
 
 b. Consider the prediction function $\hat{y}_i = b x_i$.  Given a sample $y = \{y_1,y_2,\ldots,y_n\}$ and $x = \{x_1,x_2,\ldots,x_n\}$, show how to use this data to find the value of $b$ that minimizes the prediction error (i.e., what value of $b$, a function of the data makes $\sum_{i=1}^n (y_i -\hat{y}_i)^2$ as small as possible.)
 
-**Solution:**  
+>**Solution:**  
+Since each $\hat{y}_i$ = $bx_i$,
+\begin{align*}
+SSE = & \sum_{i=1}^n (y_i -\hat{y}_i)^2\\
+SSE = & \sum_{i=1}^n (y_i - bx_i)^2\\
+\frac{dSSE}{db} = & -2x_i*\sum_{i=1}^n (y_i - bx_i)\\
+0 = & -2x_i*\sum_{i=1}^n (y_i -  bx_i)\\
+0 = & \sum_{i=1}^n (y_i -  bx_i)\\
+0 = & (\sum_{i=1}^n y_i) - (b*\sum_{i=1}^n x_i)\\
+b\sum_{i=1}^n x_i = & \sum_{i=1}^n y_i\\
+b = & \frac{\sum_{i=1}^n y_i}{\sum_{i=1}^n x_i}\\ 
+b = & \frac{\bar{y}}{\bar{x}}
+\end{align*}
 
+> Take the mean of sample data $y = \{y_1,y_2,\ldots,y_n\}$ and divide that by the mean of $x = \{x_1,x_2,\ldots,x_n\}$. Use that as the value of b that minimizes the prediction error. 
