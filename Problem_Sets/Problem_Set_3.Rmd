@@ -92,8 +92,7 @@ b. What is the model fit you were able to achieve with the variable you created.
 >**Solution:**  
 >```{r}
 cov_matrix_X <- cov(data[, c("lsales","lmktval","comtensq","ceoten")])
-cov_X_y <- cov(data[, c("lsales","lmktval","comtensq","ceoten")],
-data$lsalary)
+cov_X_y <- cov(data[, c("lsales","lmktval","comtensq","ceoten")], data$lsalary)
 coefs <- solve(cov_matrix_X, cov_X_y)
 b1 <- coefs[1]
 b2 <- coefs[2]
@@ -129,7 +128,7 @@ SSE = & \sum_{i=1}^n (y_i - a)^2\\
 0 = & -2*\sum_{i=1}^n (y_i - a)\\
 0 = & \sum_{i=1}^n (y_i - a)\\
 0 = & (\sum_{i=1}^n y_i) - (n*a)\\
-(n*a) = & (\sum_{i=1}^n (y_i)\\
+(n*a) = & \sum_{i=1}^n y_i\\
 a = & \frac{1}{n} \sum_{i=1}^n y_i = \bar{y}
 \end{align*}
 
