@@ -1,0 +1,109 @@
+---
+title: 'GSE 520: Problem Set #4'
+author: 
+  - "Rus Adamovics-Davtian"
+  - "Student Name 2 (delete if only one student or add more if more than two)"
+output: html_document
+---
+
+### Question 1
+
+a. True or False.  The regression $y_i =  \beta_1 + \beta_2 sin(x_i) + \varepsilon_i$ violates the linearity assumption of the classical linear regression model.
+
+>**Solution:**  
+False, the parameters are linear. 
+
+b. Suppose we would like to estimate the production function  $$y_i = \beta_1x_i^{\beta_2}g_i^{\beta_3}h_i^{\beta_4}e^{\varepsilon_i}$$ Where $e$ is the exponential function.  Can this function be made to satisfy the linearity assumption.
+
+>**Solution:**  
+Yes, by taking the natural log of both sides to form a log-log model.
+\begin{align*}
+y_i = & \beta_1x_i^{\beta_2}g_i^{\beta_3}h_i^{\beta_4}e^{\varepsilon_i}\\
+\ln(y_i) = & \ln(\beta_1) + \beta_2\ln(x_i) +  \beta_3\ln(g_i) +  \beta_4\ln(h_i) + \varepsilon_i
+\end{align*}
+
+
+### Question 2
+
+A researcher is interested in studying if more developed countries (i.e. countries with higher GDP) have fewer deaths when natural disasters occur compared to less developed countries.  The authors hypothesize that more developed countries will experience fewer deaths because higher income means a higher demand for safety and a better underlying social/economic fabric.  They collect data from 3,893 natural disasters.  The table below shows the summary statistics of their data.
+
+Variable | Mean | Standard Deviation
+-------  |-----| -----------------
+$\ln$(number of killed) | 3.213	 | 1.821 
+$\ln$(GDP per captia) | 8.335 	| 1.023 
+
+The authors are interested in estimating the linear regression model 
+\begin{align*}
+\ln(killed) = \beta_0 + \beta_1 \ln(GDP) + \varepsilon
+\end{align*}
+
+a. The type of disaster, for example, hurricane or earthquake, likely also has an impact on the number of deaths.  Where does the type of disaster show up in the equation above?  What must be true about the relationship between the type of disaster and GDP to satisfy the set of assumptions of the linear regression model. Why?
+  
+>**Solution:**  
+The log-log regression model specified attempts to answer what effect does a percentage change in a countries GDP have on the percent change of number of deaths during natural disasters. The error term includes all other factors besides GDP that can explain the variation in the number of deaths. Therefore, the type of disaster shows up in the error term. The error term is mean independent which implies that the type of disaster and GDP are uncorrelated. In other words, knowing GDP does not give any information about type of disaster and vice versa. Conditioning on GDP, the expectation of the error term is zero. 
+
+b. The authors estimate the value of $\beta_1$ and get a value of $-0.514$.  Literally, what does this value mean.
+
+>**Solution:** 
+$\beta_1$ is the marginal effect of GDP on number of deaths. The percentage-change in number of deaths given a 1 percent change in GDP. Therefore, We would expect a 1% increase in GDP to result in a 0.514% decrease in number of deaths.  
+
+c. If the authors used least squares to estimate $\beta_1$ and $\beta_0$, what value did they get for $\beta_0$. (Use the information above you have enough information to figure this out.)
+
+>**Solution:**
+\begin{align*}
+\beta_0 = & mean(\ln(deaths)) - \beta_1*mean(\ln(GDP))\\
+\beta_0 = & 3.213 + 0.514(8.335) = 7.497
+\end{align*}
+
+d. In the author's data set, they observe multiple natural disasters in the same country.  Which of the assumptions in the linear regression model does this likely violate?
+  
+>**Solution:**  
+This likely violates assumption #4, specifically non-autocorrelation. The individual observations (natural disasters) are assumed independent from one another or uncorrelated. However, if multiple natural disasters are observed in the same country, then the number of deaths count may be correlated in some way.  
+
+### Question 3
+
+Suppose that $X$ is a random variable that takes value $-1$ with probability $0.5$ and $1$ with probability $0.5$.  $Y$ is a random variable that equals $0$ if $X=-1$.  If $X=1$ then $Y$ takes value $-1$ with probability $0.5$ and $1$ with probability $0.5$.
+
+a. Does $Y$ depend on $X$?
+
+**Solution:**  
+
+
+b.  Find $E(X)$ and $E(Y)$
+
+**Solution:**  
+
+
+c. Is $Y$ mean independent of $X$?, i.e. Prove or disprove that $E(Y) =,\neq E(Y | X)$. True or False.  If two variables are mean independent then the two variables are completely independent.
+
+**Solution:**  
+
+
+d. What is $Cov(Y,X)$? True or False.  If the covariance of two variables is zero then the two variables are completely independent.
+
+**Solution:**  
+
+
+### Question 4
+
+Suppose that pairs of $(X,Y)$ occur with the following values $(-1,0)$, $(0,1)$, and $(1,0)$ each with probability 1/3.
+
+a. Does $Y$ depend on $X$?
+
+**Solution:**  
+
+
+b. Find $E(X)$ and $E(Y)$
+
+**Solution:**  
+
+c. Show that $Y$ is not mean independent of $X$, i.e. what is $E(Y | X=-1)$ compared to $E(Y | X=0)$?
+
+**Solution:**  
+
+d. What is $Cov(Y,X)$? True or False.  If the covariance of two variables is zero then the two variables are mean independent.
+
+**Solution:**  
+
+
+
