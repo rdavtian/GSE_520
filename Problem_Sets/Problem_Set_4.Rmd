@@ -45,7 +45,7 @@ The log-log regression model specified attempts to answer what effect does a per
 b. The authors estimate the value of $\beta_1$ and get a value of $-0.514$.  Literally, what does this value mean.
 
 >**Solution:** 
-$\beta_1$ is the marginal effect of GDP on number of deaths. The percentage-change in number of deaths given a 1 percent change in GDP. Therefore, We would expect a 1% increase in GDP to result in a 0.514% decrease in number of deaths.  
+$\beta_1$ is the marginal effect of GDP on number of deaths. The percentage-change in number of deaths given a 1% change in GDP. Therefore, We would expect a 1% increase in GDP to result in a 0.514% decrease in number of deaths.  
 
 c. If the authors used least squares to estimate $\beta_1$ and $\beta_0$, what value did they get for $\beta_0$. (Use the information above you have enough information to figure this out.)
 
@@ -58,7 +58,7 @@ c. If the authors used least squares to estimate $\beta_1$ and $\beta_0$, what v
 d. In the author's data set, they observe multiple natural disasters in the same country.  Which of the assumptions in the linear regression model does this likely violate?
   
 >**Solution:**  
-This likely violates assumption #4, specifically non-autocorrelation. The individual observations (natural disasters) are assumed independent from one another or uncorrelated. However, if multiple natural disasters are observed in the same country, then the number of deaths count may be correlated in some way.  
+This likely violates assumption #4, specifically non-autocorrelation. The individual observations (natural disasters) are assumed independent from one another or uncorrelated. However, if multiple natural disasters are observed in the same country, then the number of deaths count for those observations may be correlated in some way.  
 
 ### Question 3
 
@@ -66,23 +66,33 @@ Suppose that $X$ is a random variable that takes value $-1$ with probability $0.
 
 a. Does $Y$ depend on $X$?
 
-**Solution:**  
-
+>**Solution:**  
+Yes, $Y$ depends on $X$ since $Y$ takes different values based on the outcome of $X$. 
 
 b.  Find $E(X)$ and $E(Y)$
 
-**Solution:**  
-
+>**Solution:**  
+\begin{align*}
+E[X] = & -1*\frac{1}{2} + 1\frac{1}{2} = 0\\
+E[Y] = & E_x[E[Y|X]] = 0*\frac{1}{2} - 1*\frac{1}{4} + 1*\frac{1}{4} = 0
+\end{align*}
 
 c. Is $Y$ mean independent of $X$?, i.e. Prove or disprove that $E(Y) =,\neq E(Y | X)$. True or False.  If two variables are mean independent then the two variables are completely independent.
 
-**Solution:**  
-
+>**Solution:**  
+Yes, $Y$ is mean independent of $X$. It is proven above that $E[Y] = E_x[E[Y|X]] = 0$ using Law of Total Expectation. $E[Y] = 0$ and knowing what $X$ is does not change the expectation of $Y$. False, mean independence does not imply complete independence. Two variables can be mean independent but not variance independent. 
 
 d. What is $Cov(Y,X)$? True or False.  If the covariance of two variables is zero then the two variables are completely independent.
 
-**Solution:**  
+>**Solution:**  
+\begin{align*}
+Cov(Y,X) = & E[YX] - E[X]*E[Y]\\
+Cov(Y,X) = & E[YX] - 0*0\\
+Cov(Y,X) = & E[YX]\\
+Cov(Y,X) = & (-1)(0)\frac{1}{2} + (1)(-1)\frac{1}{4} + (1)(1)\frac{1}{4} = 0 
+\end{align*}
 
+> False, having the covariance of two variables equal zero does not imply that they are not related or independent. The variables are uncorrelated, but not necessarily independent. 
 
 ### Question 4
 
@@ -90,20 +100,32 @@ Suppose that pairs of $(X,Y)$ occur with the following values $(-1,0)$, $(0,1)$,
 
 a. Does $Y$ depend on $X$?
 
-**Solution:**  
-
+>**Solution:**  
+Yes, if $X = -1$, then $Y = 0$. Also, if $X = 0$, then $Y = 1$. Lastly, if $X = 1$, then $Y = 0$. 
 
 b. Find $E(X)$ and $E(Y)$
 
-**Solution:**  
+>**Solution:**  
+\begin{align*}
+E[X] = & -1*\frac{1}{3} + 0*\frac{1}{3} + 1*\frac{1}{3} = 0\\
+E[Y] = & 0*\frac{1}{3} + 1*\frac{1}{3} + 0*\frac{1}{3} = \frac{1}{3}
+\end{align*}
 
 c. Show that $Y$ is not mean independent of $X$, i.e. what is $E(Y | X=-1)$ compared to $E(Y | X=0)$?
 
-**Solution:**  
+>**Solution:**  
+$Y$ is not mean independent of $X$ because $E(Y) \neq E(Y | X)$. $E[Y] = \frac{1}{3}$ but $E(Y | X = -1) = 0$ and $E(Y | X = 0) = 1$.
 
 d. What is $Cov(Y,X)$? True or False.  If the covariance of two variables is zero then the two variables are mean independent.
 
-**Solution:**  
+>**Solution:**
+\begin{align*}
+Cov(Y,X) = & E[YX] - E[X]E[Y]\\
+Cov(Y,X) = & E[YX] - 0(\frac{1}{3})\\
+Cov(Y,X) = & E[YX]\\
+Cov(Y,X) = & (-1)(0)\frac{1}{3} + (0)(1)\frac{1}{3} + (1)(0)\frac{1}{3} = 0
+\end{align*}
 
+>False. Mean independence of two variables implies that their covariance is zero but not the other way around. Just because the covariance of two variables is zero does not mean that they are mean independent. 
 
 
