@@ -2,7 +2,8 @@
 title: 'GSE 520: Problem Set #4'
 author: 
   - "Rus Adamovics-Davtian"
-  - "Student Name 2 (delete if only one student or add more if more than two)"
+  - "David Ngo"
+  - "Ian Donovan"
 output: html_document
 ---
 
