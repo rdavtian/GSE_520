@@ -16,8 +16,8 @@ a. Define $e$ as the vector of residuals, such that $e = y - Xb$.  Show that $\s
 >**Solution:**
 \begin{align*}
 SSE = & \sum_{i=1}^n e_i^{2} = \sum_{i=1}^n(y_i - X_i^{T}b)^{2}\\
-\frac{dSSE}{db_0} = & -2\sum_{i=1}^n (y_i - X_i^{T}b) = 0\\
-0 = & \sum_{i=1}^n (y_i - X_i^{T}b) = \sum_{i=1}^n e_i\\
+\frac{dSSE}{db_i} = & -2\sum_{i=1}^n x_i(y_i - X_i^{T}b) = 0 \quad x_{i} = 1 \: \forall i\\
+0 = & \sum_{i=1}^n (1)(y_i - X_i^{T}b) = \sum_{i=1}^n e_i\\
 \end{align*}
 
 b. Define $\overline{x}$ as a $K \times 1$ vector which contains the mean for each column of $X$.  Let $\overline{y}$ be the mean of $y$.  Show that the result above also implies $\overline{y} = \overline{x}'b$. (Hint: rely on your results from part (a) to prove this)
