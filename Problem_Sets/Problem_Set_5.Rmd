@@ -47,6 +47,10 @@ y_i = & \beta_1x_i^{\beta_2}g_i^{\beta_3}h_i^{\beta_4}e^{\varepsilon_i}\\
 \ln(y_i) - \ln(h_i) = & \ln(\beta_1) + \beta_2[\ln(x_i) - \ln(h_i)] + \beta_3[\ln(g_i) - \ln(h_i)] + \varepsilon_i
 \end{align*}
 
+>
+\begin{align*}
+Where \quad y^* = \ln(y_i) - \ln(h_i), \quad x^*_1 = \ln(x_i) - \ln(h_i) \quad and \quad x^*_2 = \ln(g_i) - \ln(h_i).
+\end{align*}
 
 ### Question 3
 
@@ -107,17 +111,17 @@ Let $X$ be a $n \times K$ matrix that includes a column of ones.  Let $Z$ also b
 
 >**Solution:**  
 \begin{align*}
-X = & (n*k) matrix\\
-X^{T} = & (k*n) matrix\\
-(X^{T}X)^{-1} = & (k*k) matrix\\
-Z = & (n*k) matrix
+X = & (n*k) \quad matrix\\
+X^{T} = & (k*n) \quad matrix\\
+(X^{T}X)^{-1} = & (k*k) \quad matrix\\
+Z = & (n*k) \quad matrix
 \end{align*}
 
 >Therefore,
 \begin{align*}
-PZ = & X(X^{T}X)^{-1}X^{T}Z = (n*k) matrix
+PZ = & X(X^{T}X)^{-1}X^{T}Z = (n*k) \quad matrix
 \end{align*}
-This projection matrix P creates predicted values for the column vectors of Z with linear combinations of columns in X.
+This projection matrix P creates predicted values for the column vectors of Z (3 column vectors with n rows) with linear combinations of columns in X.
 
 ### Question 6
 
@@ -241,4 +245,4 @@ RENTGRS = & -1822.097 + 36.5813(RENTGRS) + 3.1520(AUTO) + 1360.037(ROOMS)
 >**Solution:**  
 For each additional dollar increase in yearly rent holding all other variables constant, we expect the annual total household income to increase by $36.58. A one unit increase in the number of rooms holding all other variables constant results in an increase of expected annual household income by $1360.04. For each additional auto theft per 100,000 people holding all other variables constant, we expect the annual total household income to increase by $3.15.
 
-> We would expect the sign on number of auto thefts per 100,000 people to be negative since higher levels of crime usually occur in areas of lower socioeconomic status where the household income is lower. 
+> We would expect the sign on number of auto thefts per 100,000 people to be negative since higher levels of crime usually occur in areas of lower socioeconomic status where the household income is lower.
