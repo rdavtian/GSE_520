@@ -1,0 +1,164 @@
+---
+title: 'GSE 520: Problem Set #6'
+author: 
+  - "Rus Adamovics-Davtian"
+  - "Student Name 2 (delete if only one student or add more if more than two)"
+output: html_document
+---
+
+### Question 1
+
+Many times before estimating a linear regression model the analyst may perform some transformation on the data.  For example, if one of the variables is in dollars, they may divide it by 1000, so that it is reported in units of 1,000's of dollars.  Consider $X$ the original matrix of data (including a constant) and assume that all of the assumptions of the linear regression model are satisfied, such that 
+$$Y = X \beta + \pmb \varepsilon$$
+Where the OLS estimate of $\beta$ is $b = (X'X)^{-1}X'Y$
+
+Next let $\text{T}$ be any transformation matrix that is $K \times K$ and is invertible.  
+Define $X^* = X \text{T}$, which produces a linear transformation on the data.  The OLS estimate of the model with the transformed data is $b^* = (X^{*'} X^{*})^{-1} X^{*'} Y$
+
+a. Plug in the definition of $X^*$ to the equation for $b^*$ to show that $b^* = \text{T}^{-1} b$ for any transformation matrix.
+
+>**Solution:**  
+\begin{align*}
+b^* = & (XT^{'} XT)^{-1} XT^{'} Y\\
+b^* = & (XT^{-1})(XT^{'})^{-1} XT^{'} Y\\
+b^* = & T^{-1} (X^{'}X)^{-1}X^{'}Y\\
+b^* = & T^{-1}b
+\end{align*}
+
+b. Use the result above to show that $\widehat{Y}$ the predicted values from the original regression equals $\widehat{Y}^*$ the predicted values from the regression with the transformed data.
+
+>**Solution:**
+\begin{align*}
+\widehat{Y} = & \widehat{Y}^*\\
+X(X^{'}X)^{-1}X^{'}Y = & XT(XT^{'}XT)^{-1}XT^{'}Y\\
+Xb = & XTT^{-1}b\\
+Xb = & X(TT^{-1})b\\
+Xb = & XIb\\
+Xb = & Xb\\
+P_xY = & P_xY
+\end{align*}
+
+c. Finally conclude by showing that given your findings above, the two regressions have the same predicted values, they will also have the same R-squared, that is you are proving the very important and intuitive result that any linear transformation of the data does not lead to an improved fit of the outcome variable. (note this result applies to linear transformations, i.e., non-linear transformations, like include log and squared terms may be very effective in increasing R-squared.)
+
+>**Solution:**  
+\begin{align*}
+R^{2} = & 1 - \frac{SSE}{SST}\\
+R^2 = & 1 - \frac{\sum_{i=1}^n (y_i - \hat y_i)}{\sum_{i=1}^n (y_i - \bar y)}\\
+R^2 = & 1 - \frac{Y - \hat Y}{Y - \bar Y}\\
+\end{align*}
+
+>Also from part b, $\widehat Y$ = $\widehat Y^{*}$ is equal to $P_xY$ = $P_xY$. Therefore,
+\begin{align*}
+1 - \frac{Y - \hat Y}{Y - \bar Y} = & 1 - \frac{Y - \hat Y^{*}}{Y - \bar Y}\\
+1 - \frac{XB + \varepsilon - Xb}{XB + \varepsilon - \bar Y} = & 1 - \frac{XB + \varepsilon - Xb^{*}}{XB + \varepsilon - \bar Y}
+\end{align*}
+
+
+### Question 2
+
+a.  Suppose we have the linear regression $y_i =  \beta_1 + \beta_2 x_i + \varepsilon_i$ that satisfies the assumptions of the classical regression model.  Define an estimator for $\beta_2$, 
+$$b_2 = (y_2 - y_1) /(x_2 - x_1)$$
+Where $y_1$ is the first observation in the sample with associated $x_1$ and and $y_2$ is the second observation with associated $x_2$.  Is this estimator for $\beta_2$ unbiased? Prove it by plugging in the value for $y_i$'s an doing algebra and taking expectations.
+
+**Solution:**  
+
+
+b.  Consider the multiple regression model containing three independent variables
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + u$$
+Assume that all of the assumptions of the linear regression model are satisfied.  
+You are interested in estimating the sum of the parameters on $x_1$ and $x_2$; call this $\theta = \beta_1 + \beta_2$.  Show that $\hat{\theta} = \hat{\beta}_1 + \hat{\beta}_2$ is an unbiased estimator of $\theta$ where $\hat{\beta}_1$ and $\hat{\beta}_2$ are the OLS estimates of a regression of $x_1$, $x_2$, and $x_3$ on $y$.
+
+**Solution:**  
+
+
+### Question 3
+
+Suppose R\&D for firms in the chemical industry is only a function of sales and satisfies the assumption of the linear regression model and can be written as
+\begin{align*}
+rd_i = \beta_1 + \beta_2 sales_i + \beta_3 sales^2_i + \varepsilon_i
+\end{align*}
+Where $E(\varepsilon | sales, sales^2) = E(\varepsilon ) = 0$
+
+a. Consider a model without the squared term, with $rd_i = \beta_1 + \beta_2 sales_i + \varepsilon_i^*$, where $\varepsilon_i^* = \beta_3 sales^2_i + \varepsilon_i$.  Show by taking the conditional expectation of $\varepsilon_i^*$ with respect to $sales$ that this model violates the assumption of mean independence when $\beta_3 \neq 0$.
+
+**Solution:** 
+
+b. Suppose we have the following estimates form the true model
+$$\widehat{rd} = 17.79 -327.48(sales) +261.26(sales^2)$$
+Let $\widetilde{b}_2$ be the estimate of the coefficient on sales when the squared term is NOT included in the regression.  Would $\widetilde{b}_2$ be larger or smaller than $-327$? Explain.
+
+**Solution:** 
+
+
+### Question 4
+
+The dataset ```voucher.RData``` contains data on elementary school students in 1994. For this analysis, remove all student who have a "NA" for the variables $mnce90$. 
+
+A portion of these students  where awarded school vouchers to attend a charter, private or public school of their choosing.  The remaining students attended their local public school.  The variable $mnce_i$ is a math test for student $i$ and $select_i$ equals one if the student was selected to receive a voucher and zero otherwise.  
+
+a. What is the mean and standard deviation of the math test score variables?
+
+**Solution:** 
+
+b. Standardize the test score variables by substracting the mean and dividing by the standard deviation.  Call this variables $mnceZ_i$. Estimate a simple linear regression model of the form:
+$$ mnceZ_i = \beta_0 + \beta_1 select_i + \varepsilon_i$$
+Report your results in equation form. According to the results do students that received a voucher do better or worse on the math test relative to those students that did not receive a voucher?  By how many standard deviations in test score units do voucher students perform better or worse?
+
+**Solution:**  
+
+
+c. Does your analysis in part b suggest that students that use vouchers cause math test scores to be lower?  Explain.
+
+**Solution:**  
+
+d. It is possible that vouchers are not randomly assigned to students.  Consider three sets of student variables: gender, race/ethnicity, and past academic performance.  The variable $female$ is an indicator if the student is female.  The variables $hispanic$ and $black$ are indicators for the race/ethnicity of the student.  The omitted race/ethnic group is non-black/non-hispanic.  Finally the variables $mnce90$ is a math score for the student 4 years earlier, which is a measure of past academic performance.
+<br/><br/>
+Run a regression with the variable $select$ as the dependent variable and the variables listed above as explanatory variables.  Report your results in equation form.  Do these results suggest the vouchers are randomly assigned or do the students that receive vouchers vary systematically from the students that do not receive the vouchers?  Use the results from this regression to characterize the main difference between students that received these vouchers versus those that did not, e.g., those likely to receive vouchers are less likely to be female, etc. 
+
+**Solution:**  
+  
+
+e. Re-do the analysis in part (b) but now add control variables mentioned in part (d).  Report your results in equation form.  According to the results do students that received a voucher do better or worse on the math test relative to those students that did not receive a voucher once we control for these additional variables?  By how many standard deviations in test score units do voucher students perform better or worse?
+
+**Solution:**  
+
+
+f. Which results are more likely to represent the causal effect of vouchers on test scores, the results in part (b) or the results from part (e)?  Why?
+
+**Solution:** 
+
+
+g.  Being as clear as possible explain how each of the variables, $female$, $black$, $hispanic$, and $mnce90$ contribute to the omitted variable bias when they are not included in the regression in part (b).  Which variable contributes the least, which contributes the most?
+
+**Solution:**  
+
+
+h. Finally, assume you had access to a variable about parental income.  Explain under what scenarios the inclusion of this additional variable in the model from part (e), would make the coefficient on $select$ smaller than you found in part (e). 
+
+**Solution:**  
+
+
+
+### Question 5
+
+Consider the simple linear regression model, $y_i = \beta_1 + \beta_2 x_i + \varepsilon_i$ that satisfies mean independence $E(\varepsilon | x) = E(\varepsilon) = 0$.  
+
+Suppose $x$ is not observed.  However, $x^*$ is observed which is defined as $x_i^* = x_i + u_i$, where $u$ is called measurement error.  Assume that $E(u)=0$ and that $E(u|x)=0$.  That is, $u$ does not depend on $x$.  This is called classical measurement error because it is purely random.  Since $x$ is not observed, consider the regression of $y$ on $x^*$:
+$$y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i$$
+
+a.  Write explicitly the determinants of $\varepsilon^*_i$.  You do this by plugging in the $x_i = x_i^* - u_i$ into the original equation and re-arrange terms.
+
+**Solution:**  
+
+
+b. Show that $\varepsilon^*_i$ is not mean independent of $x_i^*$.
+
+**Solution:**  
+
+
+c. Treating $u$ as an omitted variable, show that if you estimate  $y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i$ with OLS, the estimate of $\beta_2$ will always be biased towards zero, that is, if $\beta_2>0$, the bias will be negative and if $\beta_2<0$ the bias will be positive.  This is called attenuation bias because it always produces estimated effects that are always weakened (closer to zero).
+
+**Solution:**  
+
+
+
