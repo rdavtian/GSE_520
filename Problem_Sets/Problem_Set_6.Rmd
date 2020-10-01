@@ -31,7 +31,8 @@ b. Use the result above to show that $\widehat{Y}$ the predicted values from the
 \begin{align*}
 \widehat{Y} = & \widehat{Y}^*\\
 X(X^{'}X)^{-1}X^{'}Y = & XT(XT^{'}XT)^{-1}XT^{'}Y\\
-Xb = & XTT^{-1}b\\
+Xb = & XTb^{*}\\
+Xb = & XTT^{-1}b \quad \quad \quad since \quad b^{*} = T^{-1}b\\
 Xb = & X(TT^{-1})b\\
 Xb = & XIb\\
 Xb = & Xb\\
