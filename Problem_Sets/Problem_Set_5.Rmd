@@ -111,15 +111,15 @@ Let $X$ be a $n \times K$ matrix that includes a column of ones.  Let $Z$ also b
 
 >**Solution:**  
 \begin{align*}
-X = & (n*k) \quad matrix\\
-X^{T} = & (k*n) \quad matrix\\
-(X^{T}X)^{-1} = & (k*k) \quad matrix\\
-Z = & (n*k) \quad matrix
+X = & (n \times k) \quad matrix\\
+X^{T} = & (k \times n) \quad matrix\\
+(X^{T}X)^{-1} = & (k \times k) \quad matrix\\
+Z = & (n \times k) \quad matrix
 \end{align*}
 
 >Therefore,
 \begin{align*}
-PZ = & X(X^{T}X)^{-1}X^{T}Z = (n*k) \quad matrix
+PZ = & X(X^{T}X)^{-1}X^{T}Z = (n \times k) \quad matrix
 \end{align*}
 This projection matrix P creates predicted values for the column vectors of Z (3 column vectors with n rows) with linear combinations of columns in X.
 
@@ -156,11 +156,11 @@ b. What was my adjusted R-squared?
 >**Solution:**
 ```{r}
 n <- length(points)
-k <- 1
+k <- 2
 SST = sum((points - mean(points))^2)
 SSE = SST*(1 - 0.33)
 R2_adj <- 1 - ((SSE / (n - k)) / (SST / (n - 1)))
-paste0("Adjusted R^2 = ", R2_adj)
+paste0("Adjusted R^2 = ", round(R2_adj,3))
 ```
 
 ### Question 7
