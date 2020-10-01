@@ -44,13 +44,13 @@ c. Finally conclude by showing that given your findings above, the two regressio
 \begin{align*}
 R^{2} = & 1 - \frac{SSE}{SST}\\
 R^2 = & 1 - \frac{\sum_{i=1}^n (y_i - \hat y_i)}{\sum_{i=1}^n (y_i - \bar y)}\\
-R^2 = & 1 - \frac{Y - \hat Y}{Y - \bar Y}\\
+R^2 = & 1 - \frac{Y - \widehat Y}{Y - \overline Y}\\
 \end{align*}
 
 >Also from part b, $\widehat Y$ = $\widehat Y^{*}$ is equal to $P_xY$ = $P_xY$. Therefore,
 \begin{align*}
-1 - \frac{Y - \hat Y}{Y - \bar Y} = & 1 - \frac{Y - \hat Y^{*}}{Y - \bar Y}\\
-1 - \frac{XB + \varepsilon - Xb}{XB + \varepsilon - \bar Y} = & 1 - \frac{XB + \varepsilon - Xb^{*}}{XB + \varepsilon - \bar Y}
+1 - \frac{Y - \widehat Y}{Y - \overline Y} = & 1 - \frac{Y - \widehat Y^{*}}{Y - \overline Y}\\
+1 - \frac{XB + \varepsilon - P_xY}{XB + \varepsilon - \overline Y} = & 1 - \frac{XB + \varepsilon - P_xY}{XB + \varepsilon - \overline Y}
 \end{align*}
 
 
