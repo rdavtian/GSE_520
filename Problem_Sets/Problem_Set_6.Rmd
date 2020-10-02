@@ -61,16 +61,80 @@ a.  Suppose we have the linear regression $y_i =  \beta_1 + \beta_2 x_i + \varep
 $$b_2 = (y_2 - y_1) /(x_2 - x_1)$$
 Where $y_1$ is the first observation in the sample with associated $x_1$ and and $y_2$ is the second observation with associated $x_2$.  Is this estimator for $\beta_2$ unbiased? Prove it by plugging in the value for $y_i$'s an doing algebra and taking expectations.
 
-**Solution:**  
+>**Solution:**  
+First, define $b_2$ in terms of $\beta_2$ plus some error.
+\begin{align*}
+b_2 = & \frac{y_2 - y_1}{x_2 - x_1}\\
+b_2 = & \frac{(\beta_1 + \beta_2x_2 + \varepsilon_2) - (\beta_1 + \beta_2x_1 + \varepsilon_1)}{x_2 - x_1}\\
+b_2 = & \frac{\beta_2(x_2 - x_1) + (\varepsilon_2 - \varepsilon_1)}{x_2 - x_1}\\
+b_2 =  & \frac{\beta_2(x_2 - x_1)}{x_2 - x_1} + \frac{\varepsilon_2 - \varepsilon_1}{x_2 - x_1}\\
+b_2 = & \beta_2 + \frac{\varepsilon_2 - \varepsilon_1}{x_2 - x_1}\\
+\end{align*}
 
+> To show $b_2$ is unbiased, need to show $E[b_2] = \beta_2$. Can do that by finding $E[b_2 | X]$ and using Law of Expected Iteration to find $E[b_2]$. 
+\begin{align*}
+E[b_2 | X] = & E[\frac{(\beta_1 + \beta_2x_2 + \varepsilon_2) - (\beta_1 + \beta_2x_1 + \varepsilon_1)}{x_2 - x_1} | X]\\
+E[b_2 | X] = & E[\beta_2 | X] + E[\frac{\varepsilon_2 - \varepsilon_1}{x_2 - x_1}]
+\end{align*}
+
+>Since $y_i$ follows all the classical regression assumptions, we know by assumption 3 that $E[\varepsilon | X] = 0$. Using that we are left with:
+
+>
+\begin{align*}
+E[b_2 | X] = & E[\beta_2 | X] + E[\frac{0 - 0}{x_2 - x_1}]\\
+E[b_2 | X] = & E[\beta_2 | X]\\
+E[b_2 | X] = & \beta_2
+\end{align*}
+
+> Using Law of Expected Iteration...
+\begin{align*}
+E[b_2] = & E_x[E[b_2 | X]]\\
+E[b_2] = & E_x[\beta_2] = \beta_2
+\end{align*}
+Therefore, $b_2$ is an unbiased estimator for $\beta_2$ since $E[b_2] - \beta_2 = 0$.
 
 b.  Consider the multiple regression model containing three independent variables
 $$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + u$$
 Assume that all of the assumptions of the linear regression model are satisfied.  
 You are interested in estimating the sum of the parameters on $x_1$ and $x_2$; call this $\theta = \beta_1 + \beta_2$.  Show that $\hat{\theta} = \hat{\beta}_1 + \hat{\beta}_2$ is an unbiased estimator of $\theta$ where $\hat{\beta}_1$ and $\hat{\beta}_2$ are the OLS estimates of a regression of $x_1$, $x_2$, and $x_3$ on $y$.
 
-**Solution:**  
+>**Solution:**  
+To show that $\hat \theta = \hat \beta_1 + \hat \beta_2$ is unbiased, show $E[\hat \theta] - \theta = 0$. Using Law of Expectation and Law of Expected Iteration...
 
+>
+\begin{align*}
+E[\hat \theta] = & E[\hat \beta_1 + \hat \beta_2]\\
+E[\hat \theta] = & E[\hat \beta_1] + E[\hat \beta_2]\\
+E[\hat \theta] = & E_x[E[\hat \beta_1 | X]] + E_x[E[\hat \beta_2 | X]]
+\end{align*}
+
+> Need to solve for $E[\hat \beta_1 | X]$ and $E[\hat \beta_2 | X]$. Also, $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + u$ can be represented as $Y = X\beta + \mu$.
+\begin{align*}
+E[\hat \beta_1 | X] = & E[(X^{'}X)^{-1}X^{'}Y]\\
+E[\hat \beta_1 | X] = & E[(X^{'}X)^{-1}X^{'}(X\beta_1 + \mu)]\\
+E[\hat \beta_1 | X] = & E[(X^{'}X)^{-1}X^{'}X\beta_1 | X] + E[(X^{'}X)^{-1}X^{'}\mu | X]\\
+E[\hat \beta_1 | X] = & E[\beta_1 | X] + (X^{'}X)^{-1}X^{'}E[\mu | X] \quad \quad \quad \quad \quad *E[\mu | X] = 0 \quad by \quad ASM \quad 3\\
+E[\hat \beta_1 | X] = & E[\beta_1 | X]\\
+E[\hat \beta_1 | X] = & \beta_1\\
+\\
+E[\hat \beta_2 | X] = & E[(X^{'}X)^{-1}X^{'}Y]\\
+E[\hat \beta_2 | X] = & E[(X^{'}X)^{-1}X^{'}(X\beta_2 + \mu)]\\
+E[\hat \beta_2 | X] = & E[(X^{'}X)^{-1}X^{'}X\beta_2 | X] + E[(X^{'}X)^{-1}X^{'}\mu | X]\\
+E[\hat \beta_2 | X] = & E[\beta_2 | X] + (X^{'}X)^{-1}X^{'}E[\mu | X] \quad \quad \quad \quad \quad *E[\mu | X] = 0 \quad by \quad ASM \quad 3\\
+E[\hat \beta_2 | X] = & E[\beta_2 | X]\\
+E[\hat \beta_2 | X] = & \beta_2
+\end{align*}
+
+> Therefore, 
+\begin{align*}
+E[\hat \theta] = & E_x[E[\hat \beta_1 | X]] + E_x[E[\hat \beta_2 | X]]\\
+E[\hat \theta] = & E_x[\beta_1] + E_x[\beta_2]\\
+E[\hat \theta] = & \beta_1 + \beta_2\\
+\\
+Bias = & E[\hat \theta] - \theta = 0\\
+Bias = & (\beta_1 + \beta_2) - (\beta_1 + \beta_2) = 0\\
+\end{align*}
+> $\hat{\theta} = \hat{\beta}_1 + \hat{\beta}_2$ is an unbiased estimator of $\theta$
 
 ### Question 3
 
@@ -99,14 +163,29 @@ A portion of these students  where awarded school vouchers to attend a charter, 
 
 a. What is the mean and standard deviation of the math test score variables?
 
-**Solution:** 
+>**Solution:**
+```{r}
+voucher <- load("C:/Users/rusla/OneDrive/GSE_520/R Data/voucher.RData")
+data <- data[!is.na(data$mnce90),]
+mean_math_90 <- mean(data$mnce90)
+mean_math_94 <- mean(data$mnce)
+sd_math_90 <- sd(data$mnce90)
+sd_math_94 <- sd(data$mnce)
+cat(" Mean Math Test Score 1990: ", round(mean_math_90,3), "\n",
+    "Mean Math Test Score 1994: ", round(mean_math_94,3), "\n",
+    "SD Math Test Score 1990: ", round(sd_math_94,3), "\n", 
+    "SD Math Test Score 1994: ", round(sd_math_94,3))
+```
 
 b. Standardize the test score variables by substracting the mean and dividing by the standard deviation.  Call this variables $mnceZ_i$. Estimate a simple linear regression model of the form:
 $$ mnceZ_i = \beta_0 + \beta_1 select_i + \varepsilon_i$$
 Report your results in equation form. According to the results do students that received a voucher do better or worse on the math test relative to those students that did not receive a voucher?  By how many standard deviations in test score units do voucher students perform better or worse?
 
-**Solution:**  
-
+>**Solution:**  
+```{r}
+data$mnce90Z <- (data$mnce90 - mean(data$mnce90)) / sd(data$mnce90)
+data$mnceZ <- (data$mnce - mean(data$mnce)) / sd(data$mnce)
+```
 
 c. Does your analysis in part b suggest that students that use vouchers cause math test scores to be lower?  Explain.
 
