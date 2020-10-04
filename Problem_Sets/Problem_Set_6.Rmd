@@ -281,7 +281,7 @@ E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 E[x_i | x
 
 c. Treating $u$ as an omitted variable, show that if you estimate  $y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i$ with OLS, the estimate of $\beta_2$ will always be biased towards zero, that is, if $\beta_2>0$, the bias will be negative and if $\beta_2<0$ the bias will be positive.  This is called attenuation bias because it always produces estimated effects that are always weakened (closer to zero).
 
-**Solution:**
+>**Solution:**
 \begin{align*}
 y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i\\
 \end{align*}
