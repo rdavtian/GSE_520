@@ -20,8 +20,12 @@ a. Plug in the definition of $X^*$ to the equation for $b^*$ to show that $b^* =
 
 >**Solution:**  
 \begin{align*}
-b^* = & (XT^{'} XT)^{-1} XT^{'} Y\\
-b^* = & (XT^{-1})(XT^{'})^{-1} XT^{'} Y\\
+b^* = & (X^{*'} X^{*})^{-1} X^{*'} Y\\
+b^* = & [(XT)^{'}(XT)]^{-1} (XT)^{'} Y\\
+b^* = & [(T^{'}X^{'})(XT)]^{-1} T^{'}X^{'} Y\\
+b^* = & (XT)^{-1}(T^{'}X^{'})^{-1} T^{'}X^{'} Y\\
+b^* = & T^{-1}X^{-1}(X^{'})^{-1}(T^{'})^{-1} T^{'}X^{'}Y\\
+b^* = & T^{-1} (X^{'}X)^{-1}IX^{'}Y\\
 b^* = & T^{-1} (X^{'}X)^{-1}X^{'}Y\\
 b^* = & T^{-1}b
 \end{align*}
@@ -266,8 +270,8 @@ b. Show that $\varepsilon^*_i$ is not mean independent of $x_i^*$.
 >**Solution:**
 \begin{align*}
 E[\varepsilon^*_i | x_i^{*}] = & E[y_i - \beta_1 - \beta_2 x_i^* + \beta_2 u_i | x_i^{*}]\\
-E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 E[x_i^* | x_i^*] + \beta_2 E[u_i | x_i^*]\\
-E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 E[u_i | x_i^*]\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - E[\beta_1 | x_i^{*}] - E[\beta_2 x_i^* | x_i^*] + E[\beta_2 u_i | x_i^*]\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 E[x_i^{*} | x_i^{*}] + \beta_2 E[u_i | x_i^*]\\
 E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 E[x_i^* - x_i | x_i^*]\\
 E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 (E[x_i^* | x_i^*] - E[x_i | x_i^*])\\
 E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 x_i^{*} - \beta_2 E[x_i | x_i^*]\\
