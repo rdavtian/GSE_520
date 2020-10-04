@@ -284,7 +284,6 @@ c. Treating $u$ as an omitted variable, show that if you estimate  $y_i = \beta_
 **Solution:**
 \begin{align*}
 y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i\\
-\widehat Y = X^*b
 \end{align*}
 
 
