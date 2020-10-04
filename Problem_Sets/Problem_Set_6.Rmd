@@ -229,18 +229,21 @@ $$\widehat{mnceZ_i} = -0.9977 + 0.1415(select_i) - 0.0450(female_i) - 0.2484(his
 f. Which results are more likely to represent the causal effect of vouchers on test scores, the results in part (b) or the results from part (e)?  Why?
 
 >**Solution:** 
-The results in part (e) are more likely to represent the causal effect of vouchers on test scores. The model in part (e) explains more variation in math test scores by including more significant eplanatory variables than the model in part (b). This can be seen from the substantial increases in $R^{2}$ and $AdjR^{2}$ values from the model in part (e) compared to those vales for the model in part (b).
+The results in part (e) are more likely to represent the causal effect of vouchers on test scores. The model in part (e) explains more variation in math test scores by including more significant eplanatory variables than the model in part (b). This can be seen from the substantial increases in $R^{2}$ and $AdjR^{2}$ values from the model in part (e) compared to those values for the model in part (b).
 
-g.  Being as clear as possible explain how each of the variables, $female$, $black$, $hispanic$, and $mnce90$ contribute to the omitted variable bias when they are not included in the regression in part (b).  Which variable contributes the least, which contributes the most?
+g.  Being asiable against all other explanatory variables and multiplying the effect of the var clear as possible explain how each of the variables, $female$, $black$, $hispanic$, and $mnce90$ contribute to the omitted variable bias when they are not included in the regression in part (b).  Which variable contributes the least, which contributes the most?
 
->**Solution:**  
-
+>**Solution:**
+>```{r}
+round(coef(model1),3)
+round(coef(model2),3)
+```
+>The omitted variable bias can be computed by taking the difference in coefficients from the full model (including the omitted variable) to the simple model (without including the omitted variable). It can also be found by regressing the omitted variable of interest with the effect of the omitted variable in the full regression model. In this problem, we calculated coefficients of the omitted variables when used as explanatory variables for X (X being the select variable) in part (d). That regression gave us all non-zero coefficients for these variables. Thus, the only way these variables would not contribute to the omitted variable bias is if they had no effect on the dependent variable mnceZi. Since those coefficients in part (d) where all not zero, then all of those variables contributed to the bias for the model in part (b). The variable that contributes least to the omitted variable bias is mnce90 as it had the smallest coefficient (−0.001) from the regression we ran in part (d). The variable with the biggest contribution to omitted variable bias is hispanic as it had the largest coefficient (0.46) from the regression in part (d).  
 
 h. Finally, assume you had access to a variable about parental income.  Explain under what scenarios the inclusion of this additional variable in the model from part (e), would make the coefficient on $select$ smaller than you found in part (e). 
 
-**Solution:**  
-
-
+>**Solution:**  
+A scenario under which the inclusion of parental income would make the coefficient on select smaller would be if select is highly correlated with parental income. When regressing select against all other variables, the coefficient should be significantly different from zero and large. If the effect of parental income on math test scores can be explained better than from the effect of select, then the coefficient of select will be smaller than in part (e). This is due to parental income explaining part of the math test score variables that select was previousy explaining.
 
 ### Question 5
 
@@ -251,17 +254,33 @@ $$y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i$$
 
 a.  Write explicitly the determinants of $\varepsilon^*_i$.  You do this by plugging in the $x_i = x_i^* - u_i$ into the original equation and re-arrange terms.
 
-**Solution:**  
-
+>**Solution:**
+\begin{align*}
+y_i = \beta_1 + \beta_2 (x_i^* - u_i) + \varepsilon^*_i\\
+y_i = \beta_1 + \beta_2 x_i^* - \beta_2 u_i + \varepsilon^*_i\\
+\varepsilon^*_i = y_i - \beta_1 - \beta_2 x_i^* + \beta_2 u_i
+\end{align*}
 
 b. Show that $\varepsilon^*_i$ is not mean independent of $x_i^*$.
 
-**Solution:**  
+>**Solution:**
+\begin{align*}
+E[\varepsilon^*_i | x_i^{*}] = & E[y_i - \beta_1 - \beta_2 x_i^* + \beta_2 u_i | x_i^{*}]\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 E[x_i^* | x_i^*] + \beta_2 E[u_i | x_i^*]\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 E[u_i | x_i^*]\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 E[x_i^* - x_i | x_i^*]\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 (E[x_i^* | x_i^*] - E[x_i | x_i^*])\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 x_i^{*} + \beta_2 x_i^{*} - \beta_2 E[x_i | x_i^*]\\
+E[\varepsilon^*_i | x_i^{*}]  = & E[y_i | x_i^{*}] - \beta_1 - \beta_2 E[x_i | x_i^*]\\
+\end{align*}
 
 
 c. Treating $u$ as an omitted variable, show that if you estimate  $y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i$ with OLS, the estimate of $\beta_2$ will always be biased towards zero, that is, if $\beta_2>0$, the bias will be negative and if $\beta_2<0$ the bias will be positive.  This is called attenuation bias because it always produces estimated effects that are always weakened (closer to zero).
 
-**Solution:**  
-
+**Solution:**
+\begin{align*}
+y_i = \beta_1 + \beta_2 x_i^* + \varepsilon^*_i\\
+\widehat Y = X^*b
+\end{align*}
 
 
