@@ -247,7 +247,7 @@ round(coef(model2),3)
 h. Finally, assume you had access to a variable about parental income.  Explain under what scenarios the inclusion of this additional variable in the model from part (e), would make the coefficient on $select$ smaller than you found in part (e). 
 
 >**Solution:**  
-A scenario under which the inclusion of parental income would make the coefficient on select smaller would be if select is highly correlated with parental income. When regressing select against all other variables, the coefficient should be significantly different from zero and large. If the effect of parental income on math test scores can be explained better than from the effect of select, then the coefficient of select will be smaller than in part (e). This is due to parental income explaining part of the math test score variables that select was previousy explaining.
+A scenario under which the inclusion of parental income would make the coefficient on select smaller would be if select is highly correlated with parental income. When regressing select against all other variables, the coefficient should be significantly different from zero and large. If the effect of parental income on math test scores can be explained better than from the effect of select, then the coefficient of select will be smaller than in part (e). This is due to parental income explaining part of the math test score variables that select was previously explaining.
 
 ### Question 5
 
