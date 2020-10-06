@@ -1,0 +1,274 @@
+---
+title: 'GSE 520: Problem Set #7'
+author: 
+  - "Rus Adamovics-Davtian"
+  - "Laniah Lewis"
+  - "John Giacinto"
+  - "Charlie Taylor"
+output: html_document
+---
+
+### Question 1
+
+Consider a vector $\theta= (\theta_1, \theta_2, \ldots, \theta_n)$.  The p-norm of $\theta$ is given by 
+$$ ||\theta||_p \equiv \left( \sum_{i=1}^n |\theta_i|^p \right)^{1/p}$$
+Where $p \ge 1$.  If $p =\infty$ then $||\theta||_{\infty} = \displaystyle\max_i |\theta_i|$
+
+Consider the vector $\theta = (-5, -3, -1, 0 , 2, 4)$
+
+a. Calculate by hand the 1-norm of $\theta$
+
+>**Solution:**  
+\begin{align*}
+1 \mbox{-} norm = & (\lvert -5 \rvert ^{1} + \lvert -3 \rvert ^{1} + \lvert -1 \rvert ^{1} + \lvert 0 \rvert ^{1} + \lvert 2 \rvert ^{1} + \lvert 4 \rvert ^{1})^{1}\\
+1 \mbox{-} norm = & 15
+\end{align*}
+
+b. Calculate by hand the 2-norm of $\theta$
+
+>**Solution:**  
+\begin{align*}
+2 \mbox{-} norm = & (\lvert -5 \rvert ^{2} + \lvert -3 \rvert ^{2} + \lvert -1 \rvert ^{2} + \lvert 0 \rvert ^{2} + \lvert 2 \rvert ^{2} + \lvert 4 \rvert ^{2})^{1/2}\\
+2 \mbox{-} norm = & 7.416198
+\end{align*}
+
+c. Calculate by hand the inf-norm of $\theta$
+
+>**Solution:**
+\begin{align*}
+inf \mbox{-} norm = & max(\lvert -5 \rvert, \lvert -3 \rvert, \lvert -1 \rvert, \lvert 0 \rvert, \lvert 2 \rvert, \lvert 4 \rvert)\\
+inf \mbox{-} norm = & 5
+\end{align*}
+
+d. The function ```norm(x,type = "1")``` will calculate the 1-norm of $x$ in R (type="I") is the inf-norm.  Use this function to double check your calculation of the the norms in (a)-(c) above. (make sure 'x' is a column vector, otherwise it will perform matrix norms)
+
+>**Solution:**
+>```{r}
+x = as.matrix(c(-5, -3, -1, 0 , 2, 4))
+norm1 <- norm(x, type = "1")
+norm2 <- norm(x, type = "2")
+norminf <- norm(x, type = "I")
+cat(" 1-Norm: ", norm1, "\n",
+    "2-Norm: ", norm2, "\n",
+    "Inf-Norm: ", norminf)
+```
+
+### Question 2
+The command ```x = rnorm(100000,mean=-5,sd=1.5)``` creates 100,000 random draws from a normal distribution with mean -5 and standard deviation 1.5 (variance 2.25) and stores them in a variables 'x'.  If this function works properly, the mean and standard deviation shoud be very close to the specified parameters
+
+(a) Create a vector that contains 100,000 random draws from $x \sim N(-5,2.25)$.  What is the estimated mean and standard deviation of this vector?  Are they close to the parameters that generated the data?
+
+>**Solution:**  
+>```{r}
+x = rnorm(100000, mean = -5, sd = 2.25)
+meanx <- mean(x)
+sdx <- sd(x)
+cat(" Mean:", meanx, "\n",
+    "SD: ", sdx)
+```
+
+(b) The function ```plot(density(x))``` plots the probability density function of the numbers in 'x' using kernel smoothing.  Use this function to plot the density of the random draws from the normal distribution.  Is the result what you expected? (it should be)
+
+>**Solution:**  
+>```{r}
+plot(density(x))
+```
+
+> Yes, normal distribution with mean -5 and sd 2.25.
+
+### Question 3
+In this problem we will conduct what are called Monte Carlo simulations, where, rather than work with real data we simulate data in a controlled environment so we can better understand the properties of different estimators.
+
+Let $x$ be a vector of $n$ draws from a random variable.  The sample average of $x$ is an estimate of $E(x)=\mu$.  Define the sample average
+$$\hat{\mu} = \frac{1}{n}\sum_{i=1}^n x_i$$
+
+(a) Prove that the sample average is unbiased (i.e., $E(\hat{\mu})=\mu$)
+
+>**Solution:**  
+\begin{align*}
+E(\hat{\mu}) = & E \left[ \frac{1}{n}\sum_{i=1}^n x_i] \right]\\
+E(\hat{\mu}) = & \frac{1}{n}E \left[ \sum_{i=1}^n x_i \right]\\
+E(\hat{\mu}) = & \frac{1}{n}E \left[ x_1 + x_2 + x_3 + ... + x_n \right] \quad \quad \quad where \quad E[x_i| = \mu\\
+E(\hat{\mu}) = & \frac{1}{n} * n \mu\\
+E(\hat{\mu}) = & \mu
+\end{align*}
+
+(b) The variance of the sample average estimator is $Var(\hat{\mu}) = \sigma^2/n$, where $\sigma^2=Var(x)$.  Using this formula, explain the two things that make this variance smaller.
+
+>**Solution:** 
+>
+1) When sample size increases, the variance of the sample average estimator decreases.\
+2) If Var(x) decreases, then the variance of the sample average estimator decreases. 
+
+(c) Suppose you have $n=20$ draws of a random variable, $x \sim N(-5,2.25)$, and you compute the sample mean $\hat{\mu}= (1/n) \sum_{i=1}^n x_i$.  We can simulate this data and calculate the sample mean with the code
+```
+x = rnorm(20,mean=-5,sd=1.5)
+muhat = mean(x)
+```
+To understand the properties of this estimator, we would like to replicate this procedure 100,000 times.  The code below uses a for loop to replicate this procedure 100,000 times.
+```
+numsamp = 100000
+muhat_all = matrix(0,nrow = numsamp,ncol = 1)
+for (i in 1:numsamp){
+  x = rnorm(20,mean=-5,sd=1.5)
+  muhat_all[i] = mean(x)
+}
+```
+Use this code to conduct the Monte Carlo Simulation.  Is the mean and variance of these replicates equal to what we found in Part (a) and (b) above.
+
+>**Solution:**
+>```{r}
+numsamp = 100000
+muhat_all = matrix(0,nrow = numsamp,ncol = 1)
+for (i in 1:numsamp){
+  x = rnorm(20,mean=-5,sd=1.5)
+  muhat_all[i] = mean(x)
+}
+
+mean_muhat_all <- mean(muhat_all)
+var_muhat_all <- var(muhat_all)
+
+cat(" E[mu_bar]:", -5, "\n",
+    "Mean_Sim: ", mean_muhat_all, "\n", "\n",
+    "Var(mu_bar):", 2.25 / 20, "\n",
+    "Var_Sim:", var_muhat_all, "\n")
+```
+
+(d) Plot the kernel density of the estimates.  Do the estimates appear to be normally distributed?
+
+>**Solution:**  
+>```{r}
+plot(density(muhat_all))
+```
+
+> Yes, estimates appear to be normally distributed around -5. 
+
+### Question 4
+The exponential function is a distribution that is characterized by the rate parameter $\lambda$.  If $x \sim exponential(\lambda)$, then $E(x) = 1/\lambda$ and $Var(x) = 1/\lambda^2$.  The function ```x = rexp(100000,rate=3)``` creates 100,000 draws from a random variable with an exponential distribution and rate parameter equal 3
+
+(a) Create 100,000 draws of an exponential random variable with rate parameter 3 and see if the mean and variance of these draws matches the formulas I states above.
+
+>**Solution:**  
+>```{r}
+x = rexp(100000, rate = 3)
+meanx <- mean(x)
+varx <- var(x)
+cat(" E[x]:", 1/3, "\n",
+    "Sample Mean: ", meanx, "\n", "\n",
+    "Var(x):", 1/(3)^2, "\n",
+    "Sample Var:", varx)
+```
+
+(b) Plot the kernel density of these 100,000 draws from the exponential distribution with rate parameter 3
+
+>**Solution:**  
+```{r}
+plot(density(x))
+```
+
+(c) Repeat the Monte Carlo simulations you conducted in Question 3 Part (c), except now, the data is 20 draws from an exponential distribution with rate parameter 3.  What do you expect the mean and variance to be for the distribution of the estimator?  Are these numbers close to the ones generated from the Monte Carlo simulates?
+
+>**Solution:**
+>```{r}
+numsamp = 100000
+muhat_all = matrix(0,nrow = numsamp,ncol = 1)
+for (i in 1:numsamp){
+  x = rexp(20, rate = 3)
+  muhat_all[i] = mean(x)
+}
+
+mean_muhat_all <- mean(muhat_all)
+var_muhat_all <- var(muhat_all)
+
+cat(" E[mu_bar]:", 1/3, "\n",
+    "Mean_Sim: ", mean_muhat_all, "\n", "\n",
+    "Var(mu_bar):", (1/(3^2))/20, "\n",
+    "Var_Sim:", var_muhat_all, "\n")
+```
+
+(d) Plot the kernel density of the estimates in Part (c).  Do the estimates appear to be normally distributed?
+
+>**Solution:**
+>```{r}
+plot(density(muhat_all))
+```
+
+> Yes, estimates appear to be normally distributed around $\frac{1}{3}$. 
+
+### Question 5
+Suppose $x_1 \sim N(0,1)$.  Define $x_2$ as 
+$$x_2 = \left(\sqrt{1-a}\right)x_1 + \eta$$
+Where $\eta \sim N(0,a)$ and $0\le a < 1$
+
+We can simulate $n$ observations of this data with the code (make sure you define $n$ and $a$ before these lines)
+```
+x1 = rnorm(n,mean=0,sd=1)
+x2 = sqrt(1-a)*x1 + rnorm(n,mean=0,sd=sqrt(a))
+```
+
+(a) Prove that given the information above $Var(x_2)=1$ regardless of the value of $a$.  Don't forget to include $Cov(x_1,\eta)=0$ in your proof.
+
+>**Solution:**  
+\begin{align*}
+Var(x_2) = & Var((\sqrt{1 - a})x_1 + \eta)\\
+Var(x_2) = & Var((\sqrt{1 - a})x_1) + Var(\eta) + 2Cov(\sqrt{1 - a})x_1, \eta)\\
+Var(x_2) = & (1 - a)Var(x_1) + a + 0\\
+Var(x_2) = & (1 - a)1 + a\\
+Var(x_2) = & 1 - a + a\\
+Var(x_2) = & 1
+\end{align*}
+
+(b) What is the $Cov(x_1,x_2)$? Is it a function of $a$? (Hint: since the $E(x_1)=0$ and $E(x_2)=0$, $Cov(x_1,x_2) = E(x_1x_2)$.  Don't forget to include $Cov(x_1,\eta)=0$ in your proof.
+
+>**Solution:**
+\begin{align*}
+Cov(x_1, x_2) = & Cov(x_1, (\sqrt{1 - a})x_1 + \eta)\\
+Cov(x_1, x_2) = & Cov(x_1, (\sqrt{1 - a})x_1) + Cov(x_1, \eta)\\
+Cov(x_1, x_2) = & (\sqrt{1 - a})Cov(x1, x1) + 0\\
+Cov(x_1, x_2) = & (\sqrt{1 - a})Var(x1)\\
+Cov(x_1, x_2) = & \sqrt{1 - a}(1)\\
+Cov(x_1, x_2) = & \sqrt{1 - a} = E[x_1x_2]
+\end{align*}
+
+(c) Consider the linear regression model
+$$ y = \beta_1 x_1 + \beta_2 x_2 + \varepsilon$$
+Where $\varepsilon \sim N(0,\sigma^2)$.  Note this model does not have an intercept. Let $b = (b_1,b_2)$ be the least squares estimate of this model.  Construct the variance-covariance matrix of $b$ as a $2 \times 2$ matrix that is only a function of $a$, $n$ and $\sigma^2$
+
+>**Solution:**
+\begin{align*}
+Var(b_1) = & \\
+Var(b_2) = & \\
+Cov(b_1, b_2) = & Cov(b_2, b_1) = \\
+\end{align*}
+
+>
+\begin{align*} Cov \quad Matrix = \left[
+  \begin{matrix}
+  var(b1) & cov(b1, b2) \\
+  cov(b2, b1) & var(b2)
+  \end{matrix} \right]
+\end{align*}
+
+(d) Let $\beta_1=1$, $\beta_2=1$, $\sigma^2=10$, and $n=50$. Choose a value for $a$ and use Monte Carlo simulation with 100,000 samples to show that the formula you constructed in Part (c) is correct.
+
+>**Solution:**
+>```{r}
+beta1 = 1
+beta2 = 1
+var = 10
+n = 50
+```
+
+(e) Choose either a larger value for $a$, $n$, or $\sigma^2$ than you did in Part (d) and redo the Monte Carlo simulation.  How does the variance of the least squares estimates with these new numbers compare to the ones in Part (d). Is this what you expected? Explain. 
+
+>**Solution:**
+>```{r}
+
+```
+
+(f) Plot the kernel density of the estimates of both $b_1$ and $b_2$ in Part (e).  Do the estimates appear to be normally distributed?
+
+>**Solution:**
+>```{r}
+
+```
