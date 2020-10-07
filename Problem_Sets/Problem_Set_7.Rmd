@@ -342,13 +342,13 @@ var_b
 (e) Choose either a larger value for $a$, $n$, or $\sigma^2$ than you did in Part (d) and redo the Monte Carlo simulation.  How does the variance of the least squares estimates with these new numbers compare to the ones in Part (d). Is this what you expected? Explain. 
 
 >**Solution:**
-n = 1000
+n = 500
 >```{r}
 options(scipen=999)
 beta1 = 1
 beta2 = 1
 sigma2 = 10
-n = 1000
+n = 500
 a = 0.5
 numsamp = 100000
 x1_sample_var = matrix(0,nrow = numsamp,ncol = 1)
@@ -356,6 +356,8 @@ x2_sample_var = matrix(0,nrow = numsamp,ncol = 1)
 x1_x2_sample_cov = matrix(0,nrow = numsamp,ncol = 1)
 beta_1_est = matrix(0,nrow = numsamp,ncol = 1)
 beta_2_est = matrix(0,nrow = numsamp,ncol = 1)
+var_b1 = matrix(0,nrow = numsamp,ncol = 1)
+var_b2 = matrix(0,nrow = numsamp,ncol = 1)
 for (i in 1:numsamp){
   x1 = rnorm(n, mean = 0, sd = 1)
   eta = rnorm(n, mean = 0, sd = sqrt(a))
@@ -366,6 +368,8 @@ for (i in 1:numsamp){
   x1_x2_sample_cov[i] = cov(x1, x2)
   beta_1_est[i] = 1 + solve(n*var(x1))*mean(x1)*e
   beta_2_est[i] = 1 + solve(n*var(x2))*mean(x2)*e
+  var_b1[i] = solve(sigma2*n*var(x1))
+  var_b1[i] = solve(sigma2*n*var(x2))
 }
 mean_x1_sample_var = mean(x1_sample_var)
 mean_x2_sample_var = mean(x2_sample_var)
@@ -379,13 +383,14 @@ var_b <- solve(var_b_inv)
 var_b_inv
 var_b
 ```
-> Increasing sample size from 50 to 1000 results in the  variance-covariance matrix of b to decrease of which is what we expected. 
+> Increasing sample size from 50 to 500 results in the  variance-covariance matrix of b to decrease in each element which is what we expected. 
 
 (f) Plot the kernel density of the estimates of both $b_1$ and $b_2$ in Part (e).  Do the estimates appear to be normally distributed?
 
 >**Solution:**
->```{r}
-print(plot(density(beta_1_est)))
-print(plot(density(beta_2_est)))
+> The Variance Estimates of b1 and b2 with n = 500
+>```{r, figures-side, fig.show="hold", out.width="50%"}
+plot(density(var_b1))
+plot(density(var_b2))
 ```
-> Yes, the estimates for $b_1$ and $b_2$ appear to be normally distributed. 
+> Yes, the estimates of $b_1$ and $b_2$ appear to be normally distributed. 
