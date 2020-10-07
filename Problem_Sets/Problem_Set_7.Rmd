@@ -291,6 +291,14 @@ Var(b) =
   \end{array} } \right]^{-1}
 \end{align*}
 
+>\begin{align*}
+Var(b) =
+  \left[ {\begin{array}{cc}
+   0.004 & -0.00028 \\
+   -0.0028 & 0.004\\
+  \end{array} } \right]
+\end{align*}
+
 >```{r}
 beta1 = 1
 beta2 = 1
@@ -300,19 +308,23 @@ a = 0.5
 numsamp = 100000
 x1_sample_var = matrix(0,nrow = numsamp,ncol = 1)
 x2_sample_var = matrix(0,nrow = numsamp,ncol = 1)
+x1_x2_sample_cov = matrix(0,nrow = numsamp,ncol = 1)
 for (i in 1:numsamp){
   x1 = rnorm(n, mean = 0, sd = 1)
-  eta = rnorm(n, mean = 0, sd = a)
+  eta = rnorm(n, mean = 0, sd = sqrt(a))
   x2 = (sqrt(1 - a)*x1) + eta
   x1_sample_var[i] = var(x1)
   x2_sample_var[i] = var(x2)
+  x1_x2_sample_cov[i] = cov(x1, x2)
 }
 mean_x1_sample_var = mean(x1_sample_var)
 mean_x2_sample_var = mean(x2_sample_var)
-var_b1 = variance*n*var(x1_sample_var)
-var_b2 = variance*n*var(x2_sample_var)
-cov_b1_b2 = variance*n*cov(x1_sample_var, x2_sample_var)
-cov_b2_b1 = variance*n*cov(x1_sample_var, x2_sample_var)
+mean_x1_x2_sample_cov = mean(x1_x2_sample_cov)
+
+var_b1 = variance*n*mean_x1_sample_var
+var_b2 = variance*n*mean_x2_sample_var
+cov_b1_b2 = variance*n*mean_x1_x2_sample_cov
+cov_b2_b1 = variance*n*mean_x1_x2_sample_cov
 cat(" Var(b1):", var_b1, "\n",
     "Var(b2): ",var_b2, "\n", "\n",
     "Cov(b1,b2):", cov_b1_b2, "\n",
