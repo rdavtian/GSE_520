@@ -342,6 +342,7 @@ var_b
 (e) Choose either a larger value for $a$, $n$, or $\sigma^2$ than you did in Part (d) and redo the Monte Carlo simulation.  How does the variance of the least squares estimates with these new numbers compare to the ones in Part (d). Is this what you expected? Explain. 
 
 >**Solution:**
+n = 500
 >```{r}
 options(scipen=999)
 beta1 = 1
