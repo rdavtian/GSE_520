@@ -124,15 +124,15 @@ for (i in 1:numsamp){
   x = rnorm(20,mean=-5,sd=1.5)
   muhat_all[i] = mean(x)
 }
-
 mean_muhat_all <- mean(muhat_all)
 var_muhat_all <- var(muhat_all)
-
 cat(" E[mu_bar]:", -5, "\n",
     "Mean_Sim: ", mean_muhat_all, "\n", "\n",
     "Var(mu_bar):", 2.25 / 20, "\n",
     "Var_Sim:", var_muhat_all, "\n")
 ```
+
+> Yes, the mean and variance of these replicates equal to what we found in Part (a) and (b) above.
 
 (d) Plot the kernel density of the estimates.  Do the estimates appear to be normally distributed?
 
@@ -176,15 +176,14 @@ for (i in 1:numsamp){
   x = rexp(20, rate = 3)
   muhat_all[i] = mean(x)
 }
-
 mean_muhat_all <- mean(muhat_all)
 var_muhat_all <- var(muhat_all)
-
 cat(" E[mu_bar]:", 1/3, "\n",
     "Mean_Sim: ", mean_muhat_all, "\n", "\n",
     "Var(mu_bar):", (1/(3^2))/20, "\n",
     "Var_Sim:", var_muhat_all, "\n")
 ```
+> Yes, these numbers are close to the ones generated from the Monte Carlo simulation.
 
 (d) Plot the kernel density of the estimates in Part (c).  Do the estimates appear to be normally distributed?
 
@@ -299,47 +298,93 @@ Var(b) =
   \end{array} } \right]
 \end{align*}
 
+> Let's use Monte Carlo Simulation to find a close approximation to Var(b) computed above. 
+
 >```{r}
+options(scipen=999)
 beta1 = 1
 beta2 = 1
-variance = 10
+sigma2 = 10
 n = 50
 a = 0.5
 numsamp = 100000
 x1_sample_var = matrix(0,nrow = numsamp,ncol = 1)
 x2_sample_var = matrix(0,nrow = numsamp,ncol = 1)
 x1_x2_sample_cov = matrix(0,nrow = numsamp,ncol = 1)
+beta_1_est = matrix(0,nrow = numsamp,ncol = 1)
+beta_2_est = matrix(0,nrow = numsamp,ncol = 1)
 for (i in 1:numsamp){
   x1 = rnorm(n, mean = 0, sd = 1)
   eta = rnorm(n, mean = 0, sd = sqrt(a))
   x2 = (sqrt(1 - a)*x1) + eta
+  e = rnorm(1, 0, sigma2)
   x1_sample_var[i] = var(x1)
   x2_sample_var[i] = var(x2)
   x1_x2_sample_cov[i] = cov(x1, x2)
+  beta_1_est[i] = 1 + solve(n*var(x1))*mean(x1)*e
+  beta_2_est[i] = 1 + solve(n*var(x2))*mean(x2)*e
 }
 mean_x1_sample_var = mean(x1_sample_var)
 mean_x2_sample_var = mean(x2_sample_var)
 mean_x1_x2_sample_cov = mean(x1_x2_sample_cov)
-
-var_b1 = variance*n*mean_x1_sample_var
-var_b2 = variance*n*mean_x2_sample_var
-cov_b1_b2 = variance*n*mean_x1_x2_sample_cov
-cov_b2_b1 = variance*n*mean_x1_x2_sample_cov
-cat(" Var(b1):", var_b1, "\n",
-    "Var(b2): ",var_b2, "\n", "\n",
-    "Cov(b1,b2):", cov_b1_b2, "\n",
-    "Cov(b2,b1)", cov_b2_b1)
+var_b1_inv = sigma2*n*mean_x1_sample_var
+var_b2_inv = sigma2*n*mean_x2_sample_var
+cov_b1_b2_inv = sigma2*n*mean_x1_x2_sample_cov
+cov_b2_b1_inv = sigma2*n*mean_x1_x2_sample_cov
+var_b_inv <- as.matrix(cbind(c(var_b1_inv, cov_b1_b2_inv), c(cov_b2_b1_inv, var_b2_inv)))
+var_b <- solve(var_b_inv)
+var_b_inv
+var_b
 ```
+
+> The Monte Carlo Simulation produced similar variance-covariance matrix compared to the formula in part c. 
 
 (e) Choose either a larger value for $a$, $n$, or $\sigma^2$ than you did in Part (d) and redo the Monte Carlo simulation.  How does the variance of the least squares estimates with these new numbers compare to the ones in Part (d). Is this what you expected? Explain. 
 
 >**Solution:**
 >```{r}
+options(scipen=999)
+beta1 = 1
+beta2 = 1
+sigma2 = 10
+n = 500
+a = 0.5
+numsamp = 100000
+x1_sample_var = matrix(0,nrow = numsamp,ncol = 1)
+x2_sample_var = matrix(0,nrow = numsamp,ncol = 1)
+x1_x2_sample_cov = matrix(0,nrow = numsamp,ncol = 1)
+beta_1_est = matrix(0,nrow = numsamp,ncol = 1)
+beta_2_est = matrix(0,nrow = numsamp,ncol = 1)
+for (i in 1:numsamp){
+  x1 = rnorm(n, mean = 0, sd = 1)
+  eta = rnorm(n, mean = 0, sd = sqrt(a))
+  x2 = (sqrt(1 - a)*x1) + eta
+  e = rnorm(1, 0, sigma2)
+  x1_sample_var[i] = var(x1)
+  x2_sample_var[i] = var(x2)
+  x1_x2_sample_cov[i] = cov(x1, x2)
+  beta_1_est[i] = 1 + solve(n*var(x1))*mean(x1)*e
+  beta_2_est[i] = 1 + solve(n*var(x2))*mean(x2)*e
+}
+mean_x1_sample_var = mean(x1_sample_var)
+mean_x2_sample_var = mean(x2_sample_var)
+mean_x1_x2_sample_cov = mean(x1_x2_sample_cov)
+var_b1_inv = sigma2*n*mean_x1_sample_var
+var_b2_inv = sigma2*n*mean_x2_sample_var
+cov_b1_b2_inv = sigma2*n*mean_x1_x2_sample_cov
+cov_b2_b1_inv = sigma2*n*mean_x1_x2_sample_cov
+var_b_inv <- as.matrix(cbind(c(var_b1_inv, cov_b1_b2_inv), c(cov_b2_b1_inv, var_b2_inv)))
+var_b <- solve(var_b_inv)
+var_b_inv
+var_b
 ```
+> Increasing sample size from 50 to 500 results in the  variance-covariance matrix of b to decrease of which is what we expected. 
 
 (f) Plot the kernel density of the estimates of both $b_1$ and $b_2$ in Part (e).  Do the estimates appear to be normally distributed?
 
 >**Solution:**
 >```{r}
-
+print(plot(density(beta_1_est)))
+print(plot(density(beta_2_est)))
 ```
+> Yes, the estimates for $b_1$ and $b_2$ appear to be normally distributed. 
