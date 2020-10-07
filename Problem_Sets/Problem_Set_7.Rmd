@@ -265,8 +265,8 @@ $Var(b)=\sigma^2(X'X)^{-1}$
  \[
    Var(b)=\sigma^2
   \left[ {\begin{array}{cc}
-   nVar(x_1) & nCov(x_1,x_2) \\
-   nCov(x_1,x_2) & nVar(x_2)\\
+   n & n\sqrt{1 - a} \\
+   n\sqrt{1 - a} & n)\\
   \end{array} } \right]^{-1}
 \]
 
