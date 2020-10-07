@@ -266,7 +266,7 @@ $Var(b)=\sigma^2(X'X)^{-1}$
    Var(b)=\sigma^2
   \left[ {\begin{array}{cc}
    n & n\sqrt{1 - a} \\
-   n\sqrt{1 - a} & n)\\
+   n\sqrt{1 - a} & n\\
   \end{array} } \right]^{-1}
 \]
 
@@ -274,18 +274,55 @@ $Var(b)=\sigma^2(X'X)^{-1}$
 (d) Let $\beta_1=1$, $\beta_2=1$, $\sigma^2=10$, and $n=50$. Choose a value for $a$ and use Monte Carlo simulation with 100,000 samples to show that the formula you constructed in Part (c) is correct.
 
 >**Solution:**
+Let $a = 0.5$,
+\begin{align*}
+Var(b) =10
+  \left[ {\begin{array}{cc}
+   50 & 50\sqrt{1 - 0.5} \\
+   50\sqrt{1 - 0.5} & 50\\
+  \end{array} } \right]^{-1}
+\end{align*}
+
+>\begin{align*}
+Var(b) =
+  \left[ {\begin{array}{cc}
+   500 & 353.5534 \\
+   353.5534 & 500\\
+  \end{array} } \right]^{-1}
+\end{align*}
+
 >```{r}
 beta1 = 1
 beta2 = 1
-var = 10
+variance = 10
 n = 50
+a = 0.5
+numsamp = 100000
+x1_sample_var = matrix(0,nrow = numsamp,ncol = 1)
+x2_sample_var = matrix(0,nrow = numsamp,ncol = 1)
+for (i in 1:numsamp){
+  x1 = rnorm(n, mean = 0, sd = 1)
+  eta = rnorm(n, mean = 0, sd = a)
+  x2 = (sqrt(1 - a)*x1) + eta
+  x1_sample_var[i] = var(x1)
+  x2_sample_var[i] = var(x2)
+}
+mean_x1_sample_var = mean(x1_sample_var)
+mean_x2_sample_var = mean(x2_sample_var)
+var_b1 = variance*n*var(x1_sample_var)
+var_b2 = variance*n*var(x2_sample_var)
+cov_b1_b2 = variance*n*cov(x1_sample_var, x2_sample_var)
+cov_b2_b1 = variance*n*cov(x1_sample_var, x2_sample_var)
+cat(" Var(b1):", var_b1, "\n",
+    "Var(b2): ",var_b2, "\n", "\n",
+    "Cov(b1,b2):", cov_b1_b2, "\n",
+    "Cov(b2,b1)", cov_b2_b1)
 ```
 
 (e) Choose either a larger value for $a$, $n$, or $\sigma^2$ than you did in Part (d) and redo the Monte Carlo simulation.  How does the variance of the least squares estimates with these new numbers compare to the ones in Part (d). Is this what you expected? Explain. 
 
 >**Solution:**
 >```{r}
-
 ```
 
 (f) Plot the kernel density of the estimates of both $b_1$ and $b_2$ in Part (e).  Do the estimates appear to be normally distributed?
