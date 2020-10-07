@@ -235,19 +235,41 @@ $$ y = \beta_1 x_1 + \beta_2 x_2 + \varepsilon$$
 Where $\varepsilon \sim N(0,\sigma^2)$.  Note this model does not have an intercept. Let $b = (b_1,b_2)$ be the least squares estimate of this model.  Construct the variance-covariance matrix of $b$ as a $2 \times 2$ matrix that is only a function of $a$, $n$ and $\sigma^2$
 
 >**Solution:**
-\begin{align*}
-Var(b_1) = & \\
-Var(b_2) = & \\
-Cov(b_1, b_2) = & Cov(b_2, b_1) = \\
-\end{align*}
+$X=[x_1,x_2]$
+$Var(b)=\sigma^2(X'X)^{-1}$
 
->
-\begin{align*} Cov \quad Matrix = \left[
-  \begin{matrix}
-  var(b1) & cov(b1, b2) \\
-  cov(b2, b1) & var(b2)
-  \end{matrix} \right]
-\end{align*}
+ \[
+   (X'X)^{-1}=
+  \left[ {\begin{array}{cc}
+   x_1'x_1 & x_1'x_2 \\
+   x_2'x_1 & x_2'x_2\\
+  \end{array} } \right]^{-1}
+\]
+
+ \[
+   (X'X)^{-1}=
+  \left[ {\begin{array}{cc}
+   nVar(x_1) & nCov(x_1,x_2) \\
+   nCov(x_1,x_2) & nVar(x_2)\\
+  \end{array} } \right]^{-1}
+\]
+
+ \[
+   Var(b)=\sigma^2
+  \left[ {\begin{array}{cc}
+   nVar(x_1) & nCov(x_1,x_2) \\
+   nCov(x_1,x_2) & nVar(x_2)\\
+  \end{array} } \right]^{-1}
+\]
+
+ \[
+   Var(b)=\sigma^2
+  \left[ {\begin{array}{cc}
+   nVar(x_1) & nCov(x_1,x_2) \\
+   nCov(x_1,x_2) & nVar(x_2)\\
+  \end{array} } \right]^{-1}
+\]
+
 
 (d) Let $\beta_1=1$, $\beta_2=1$, $\sigma^2=10$, and $n=50$. Choose a value for $a$ and use Monte Carlo simulation with 100,000 samples to show that the formula you constructed in Part (c) is correct.
 
