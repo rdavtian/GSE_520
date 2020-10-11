@@ -148,7 +148,21 @@ cat("95% Confidence Prediction Interval: [",1000*conf_int,"]")
 
     Consider the random variable actual selling price minus predicted selling price, $y_o - \hat{y}_o= x_o' \beta + \varepsilon_o - x_o'b$.  What is $E(y_o - \hat{y}_o)$?  Show that $Var(y_o - \hat{y}_o) = x_o' \widehat{Var(b)}x_o + \sigma^2$
 
->**Solution:**  
+>**Solution:**
+\begin{align*}
+E[y_o - \hat{y}_o] = & E[x_o' \beta + \varepsilon_o - x_o'b]\\
+E[y_o - \hat{y}_o] = & x_o'E[\beta] + E[\varepsilon_o] - x_o'E[b]\\
+E[y_o - \hat{y}_o] = & x_o'\beta + \sigma^{2} - x_o'\beta\\
+E[y_o - \hat{y}_o] = & \sigma^{2}
+\end{align*}
+
+>\begin{align*}
+Var(y_o - \hat{y}_o) = & Var(x_o' \beta + \varepsilon_o - x_o'b)\\
+Var(y_o - \hat{y}_o) = & Var(x_o'(\beta - b) + \varepsilon_o)\\
+Var(y_o - \hat{y}_o) = & x_o'Var(\beta - b)x_o + Var(\varepsilon_o)\\
+Var(y_o - \hat{y}_o) = & x_o'Var(\beta - b)x_o + \sigma^{2}\\
+Var(y_o - \hat{y}_o) = & x_o' \widehat{Var(b)}x_o + \sigma^2
+\end{align*}
 
 (e) Construct a 95\% prediction interval for $y_o$ using the fact that 
 $$\frac{y_o- \hat{y}_o}{\sqrt{x_o' \widehat{Var(b)}x_o + s^2}} \sim t[n-K]$$
@@ -245,6 +259,8 @@ True, since $E(x_2 | x_1) \neq E(x_2)$, then the two variables are not mean inde
 (c) In the classical linear regression model we assumed normal disturbance, i.e. $\varepsilon \sim \mathcal{N}(0,\sigma^2)$.  Because of this assumption we are able to show that the variance of the least squares estimator was $Var(b | X) = \sigma^2 (X'X)^{-1}$
 
 >**Solution:**  
+False, we are able to show that $Var(b | X) = \sigma^2 (X'X)^{-1}$ from the assumptions of non-autocorrelation $E[\varepsilon_i\varepsilon_j] = 0$ and homoskedasticity $E[\varepsilon^{2}] = \sigma^{2}$ which are part of the variance-covariance matrix. Assumming the disturbance is normally distributed with mean 0 and sd sigma does not tell us about $Var(b | X) = \sigma^2 (X'X)^{-1}$.
+
 
 
 ### Question 5
