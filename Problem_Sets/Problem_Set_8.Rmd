@@ -1,0 +1,269 @@
+---
+title: 'GSE 520: Problem Set #8'
+author: 
+  - "Rus Adamovics-Davtian"
+  - "Charlie Taylor"
+  - "Brendan Hoang"
+output: html_document
+---
+
+### Question 1
+
+The dataset ```hprice1.Rdata``` contains home prices for 88 homes as well as various housing characteristics.  We are interested in understanding the relationship between housing characteristics and home prices.  Consider the equation:
+$$price = \beta_1 + \beta_2 bdrms + \beta_3 (sqrft/100) + \beta_4 (lotsize/100) + \varepsilon$$
+Where $price$ is selling price in units of \$1,000's, $bdrms$ is the number of bedrooms, $sqrft$ is the number of square feet of the house, and $lotsize$ is the lot size in square feet.
+
+The OLS estimates of the parameters and the standard errors are 
+```{r,echo=FALSE}
+load("C:/Users/rusla/OneDrive/GSE_520/R Data/hprice1.RData")
+mod1 = lm(price~bdrms+I(sqrft/100)+I(lotsize/100),data=data)
+print('Least Squares Estimates')
+mod1$coefficients
+print('Standard Errors')
+sqrt(diag(vcov(mod1)))
+```
+
+(a) List two variables that influence home price that are captured in $\varepsilon$.
+
+>**Solution:**  
+1) Location of Neighborhood (near public transportation, grocery stores, schools, etc.)\
+2) Age and condition of home. 
+
+(b) How do you interpret the coefficient $\beta_3$?
+
+>**Solution:**  
+Adjusting for all other variables, a one unit $(1 ft^{2})$ increase in size of house in is associated with a $1,227.78 average increase in house selling price. 
+
+(c) Using only matrices, in ```R``` reproduce the least squares estimates and the estimates of the standard errors using the data set.
+
+>**Solution:**  
+>```{r}
+data$sqrft <- data$sqrft / 100
+data$lotsize <- data$lotsize / 100
+X <- as.matrix(data[, c("bdrms","sqrft","lotsize")])
+X <- as.matrix(cbind(rep(1, nrow(data)),X))
+Y <- as.matrix(data[, "price"])
+x_t_x <- t(X) %*% X
+x_t_y <- t(X) %*% Y
+betas <- round((solve(x_t_x) %*% x_t_y),5)
+cat(" Regression Equation:","\n", "\n",
+   "intercept = ", betas[1],"\n",
+   "bdrms = ", betas[2],"\n",
+   "sqrft = ", betas[3],"\n",
+   "lotsize = ", betas[4])
+y_hat <- betas[1] + betas[2]*data$bdrms + betas[3]*data$sqrft + betas[4]*data$lotsize
+resid <- Y - y_hat
+s_2 <- sum(resid^2) / (nrow(data) - (ncol(X) - 1))
+std_err <- diag(sqrt(s_2*solve(t(X) %*% X)))
+cat(" Standard Errors:","\n", "\n",
+   "intercept = ", std_err[1],"\n",
+   "bdrms = ", std_err[2],"\n",
+   "sqrft = ", std_err[3],"\n",
+   "lotsize = ", std_err[4])
+```
+
+(d) Next, using the ```lm``` and ```vcov``` function as I did above, re-estimate the model including the standard errors adding the variable 'colonial' to the model.  Show the results of the new model and explain ***how*** and ***why*** the parameter estimate on $bdrms$ changed with the addition of the new variable. (Recall: if you define $z$ as the new variable it is helpful to know how $z$ relates to $bdrms$, $sqrt$, and $lotsize$ by estimating $\widehat{z} = \hat{\alpha}_1  + \hat{\alpha}_2 bdrms  + \hat{\alpha}_3 (sqrft/100)  +  \hat{\alpha}_4 (lotsize/100)$.)
+
+>**Solution:**  
+>```{r, echo=FALSE}
+mod3 = lm(price~bdrms+I(sqrft/100)+I(lotsize/100) + colonial,data=data)
+print('Least Squares Estimates')
+mod3$coefficients
+print('Standard Errors')
+sqrt(diag(vcov(mod3)))
+```
+>
+Before adding colonial to the model, the estimated beta coefficient on bdrms was 13.85. Now, after adding colonial to the regression model, the estimated beta coefficient is 11.00, which is a difference of 2.85. This shows that the original model suffered from some violation of the mean independence assumption. The original model left out a variable (colonial) that could potentially explain more of the variation in house price. We can compute the exact change in estimatation by regressing colonial against all other independent variables and observing the bdrms to be significantly different from zero. This means bdrms and colonial would have some correlation and $E[\varepsilon | X] \neq 0$ for the original model with colonial in the \varepsilon term. Lastly, we can use the beta coefficient on bdrms when predicting colonial and multiply it by the coefficient of colonial on the full model.   
+
+>```{r}
+mod2 = lm(colonial ~ bdrms+I(sqrft/100)+I(lotsize/100), data = data)
+cat(" bdrms coef from colonial ~ bdrms + sqrft + lotsize: ", mod2$coefficients["bdrms"], "\n",
+"colonial coef from price ~ bdrms + sqrft + lotsize + colonial: ", mod3$coefficients["colonial"], "\n",
+"Omitted Variable Bias: ", mod2$coefficients["bdrms"]*mod3$coefficients["colonial"])
+```
+
+(e) Finally, appealing to the formula that determines the variance of a single parameter, explain why the standard error on $bdrms$ changed when 'colonial' was added to the regression.
+
+>**Solution:**  
+Before adding colonial to the model, the standard error of the coefficient on bdrms was 9.01. Now, after adding colonial to the regression model, the standard error on the coefficient of bdrms is 9.52, which is an increase of 0.51. This seems to suggest that adding colonial is actually irrelevant since the standard error on the cofficient increased. The issue here is bias/variance trade-off. It seems that including colonial as part of the error term induces bias that is not large enough to justify adding colonial into the regression equation due to variance increase. Therefore, we should be okay with inducing little bias in exchange for smaller variance. 
+
+### Question 2
+
+For this problem it is acceptable to use the built in ```lm``` function.
+
+The dataset ```hprice1.Rdata``` contains home prices for 88 homes as well as various housing characteristics.  We are interested in understanding the relationship between housing characteristics and home prices.  Consider the equation:
+$$price = \beta_1 + \beta_2 bdrms + \beta_3 (sqrft/100) + \beta_4 (lotsize/100) + \varepsilon$$
+Where $price$ is selling price in units of \$1,000's, $bdrms$ is the number of bedrooms, $sqrft$ is the number of square feet of the house, and $lotsize$ is the lot size in square feet.
+
+The OLS estimates using the 88 observations are
+```{r,echo=FALSE}
+load("C:/Users/rusla/OneDrive/GSE_520/R Data/hprice1.RData")
+mod = lm(price~bdrms+I(sqrft/100)+I(lotsize/100),data=data)
+summary(mod)
+```
+
+(a) Use these estimates to construct a 95\% confidence interval for $\beta_3$.  How did you choose your critical value?
+
+>**Solution:**
+To construct a confidence interval, we use the formula... \
+$b_k \quad (+/-) \quad CV \times \widehat{SE(b_k)}$ \
+From the model summary output, $b_k = 12.22782$ and $\widehat{SE(b_k)} = 1.32374$. To find the critical value for a 95% confidence interval, we can find the t-value from the t distribution with $\alpha = 0.05$ and degrees of freedom number of rows minus number of variables in model (88 - 4 = 84). The critical value is 1.98861. Therefore, a 95% confidence interval can be constructed as such...
+$$[12.22782 - (1.98861)\times1.32374, 12.22782 + (1.98861)\times1.32374] = $$
+$$[9.595417, 14.86022] = [9.60, 14.86]$$
+If we were to hypothetically keep collecting samples of data and constructing confidence intervals, then 95% of the random samples would contain $\beta_3$. In other words, we are 95% confident that this specific confidence interval [9.60, 14.86] contains $\beta_3$.  
+
+
+(b) Next, consider a house that has $bdrms=3$, $sqrft=2000$, and $lotsize=6000$.  We can use the estimates from our model to predict the selling price for this house.  Let $x_o = [\begin{matrix} 1 & 3 & 20 & 60 \end{matrix} ]'$ be the vector of characteristics for this house.  The predicted selling price is $\hat{y}_o = x_o'b$.  What is the predicted selling price for this house?
+
+>**Solution:**
+```{r}
+x0 <- as.matrix(c(1, 3, 20, 60))
+b <- as.matrix(c(coef(mod)))
+y0 <- t(x0) %*% b
+paste0("The predicted selling price for this house is $", round(y0,5) * 1000)[1]
+```
+
+
+(c) $\hat{y}_o$ is an estimate of $E(y | x_o)$. As an estimate, $\hat{y}_o$ itself is a random variable, i.e., with a different sample we would have a different value.  We can use our OLS estimates to construct a 95\% confidence interval for $E(y | x_o)$ by using the fact that
+$$\frac{\hat{y}_o - E(y | x_o)}{\widehat{SE(\hat{y}_o)}} \sim t[n-K]$$
+To construct the confidence interval we need $\widehat{SE(\hat{y}_o)}$.  Use the fact that $\hat{y}_o = x_o'b$ to show that $\widehat{Var(\hat{y}_o)} = x_o' \widehat{Var(b)}x_o$.
+Construct a 95\% confidence interval for $E(y | x_o)$ using the command  
+    ```
+x_o = matrix(c(1,3,20,60))
+yhat_o = t(x_o) %*% mod$coefficients
+SEyhat_o = sqrt(t(x_o) %*% vcov(mod) %*% x_o)
+```
+    Choose the appropriate critical value to construct the confidence interval.  THIS IS CALLED A CONFIDENCE INTERVAL FOR PREDICTED VALUES.
+
+>**Solution:**  
+```{r}
+x_o = matrix(c(1,3,20,60))
+yhat_o = t(x_o) %*% mod$coefficients
+SEyhat_o = sqrt(t(x_o) %*% vcov(mod) %*% x_o)
+CV = abs(qt((0.05)/2,84))
+conf_int = c(yhat_o - (CV*SEyhat_o), yhat_o + (CV*SEyhat_o))
+cat("95% Confidence Prediction Interval: [",1000*conf_int,"]")
+```
+
+(d) We can use our estimates to construct something called a PREDICTION INTERVAL.  While $\hat{y}_o$ is our best guess at the selling price, the actual selling price will be determined by $y_o = x_o' \beta + \varepsilon_o$.  A prediction interval gives a range of values such that there is a 95\% chance the random interval will contain the actual selling price.  
+
+    Consider the random variable actual selling price minus predicted selling price, $y_o - \hat{y}_o= x_o' \beta + \varepsilon_o - x_o'b$.  What is $E(y_o - \hat{y}_o)$?  Show that $Var(y_o - \hat{y}_o) = x_o' \widehat{Var(b)}x_o + \sigma^2$
+
+>**Solution:**  
+
+(e) Construct a 95\% prediction interval for $y_o$ using the fact that 
+$$\frac{y_o- \hat{y}_o}{\sqrt{x_o' \widehat{Var(b)}x_o + s^2}} \sim t[n-K]$$
+You can use the following code to help construct the prediction interval.
+    ```
+s2 = sum(mod$residuals^2)/mod$df.residual
+vy_o = t(x_o) %*% vcov(mod) %*% x_o + s2
+```
+
+>**Solution:**
+```{r}
+s2 = sum(mod$residuals^2)/mod$df.residual 
+vy_o = t(x_o) %*% vcov(mod) %*% x_o + s2
+pred_int = c((yhat_o - (CV*sqrt(vy_o))), (yhat_o + (CV*sqrt(vy_o))))
+cat("95% Confidence Prediction Interval: [",1000*pred_int,"]")
+```
+
+
+(f) Finally, run the following commands in ```R```.  Explain what each of these commands is doing relative to what you just did by hand above.
+    ```
+mod = lm(price~bdrms+I(sqrft/100)+I(lotsize/100),data=data)
+confint(mod)
+pdata = data.frame(bdrms=3,sqrft=20*100,lotsize=60*100)
+predict(mod,pdata,interval="prediction")
+predict(mod,pdata,interval="confidence")
+```
+>**Solution:**  
+Command 1: Runs an OLS multiple linear regression model with price as response variable and bdrms, sqrtft/100, and lotsize/100 as explanatory variables. \
+Command 2: Returns a 95% confidence interval for each parameter. \
+Command 3: Creates a new X dataframe with one observation and three variables (explanatory variables in regression). The value of bdrms, sqrtft, and lotsize are (3, 2000, 6000). \
+Command 4: Outputs the 95% prediction interval \
+Command 5: Outputs the 95% confidence interval
+
+### Question 3
+
+In ``Parental Education and Offspring Outcomes: Evidence from the Swedish Compulsory Schooling Reform'', Petter Lundborg, Anton Nilsson, and Dan-Olof Rooth set out to study the impact of parental educational attainment on the development of cognitive and noncognitive skills in their children (cognitive skills reflect hard skills, for example how good someone is at logic and reasoning.  Noncognitive skills reflect soft skills, for example the motivation and self-discipline of an individual).  Letting $H^c$ denote a given measurement for the outcome of the child, the researchers where interested in estimating the econometric equation:
+\begin{align}
+H^c = \alpha_0 + \alpha_1 S^p + \varepsilon
+\end{align}
+Where $S^p$ represents the years of education of either the father or the mother (they estimate two separate equations, one where the mother's education level effects the outcome and one where the father's education effects the outcome).  The structural error $\varepsilon$ includes all of the other unobserved components effecting the outcome.
+
+The authors offer a causal and non-causal explanation for any possible empirical relationship between parental education and the outcomes of their children:
+
+"Commonly discussed causal pathways have been the improved knowledge and the greater economic resources that follow with greater education. The latter pathway refers to the fact that higher education usually also means higher income."  
+  
+"In particular, since parents and children share common genes, any relationship between them may be generated through unobserved genetic endowments."
+
+(a) The authors begin by estimating the equation above using ordinary least squares.  Which of the assumptions in the classic linear regression model would be most important in order to view the estimate of $\alpha_1$ as a causal effect of parental education on the outcome $H^c$?
+
+>**Solution:**  
+The mean independence assumption (#3) is the most important in order to view the estimtate of $\alpha_1$ as a causal effect of parental education on the outcome $H^c$. Without mean independence, the coefficient estimates cannot be trusted and it becomes a prediction problem, not causal effect. 
+
+(b)
+ Suppose all of the assumptions of the classic linear regression model are satisfied.  The results of these estimates are found in the table below (standard errors are in parenthesis):
+
+    Variable	 | Cognitive Ability | Noncognitive Ability
+-------  |-----  | -----------------
+Mother Years of Schooling ($\alpha_1$) | 0.1188 (0.0009) | 0.0651 (0.0008)
+Father Years of Schooling ($\alpha_1$) | 0.1090 (0.0009) | 0.0583 (0.0008)
+
+    In one sentence, summarize *qualitatively* the results of the coefficient estimates in this table.  In one sentence provide *one quantitative* result expressed in this table (the dependent variables have been standardized to have mean zero and standard deviation of one).
+
+>**Solution:**  
+It appears that both the mother and father education levels have positive effects on a child's cognitive and non-cognitive abilities. The effects by parent seem to be similar but the effects of parents education on cognitive ability of children are larger than the effects on non-cognitive ability of children. Specifically, a 1 year increase in a father's education level is associated with a 0.1090 standard deviation increase in a child's outcome measurement holding all other variables constant.   
+
+(c) The question does not state the sample size.  Given their extremely simple model they likely have a very small R-squared.  However, they also have extremely small standard errors on the parameters.  What do these two facts suggest about the size of the sample used in estimation. Explain.
+
+>**Solution:**
+$$Var(d) = \frac{\sigma_\varepsilon ^{2}}{(1 - R^{2}_{z | X})\sum_{i=1}^n(z_i - \bar z)^{2}}$$
+From the equation above, we know that the variance or standard error of any single parameter depends on the sum of square totals from the variable of interest. As the sample size increases, the sum of squares total in the denominator increases which drives the variance of the estimator down. Therefore, assuming R^{2} and standard errors are low, this means that the sample size must be very large. Especially with only using one variable in the regression, the sample size must be large to have small standard errors around the estimate. 
+
+(d) Using these results, construct a 95\% confidence interval for the estimate for the impact of an additional year of education for the father on noncognitive skills of their children.
+
+>**Solution:**  
+Assuming a large sample size, the t-distribution approximately follows a normal distribution. Therefore, we can use a critical value of 1.96 for a 95% confidence interval. \
+$$[0.0583 - 1.96\times(0.0008), 0.0583 - 1.96\times(0.0008)] = $$ \
+$$[0.056732, 0.059868]$$
+  
+
+### Question 4
+
+For each statement below determine whether the statement is true or false and explain your answer
+
+(a) In the population, the distribution of $Y$ conditional on $X$ can be written as $P(Y | X)$.  Suppose this distribution satisfies the set of assumptions in the classical linear regression model.  If we estimate $\beta$ from two different random samples from the population, then we will get two different answers because $\beta$ is an unknown random variable in the population. 
+
+>**Solution:**  
+False, $\beta$ (capital B) represents a single true population parameter. It is unknown but it is not a random variable since $\beta$ is just a single value. However, b (lower case b) is an estimator of $\beta$ so it is true that two different samples from the population will yield two different b's.  
+
+(b)  Consider the long regression $y = x_1 \beta_1 + x_2 \beta_2 + \varepsilon$, then the estimate of the short regression $y = x_1 \beta_1 + \widetilde{\varepsilon}$ is always biased if $E(x_2 | x_1) \neq E(x_2)$.
+
+>**Solution:**  
+True, since $E(x_2 | x_1) \neq E(x_2)$, then the two variables are not mean independent. Knowing $x_1$ does tell us something about $x_2$. Therefore, any model without $x_2$ will violate the mean independence assumption and $\widetilde{\varepsilon}$ is biased without $x_2$ in the regression model. 
+
+(c) In the classical linear regression model we assumed normal disturbance, i.e. $\varepsilon \sim \mathcal{N}(0,\sigma^2)$.  Because of this assumption we are able to show that the variance of the least squares estimator was $Var(b | X) = \sigma^2 (X'X)^{-1}$
+
+>**Solution:**  
+
+
+### Question 5
+
+Discuss which (if any) assumptions of the linear regression model are violated from each the following and whether they cause least squares to be biased.
+
+(a) Heteroskedasticity. 
+
+>**Solution:**  
+Heteroskedasticity violates the homosekedasticty and non-autocorrelation assumption (#4). This means that the variance of the disturbance (population error) is not constant at $\sigma^{2}$ across observations. This violation does not cause least squares to be biased.  
+
+(b) Omitting an important variable. 
+
+>**Solution:**  
+Omitting an important variable violates the mean independence assumption (#3). This means that the error term is not independent of the explanatry variables chosen in the model. We cannot trust the beta coefficient estimates which means least squares is biased.  
+
+(c)  A sample correlation coefficient of .95 between two independent variables both included in the model.
+
+>**Solution:**  
+A sample correlation coefficient of 0.95 between two independent variables might violate the full rank of X assumption (#2). The assumption is violated when another predictor is a linear transformation of another variable. A correlation of 0.95 doesn't necessarily mean full rank is violated. However, Including two variables that are almost identical in behavior induces multicollinearity problems. Using both variables doesn't cause least squares to be biased but multicollinearity does affect the interpretation of the model with inflated standard errors, unexpected coefficient sign or magntitude changes, and different results with slight changes to the data.    
+
