@@ -116,19 +116,18 @@ If we were to hypothetically keep collecting samples of data and constructing co
 (b) Next, consider a house that has $bdrms=3$, $sqrft=2000$, and $lotsize=6000$.  We can use the estimates from our model to predict the selling price for this house.  Let $x_o = [\begin{matrix} 1 & 3 & 20 & 60 \end{matrix} ]'$ be the vector of characteristics for this house.  The predicted selling price is $\hat{y}_o = x_o'b$.  What is the predicted selling price for this house?
 
 >**Solution:**
-```{r}
+>```{r}
 x0 <- as.matrix(c(1, 3, 20, 60))
 b <- as.matrix(c(coef(mod)))
 y0 <- t(x0) %*% b
 paste0("The predicted selling price for this house is $", round(y0,5) * 1000)[1]
 ```
 
-
 (c) $\hat{y}_o$ is an estimate of $E(y | x_o)$. As an estimate, $\hat{y}_o$ itself is a random variable, i.e., with a different sample we would have a different value.  We can use our OLS estimates to construct a 95\% confidence interval for $E(y | x_o)$ by using the fact that
 $$\frac{\hat{y}_o - E(y | x_o)}{\widehat{SE(\hat{y}_o)}} \sim t[n-K]$$
 To construct the confidence interval we need $\widehat{SE(\hat{y}_o)}$.  Use the fact that $\hat{y}_o = x_o'b$ to show that $\widehat{Var(\hat{y}_o)} = x_o' \widehat{Var(b)}x_o$.
 Construct a 95\% confidence interval for $E(y | x_o)$ using the command  
-    ```
+```{r}
 x_o = matrix(c(1,3,20,60))
 yhat_o = t(x_o) %*% mod$coefficients
 SEyhat_o = sqrt(t(x_o) %*% vcov(mod) %*% x_o)
@@ -136,7 +135,7 @@ SEyhat_o = sqrt(t(x_o) %*% vcov(mod) %*% x_o)
     Choose the appropriate critical value to construct the confidence interval.  THIS IS CALLED A CONFIDENCE INTERVAL FOR PREDICTED VALUES.
 
 >**Solution:**  
-```{r}
+>```{r}
 x_o = matrix(c(1,3,20,60))
 yhat_o = t(x_o) %*% mod$coefficients
 SEyhat_o = sqrt(t(x_o) %*% vcov(mod) %*% x_o)
@@ -154,13 +153,13 @@ cat("95% Confidence Prediction Interval: [",1000*conf_int,"]")
 (e) Construct a 95\% prediction interval for $y_o$ using the fact that 
 $$\frac{y_o- \hat{y}_o}{\sqrt{x_o' \widehat{Var(b)}x_o + s^2}} \sim t[n-K]$$
 You can use the following code to help construct the prediction interval.
-    ```
+```{r}
 s2 = sum(mod$residuals^2)/mod$df.residual
 vy_o = t(x_o) %*% vcov(mod) %*% x_o + s2
 ```
 
 >**Solution:**
-```{r}
+>```{r}
 s2 = sum(mod$residuals^2)/mod$df.residual 
 vy_o = t(x_o) %*% vcov(mod) %*% x_o + s2
 pred_int = c((yhat_o - (CV*sqrt(vy_o))), (yhat_o + (CV*sqrt(vy_o))))
