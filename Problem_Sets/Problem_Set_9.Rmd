@@ -26,7 +26,7 @@ X'X = \left[
 ```{r}
 options(scipen=999)
 x_t_x <- as.matrix(cbind(c(29,0,0), c(0,50,10), c(0,10,80)))
-betas <- as.matrix(c(4, 0.4, 0.9))
+betas <- as.matrix(c(4, 0.4, 0.9), nrow = 3, ncol = 1)
 n = 29
 e_t_e = 520
 s2 <- e_t_e / (n - 3)
@@ -48,7 +48,18 @@ H_1: \quad & \beta_1 + \beta_2 \neq 1
 \end{align*}
 
 >```{r}
+# 1 row for R since number of restrictions = 1
+r <- t(as.matrix(c(0,1,1)))
+q = as.matrix(c(1))
+m = (r %*% betas) - q
+var_m = r %*% (s2 * solve(x_t_x)) %*% t(r)
+fstat <- round((t(m) %*% solve(r %*% solve(x_t_x) %*% t(r)) %*% m) / (s2),4)
+df = n - 3
+p_value <- round(1 - pf(fstat, 1, df), 4)
+cat(" F-Stat: ", fstat, "\n",
+"P-Value: ", p_value)
 ```
+> We conclude that there is not enough evidence given the data to suggest that the null hypothesis is false. Therefore, there is not enough evidence to reject the null hypothesis in favor of the alternative and that it is possible $\beta_1 + \beta_2 = 1$. 
 
 
 ### Question 2
@@ -163,7 +174,14 @@ cat(" F-Stat: ", f_stat, "\n",
    
 (g) Finally, using the Wald principle conduct a joint hypothesis test that includes at least *two restrictions* on the parameters.  State the hypothesis, construct the F-statistic and p-value for your test, state the conclusion of the test.
 
->**Solution:**  
+>**Solution:**
+\begin{align*}
+H_0: \quad & \beta_1 + \beta_3 = 1 \quad and \quad \beta_4 = 0\\
+H_1: \quad & \beta_1 + \beta_3 \neq 1 \quad and \quad \beta_4 \neq 0
+\end{align*}
+
+>```{r}
+```
 
 (h) Confirm your results in Part (g) using the ```linearHypothesis``` from the ```AER``` library.
 
