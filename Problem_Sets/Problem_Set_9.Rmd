@@ -1,0 +1,173 @@
+---
+title: 'GSE 520: Problem Set #9'
+author: 
+  - "Student Name 1"
+  - "Student Name 2 (delete if only one student or add more if more than two)"
+output: html_document
+---
+
+### Question 1
+
+A multiple regression of $y$ on a constant $x_1$ and $x_2$ produces the following results: $\hat{y} =4+0.4x_1 +0.9x_2$, $R^2=8/60$, $e'e = 520$, and $n=29$
+\begin{align*}
+X'X = \left[ 
+\begin{matrix}
+29 & 0 & 0 \\
+0 & 50 & 10 \\
+0 & 10 & 80
+\end{matrix} \right]
+\end{align*}
+
+(a) Use these results to form confidence intervals for the coefficients on $x_1$ and $x_2$, called $\beta_1$ and $\beta_2$ respectively.
+
+>**Solution:**
+```{r}
+options(scipen=999)
+x_t_x <- as.matrix(cbind(c(29,0,0), c(0,50,10), c(0,10,80)))
+betas <- as.matrix(c(4, 0.4, 0.9))
+n = 29
+e_t_e = 520
+s2 <- e_t_e / (n - 3)
+se_betas <- as.matrix(sqrt(diag(s2 * solve(x_t_x))))
+C = 1 - 0.05
+CV = abs(qt((1 - C) / 2, df = n - 3))
+CI = round(matrix(c(betas - (CV * se_betas), betas + (CV * se_betas)), ncol = 2),3)
+cat(" The 95% confidence interval for Beta 1 is [", c(CI[2,1], CI[2,2]),"]", "\n",
+"The 95% confidence interval for Beta 2 is [", c(CI[3,1], CI[3,2]),"]")
+```
+
+
+(b) Test the hypothesis that the two slopes sum to 1. Compute the F-statistic and the p-value and state your conclusion from the test.
+
+>**Solution:**
+\begin{align*}
+H_0: \quad & \beta_1 + \beta_2 = 1\\
+H_1: \quad & \beta_1 + \beta_2 \neq 1
+\end{align*}
+
+>```{r}
+```
+
+
+### Question 2
+The median starting salary for new law school graduates is determined by
+$$\ln(salary) = \beta_0 + \beta_1 LSAT + \beta_2 GPA + \beta_3 \ln(libvol)  + \beta_4 \ln(cost) + \beta_5 rank +u$$
+where $LSAT$ is the median LSAT score for the graduating class, $GPA$ is the median college GPA for the class, $libvol$ is the number of volumes in the law school library, $cost$ is the annual cost of attending law school, and $rank$ is a law school ranking (with $rank=1$ being the best).
+
+Using the data in ```LAWSCH85```, the regression output from ```R``` appears as
+```{r,echo=FALSE}
+load("C:/Users/rusla/OneDrive/GSE_520/R Data/lawsch85.RData")
+mod = lm(lsalary~LSAT+GPA+llibvol+lcost+rank,data=data)
+summary(mod)
+```
+
+Using only linear algebra and matrices reproduce the following from this table: (don't forget to remove the NA's)
+
+(a) The coefficient estimates.
+
+>**Solution:**
+>```{r}
+data2 <- data[c("LSAT","GPA","llibvol","lcost","rank","lsalary")]
+data2 <- na.omit(data2)
+X <- as.matrix(data2[, c("LSAT","GPA","llibvol","lcost","rank")])
+X <- as.matrix(cbind(rep(1, nrow(data2)),X))
+Y <- as.matrix(data2[, "lsalary"])
+x_t_x <- t(X) %*% X
+x_t_y <- t(X) %*% Y
+betas <- round((solve(x_t_x) %*% x_t_y),4)
+cat(" Coefficients: ","\n","\n",
+   "intercept = ", betas[1],"\n",
+   "LSAT = ", betas[2],"\n",
+   "GPA = ", betas[3],"\n",
+   "llibvol = ", betas[4],"\n",
+   "lcost = ", betas[5],"\n",
+   "rank = ", betas[6])
+```
+
+
+(b) The description statistics of the residuals
+
+>**Solution:**  
+>```{r}
+y_hat <- (X %*% (solve(x_t_x)))%*%t(X)%*%Y
+resid <- data2$lsalary - y_hat 
+summary(resid)
+```
+
+(c) The standard error estimates, t-values, p-values.
+
+>**Solution:**  
+>```{r}
+s2 <-  sum((resid)^2)  / (nrow(X) - ncol(X))
+se_betas <- round(as.matrix(sqrt(diag(s2 * solve(x_t_x)))),4)
+cat(" Standard Errors: ","\n","\n",
+   "intercept = ", se_betas[1],"\n",
+   "LSAT = ", se_betas[2],"\n",
+   "GPA = ", se_betas[3],"\n",
+   "llibvol = ", se_betas[4],"\n",
+   "lcost = ", se_betas[5],"\n",
+   "rank = ", se_betas[6])
+t_values <- round((betas - 0) / se_betas,4)
+cat(" T-Values: ","\n","\n",
+   "intercept = ", t_values[1],"\n",
+   "LSAT = ", t_values[2],"\n",
+   "GPA = ", t_values[3],"\n",
+   "llibvol = ", t_values[4],"\n",
+   "lcost = ", t_values[5],"\n",
+   "rank = ", t_values[6])
+p_values <- 2*(1-pt(abs(t_values),nrow(X) - ncol(X)))
+cat(" P-Values: ","\n","\n",
+   "intercept = ", p_values[1],"\n",
+   "LSAT = ", p_values[2],"\n",
+   "GPA = ", p_values[3],"\n",
+   "llibvol = ", p_values[4],"\n",
+   "lcost = ", p_values[5],"\n",
+   "rank = ", p_values[6])
+```
+
+(d) The residual standard error
+
+>**Solution:**
+>```{r}
+df <- nrow(X) - ncol(X)
+resid_SE <- round(sqrt((sum(resid^2)) / df),4)
+cat("Residual Standard Error: ", resid_SE)
+```
+
+
+(e) The multiple R-squared, Adjusted R-squared
+
+>**Solution:**  
+>```{r}
+SSE <- sum(resid^2)
+SST <- sum((Y - mean(Y))^2)
+R2 <- round(1 - (SSE/SST),4)
+R2_adj <- round(1 - ((SSE/df) / (SST/(nrow(X) - 1))),4)
+cat(" R2: ", R2, "\n",
+"R2 adjusted: ", R2_adj)
+```
+
+(f) The F-statistic and the p-value for the F-statistic
+
+>**Solution:**  
+>```{r}
+# There are five restrictions for each beta parameter minus the intercept B1 = B2 = B3 = B4 = B5 = 0. 
+num_restrictions = 5
+f_stat <- ((R2 - 0) / num_restrictions) / ((1 - R2) / (df))
+p_value <- 1 - pf(f_stat, 5, df)
+cat(" F-Stat: ", f_stat, "\n",
+"P-Value: ", p_value)
+```
+   
+(g) Finally, using the Wald principle conduct a joint hypothesis test that includes at least *two restrictions* on the parameters.  State the hypothesis, construct the F-statistic and p-value for your test, state the conclusion of the test.
+
+>**Solution:**  
+
+(h) Confirm your results in Part (g) using the ```linearHypothesis``` from the ```AER``` library.
+
+>**Solution:**  
+
+
+
+
+
