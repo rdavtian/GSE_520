@@ -178,7 +178,7 @@ cat(" F-Stat: ", f_stat, "\n",
 >**Solution:**
 \begin{align*}
 H_0: \quad & \beta_1 + \beta_2 = 0 \quad and \quad \beta_5 = 0\\
-H_1: \quad & \beta_1 + \beta_2 \neq 0 \quad and \quad \beta_5 \neq 0
+H_1: \quad & \beta_1 + \beta_2 \neq 0 \quad or/and \quad \beta_5 \neq 0
 \end{align*}
 
 >```{r}
@@ -193,6 +193,7 @@ p_value <- round(1 - pf(fstat, num_restrictions, df),4)
 cat(" F-Stat: ", fstat, "\n",
 "P-Value: ", p_value)
 ```
+> We conclude that there is very strong evidence given the data to suggest that the null hypothesis is false. Therefore, there is enough evidence to reject the null hypothesis in favor of the alternative that $\beta_1 + \beta_2 \neq 1$ OR $\beta_5 \neq 1$ OR both. 
 
 (h) Confirm your results in Part (g) using the ```linearHypothesis``` from the ```AER``` library.
 
