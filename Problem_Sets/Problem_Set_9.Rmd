@@ -49,11 +49,12 @@ H_1: \quad & \beta_1 + \beta_2 \neq 1
 
 >```{r}
 # 1 row for R since number of restrictions = 1
+num_restrictions <- 1
 r <- t(as.matrix(c(0,1,1)))
 q = as.matrix(c(1))
 m = (r %*% betas) - q
 var_m = r %*% (s2 * solve(x_t_x)) %*% t(r)
-fstat <- round((t(m) %*% solve(r %*% solve(x_t_x) %*% t(r)) %*% m) / (s2),4)
+fstat = (((t(m)) %*% solve(r %*% solve(x_t_x) %*% t(r)) %*% (m)) / s2) / (num_restrictions)
 df = n - 3
 p_value <- round(1 - pf(fstat, 1, df), 4)
 cat(" F-Stat: ", fstat, "\n",
@@ -187,7 +188,7 @@ r <- matrix(rbind(c(0,1,1,0,0,0), c(0,0,0,0,0,1)), nrow = num_restrictions)
 q = as.matrix(c(0,0))
 m = (r %*% betas) - q
 var_m = r %*% (s2 * solve(x_t_x)) %*% t(r)
-fstat <- round(((t(m) %*% solve(r %*% solve(x_t_x) %*% t(r)) %*% m) / df) / (s2),4)
+fstat <- (((t(m)) %*% solve(r %*% solve(x_t_x) %*% t(r)) %*% (m)) / s2) / (num_restrictions)
 p_value <- round(1 - pf(fstat, num_restrictions, df),4)
 cat(" F-Stat: ", fstat, "\n",
 "P-Value: ", p_value)
@@ -198,7 +199,7 @@ cat(" F-Stat: ", fstat, "\n",
 >**Solution:**  
 >```{r}
 suppressMessages(library("AER"))
-linearHypothesis(mod,'LSAT=-GPA')
+linearHypothesis(mod,c('LSAT = -GPA','rank = 0'))
 ```
 
 
