@@ -185,11 +185,19 @@ x_t_y <- t(X) %*% Y
 betas <- round((solve(x_t_x) %*% x_t_y),5)
 s2 <- sum((Y - (X %*% betas))^2) / (nrow(X) - ncol(X))
 std_err <- round(as.matrix(sqrt(diag(s2 * solve(x_t_x)))),5)
-mod7 <- lm(LWAGE ~ EXP + EXP_sq + WKS + OCC + IND + SOUTH + SMSA + MS + UNION + ED + FEM + BLK, data = data)
-n <- nobs(mod7)
-huber_white <- solve(x_t_x) %*% (t(X)%*%diag(mod7$residuals^2)%*%X)%*% solve(x_t_x) 
-huber_white <- (n/mod7$df.residual)*huber_white
-huber_white_se <- round(coeftest(mod7, vcov = huber_white),5)[,2]
+e = Y - X%*%betas
+resid_squared <- diag(e %*% t(e))
+huber_white <- solve(x_t_x) %*% (t(X)%*%diag(resid_squared)%*%X)%*% solve(x_t_x)  
+huber_white <- (nrow(X)/(nrow(X) - ncol(X)))*huber_white
+huber_white_se <- round(sqrt(diag(huber_white)), 5)
+big_g = matrix(0, ncol = length(unique(data$ED)) - 1, nrow = length(unique(data$ED)) - 1)
+for (i in seq(1, nrow(X), by= 7)){
+  g = t(X[i:(i+6), ]) %*% e[i:(i+6), ] %*% t(e[i:(i+6), ]) %*% X[i:(i+6), ]
+  big_g = big_g + g
+}
+df.adj = ((nrow(X) / 7)/((nrow(X) / 7) - 1)) * ((nrow(X) - 1)/(nrow(X) - ncol(X)))
+clus_varb = df.adj * solve(x_t_x) %*% big_g %*% solve(x_t_x)
+clus_se = round(sqrt(diag(clus_varb)), 5)
 cat(" Least Squares Estimate: ","\n","\n",
    "intercept = ", betas[1],"\n",
    "EXP = ", betas[2],"\n",
@@ -219,16 +227,31 @@ cat(" Standard Error: ","\n","\n",
    "FEM = ", std_err[12],"\n",
    "BLK = ", std_err[13])
 cat(" Huber-White Robust Standard Errors: ","\n","\n",
-   "EXP = ", huber_white_se[1],"\n",
-   "EXP**2 = ", huber_white_se[2],"\n",
-   "WKS = ", huber_white_se[3],"\n",
-   "OCC = ", huber_white_se[4],"\n",
-   "IND = ", huber_white_se[5],"\n",
-   "SOUTH = ", huber_white_se[6],"\n",
-   "SMSA = ", huber_white_se[7],"\n",
-   "MS = ", std_err[8],"\n",
-   "UNION = ", huber_white_se[9],"\n",
-   "ED = ", huber_white_se[10],"\n",
-   "FEM = ", huber_white_se[11],"\n",
-   "BLK = ", huber_white_se[12])  
+   "Intercept = ", huber_white_se[1],"\n",
+   "EXP = ", huber_white_se[2],"\n",
+   "EXP**2 = ", huber_white_se[3],"\n",
+   "WKS = ", huber_white_se[4],"\n",
+   "OCC = ", huber_white_se[5],"\n",
+   "IND = ", huber_white_se[6],"\n",
+   "SOUTH = ", huber_white_se[7],"\n",
+   "SMSA = ", huber_white_se[8],"\n",
+   "MS = ", huber_white_se[9],"\n",
+   "UNION = ", huber_white_se[10],"\n",
+   "ED = ", huber_white_se[11],"\n",
+   "FEM = ", huber_white_se[12],"\n",
+   "BLK = ", huber_white_se[13]) 
+cat(" Cluster Robust Standard Errors: ","\n","\n",
+   "Intercept = ", clus_se[1],"\n",
+   "EXP = ", clus_se[2],"\n",
+   "EXP**2 = ", clus_se[3],"\n",
+   "WKS = ", clus_se[4],"\n",
+   "OCC = ", clus_se[5],"\n",
+   "IND = ", clus_se[6],"\n",
+   "SOUTH = ", clus_se[7],"\n",
+   "SMSA = ", clus_se[8],"\n",
+   "MS = ", clus_se[9],"\n",
+   "UNION = ", clus_se[10],"\n",
+   "ED = ", clus_se[11],"\n",
+   "FEM = ", clus_se[12],"\n",
+   "BLK = ", clus_se[13])  
 ```
