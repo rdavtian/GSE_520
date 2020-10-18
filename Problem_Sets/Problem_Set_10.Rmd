@@ -1,0 +1,234 @@
+---
+title: 'GSE 520: Problem Set #10'
+author: 
+  - "Rus Adamovics-Davtian"
+  - "Amy Ozee"
+  - "Ian Donovan"
+  - "John Giacinto"
+output: html_document
+---
+
+### Question 1
+
+Suppose the government believes that if a student has someone help them fill out their FAFSA form, the student will be more likely to attend college (the FAFSA is the Free Application for Federal Student Aid).  They wish to estimate the regression
+$$ col_i = \beta_0 + \beta_1 FAFSA_i + \beta_2 income_i + \varepsilon_i$$
+Where $i$ indicates the individual, and $FAFSA_i=1$ if the student received help filling out the FAFSA and zero otherwise, and $income_i$ is the income of student $i$.  Assume the error in the model above $\varepsilon$ is homoskedastic and non-autocorrelated, with $Var(\varepsilon) = \sigma^2$
+
+The government randomly selects 300 high schools in the nation and randomly decides whether they will have a program to help students with the FAFSA.  Not all schools will receive the FAFSA program, however if a school is selected for the program, all students will receive the FAFSA support.  Let $j$ indicate high school, and $FAFSA_j=1$ if the school was assigned the program and zero otherwise.  Rather than observing individual level college decisions, you only have data on the averages of the variables for the 300 colleges.  You consider the school level regression
+$$ \overline{col}_j = \beta_1 + \beta_2 FAFSA_j + \beta_3 \overline{income}_j + \overline{\varepsilon}_j \qquad(2)$$
+Where $\overline{col}_j$ is the fraction of students at high school $j$ attending college, $\overline{income}_j$ is the average income of students at high school $j$, and $\overline{\varepsilon}_j$ is the new model error.
+
+(a) Letting $clsize_j$ denote the class size of high school $j$.  Show that even though $\varepsilon$ is homoskedastic, that the new error $\overline{\varepsilon}$ is necessarily heteroskedastic.  Find $Var(\overline{\varepsilon}_j)$, which is a function $\sigma^2$ and $clsize_j$.
+
+>**Solution:**
+* Mean Independence still holds in both equations.
+\begin{align*}
+Var(\varepsilon | X) = & E[\varepsilon \varepsilon^{'} | X] - E[\varepsilon | X]E[\varepsilon | X]^{'}\\
+Var(\varepsilon | X) = & E[\varepsilon \varepsilon^{'} | X] - 0\\
+Var(\varepsilon | X) = & \sigma^2
+\end{align*}
+\begin{align*}
+Var(\overline{\varepsilon}_j) = & E[\varepsilon_j \varepsilon_j^{'} | X] - E[\varepsilon_j | X]E[\varepsilon_j | X]^{'}\\
+Var(\overline{\varepsilon}_j) = & E[\varepsilon_j \varepsilon_j^{'} | X] - 0\\
+Var(\overline{\varepsilon}_j) = & \sigma_j^{2}\\
+Var(\overline{\varepsilon}_j) = & clsize_j * \sigma^2
+\end{align*}
+
+(b) In Part (a) you showed that Equation (2) is heteroskedastic.  This means that if you apply least squares to estimate $\beta_2$ in Equation (2) your estimator will be unbiased, but it will not be the minimum variance linear unbiased estimator (MVLUE).  Since Equation (2) has heteroskedasticity of known form, one way to derive the MLVUE is to transform the data so that the error is homoskedastic, then apply least squares, which by the Gauss-Markov theorem guarantees MVLUE.  What could you multiple both sides of Equation (2) by that would make the error homoskedastic? (Hint: you will multiple both sides of Equation (2) by a function of $clsize_j$.)
+
+>**Solution:**  
+Since $clsize_j$ term is included in the $\varepsilon$ term, if we multiply both sides of equation 2 by the reciprocal $1/clsize_j$, then $clsize_j$ in the error term gets canceled out and we maintain homoskedasticity. 
+
+### Question 2
+The median starting salary for new law school graduates is determined by
+$$salary = \beta_0 + \beta_1 LSAT + \beta_2 GPA + \beta_3 \ln(libvol)  + \beta_4 \ln(cost) + \beta_5 rank +\varepsilon$$
+where $LSAT$ is the median LSAT score for the graduating class, $GPA$ is the median college GPA for the class, $libvol$ is the number of volumes in the law school library, $cost$ is the annual cost of attending law school, and $rank$ is a law school ranking (with $rank=1$ being the best).
+
+(a) Using the data in ```LAWSCH85.RData```, estimate the model above.  Report your coefficients and which if any are statistically different from zero at the 5\% level (you can use the ```lm``` and ```summary``` or ```coeftest``` functions)
+
+>**Solution:**  
+>```{r, warning = FALSE, message = FALSE}
+options(scipen=999)
+library('AER')
+library('clubSandwich')
+load("C:/Users/rusla/OneDrive/GSE_520/R Data/LAWSCH85.RData")
+mod <- lm(salary ~ LSAT + GPA + llibvol + lcost + rank, data = data)
+round(coeftest(mod),4)
+```
+>
+At the 5% level (alpha = 0.05), the estimated beta coefficients for median college gpa, law school ranking, and log number of lib volumes are statistically significant. There is enough evidence to reject the null hypothesis that those variables have no effect on log salary. 
+
+(b) Use the ```bptest``` funciton to do a Breusch-Pagan test of heteroskedasticity, which uses the $\Xi^2$ short-cut.  What critical value will you use for a 5\% test?  Do you reject the null hypothesis at the 5\% level. 
+
+>**Solution:**  
+>```{r}
+bptest(mod)
+alpha = 0.05
+df = 5
+cv <- qchisq(1 - alpha, df = 5)
+cat(" Critical Value from Chi-Square at 5% Level with DF = 5:", cv)
+```
+
+> At the 5% level, there is strong evidence to reject the null hypothesis of homoskedasticity and assume heteroskedasticity is present in the model (variance of residuals not equal across observations). 
+
+(c) Using ```vcovHC(mod, "HC1")``` Compute heteroskedastic-robust standard errors from your model in Part (a).  Do any of your major conclusions change with these different standard errors?
+
+>**Solution:**  
+>```{r}
+round(coeftest(mod, vcov = vcovHC(mod, "HC1")),4)
+```
+ 
+> The standard errors slightly changed and are now more precise but no majors conclusion changes. The same variables are still statistically significant at the 5% level. With heteroskedastic-robust standard errors, we are more confident in the standard errors describing the variability among the coefficients than with the original standard errors. 
+
+(d) Finally, do a Breusch-Pagan test of heteroskedasticity, using $\ln(salary)$ on the left hand side.  Do you reject this test at the 5\% significance level?
+
+>**Solution:**  
+>```{r}
+mod2 <- lm(lsalary ~ LSAT + GPA + llibvol + lcost + rank, data = data)
+bptest(mod2)
+```
+> At the 5% significance level, there is not enough evidence to reject the null hypothesis and assume that heteroskedasticity is present in the model. The only change is using ln(salary) instead of salary as the response variable. 
+
+### Question 3
+Use the data in ```CORNWELL.RData``` (from Cornwell and Trumball, 1994) to estimate a model of county-level crime rates, ***using the year 1987 only***.
+
+(a) Using logarithms of all variables, estimate a model relating the crime rate to the deterrent variables $prbarr$, $prbconv$, $prbpris$, and $avgsen$.
+
+>**Solution:**  
+>```{r, warning = FALSE, message = FALSE}
+library(dplyr)
+load("C:/Users/rusla/OneDrive/GSE_520/R Data/CORNWELL.RData")
+data2 <- data %>% filter(year == 87)
+mod3 <- lm(lcrmrte ~ lprbarr + lprbconv + lprbpris + lavgsen, data = data2)
+round(coeftest(mod3),4)
+```
+
+(b) Add $\ln(crmrte)$ for 1986 as an additional explanatory variable, and comment on how the estimated parameters differ from part (a). (figuring out how to add this variable will challenge your data science skills)
+
+>**Solution:**  
+>```{r}
+lcrmrte86_by_county <- data %>% filter(year == 86) %>% dplyr::select(county, lcrmrte) %>% rename("lmcrmte86" = lcrmrte) 
+data2 <- data2 %>% inner_join(lcrmrte86_by_county, by = 'county')
+mod4 <- lm(lcrmrte ~ lprbarr + lprbconv + lprbpris + lavgsen + lmcrmte86, data = data2)
+round(coeftest(mod4),4)
+```
+> After adding the previous year's (1986) log crime rate for each county into the model as an explanatory variable to explain log of crimerate in 1987, some of the coefficients drastically changed. lprbarr has a smaller, negative coefficient in magnitude than before (-0.724 vs -0.1850) but both are still statistically significant at the 5% level. Also, lprbconv is not statistically significant anymore and the estimated beta coefficient is very close to zero. The lprbpris variable changed signs from 0.1597 to -0.1267 but both are not significant. Lastly, lavgsen also changed sign from 0.0764 to -0.1520.  
+
+(c)  Add all 9 sector specific wage variables  (again in logs) to the model in part (b) and compute the F-statistic for joint significance of all of the wage variables.  Do wages appear to have an impact on the crime rate?
+
+>**Solution:**  
+>```{r}
+mod5 <- lm(lcrmrte ~ lprbarr + lprbconv + lprbpris + lavgsen + lmcrmte86 + lwcon + lwtuc + lwtrd + lwfir + lwser + lwmfg + lwfed + lwsta + lwloc, data = data2)
+round(coeftest(mod5),4)
+linearHypothesis(mod5, c("lwcon=0","lwtuc=0","lwtrd=0","lwfir=0","lwser=0","lwmfg = 0","lwfed = 0","lwsta=0","lwloc=0"))
+```
+Based on the F-Statistic and p-value from checking 9 different wage restrictions, there is not enough evidence to suggest that any of the nine sector wages have an impact on log crime rate.   
+
+(d) Redo Part (c), but make the test robust to heteroskedasticity of unknown form.  Do your conclusions change?  Determine which sector wages are most responsible for your change in conclusion.
+
+>**Solution:**  
+>```{r}
+round(coeftest(mod5, vcov = vcovHC(mod5, "HC1")),4)
+linearHypothesis(mod5, c("lwcon=0","lwtuc=0","lwtrd=0","lwfir=0","lwser=0","lwmfg","lwfed","lwsta","lwloc"), vcov = vcovHC(mod5, "HC1"))
+```
+
+> After performing the Huber-White standard error adjustment procedure to get robust standard errors, there is enough evidence reject the null hypothesis that all wages do not have an impact on crime rate. At a 5% level, there exists enough evidence to conclude that lwcon or log of weekly construction wages has a statistically significant negative effect on log of crime rate. 
+
+### Question 4
+In Greene's textbook he has a couple of examples using data on Monet paintings.  You can read this data into R using the command  
+```
+data = read.csv(url("http://www.stern.nyu.edu/~wgreene/Text/Edition7/TableF4-1.csv"))
+```
+Use this data to estimate the following regression
+$$log(PRICE) = \beta_1 + \beta_2 \ln(AREA) + \beta_3 AspectRatio + \varepsilon$$
+Where $AREA=Width\times Height$ and $AspectRatio=Width/Height$.
+
+(a) Report your OLS estimates. State exactly the numerical interpretation for your estimate of $\beta_2$
+
+>**Solution:**  
+>```{r}
+data = read.csv(url("http://www.stern.nyu.edu/~wgreene/Text/Edition7/TableF4-1.csv"))
+data$AREA <- data$WIDTH * data$HEIGHT
+data$AspectRatio <- data$WIDTH / data$HEIGHT 
+mod6 <- lm(log(PRICE) ~ log(AREA) + AspectRatio, data = data)
+round(coeftest(mod6),4)
+```
+> Adjusting for aspect ratio, a one percent increase in area size of a painting is associated with an average price increase of 1.32% for the painting.   
+
+(b) In the 8th edition of the textbook, Greene reports three versions of the standard errors for this model, homoskedastic, heteroskedastic, and clustered standard errors. You can find this table on Canvas under the page "Greene Robust Standard Error Pages".  It is labeled Table 4.4. Using built-in R functions, re-produce all of these different standard error estimates ***exactly***.  (Hint: When using \textsf{vcovHC} and \textsf{vcovCR} you need to specify the small sample degrees of freedom adjustment.  To match Greene's HC numbers you need to use ``HC0''.  I will leave you to figure out what degrees of freedom adjustment he used for the clustered standard errors.  In practice, it does not matter which ones you use.  If your results depend heavily on degrees of freedom adjustments then you don't have very strong results.
+
+>**Solution:**  
+>```{r}
+round(coeftest(mod6),5)
+round(coeftest(mod6, vcov = vcovHC(mod6, "HC0")),5)
+round(coeftest(mod6, vcov = vcovCR(mod6, data$PICTURE, "CR1S")),5)
+```
+
+### Question 5
+
+On Canvas, there is a page titled "Greene Robust Standard Error Pages".  On this page you will see some screenshots from the 8th Edition of Greene.  Example 4.6 shows a model based on the data in Cornwell and Rupert.  The results from this model are reported in Table 4.5.  ***Using only matrix algebra, replicate all of the numbers in this table (ignore the column bootstrapped standard errors)***
+
+Use the command 
+```
+data = read.csv(url("http://www.stern.nyu.edu/~wgreene/Text/Edition7/TableF8-1.csv"))
+```
+
+>**Solution:**
+>```{r}
+data = read.csv(url("http://www.stern.nyu.edu/~wgreene/Text/Edition7/TableF8-1.csv"))
+data$EXP_sq <- data$EXP**2 
+X <- as.matrix(data[, c("EXP","EXP_sq","WKS","OCC","IND","SOUTH","SMSA","MS","UNION","ED","FEM","BLK")])
+X <- as.matrix(cbind(rep(1, nrow(data)),X))
+Y <- as.matrix(data[, "LWAGE"])
+x_t_x <- t(X) %*% X
+x_t_y <- t(X) %*% Y
+betas <- round((solve(x_t_x) %*% x_t_y),5)
+s2 <- sum((Y - (X %*% betas))^2) / (nrow(X) - ncol(X))
+std_err <- round(as.matrix(sqrt(diag(s2 * solve(x_t_x)))),5)
+mod7 <- lm(LWAGE ~ EXP + EXP_sq + WKS + OCC + IND + SOUTH + SMSA + MS + UNION + ED + FEM + BLK, data = data)
+n <- nobs(mod7)
+huber_white <- solve(x_t_x) %*% (t(X)%*%diag(mod7$residuals^2)%*%X)%*% solve(x_t_x) 
+huber_white <- (n/mod7$df.residual)*huber_white
+huber_white_se <- round(coeftest(mod7, vcov = huber_white),5)[,2]
+cat(" Least Squares Estimate: ","\n","\n",
+   "intercept = ", betas[1],"\n",
+   "EXP = ", betas[2],"\n",
+   "EXP**2 = ", betas[3],"\n",
+   "WKS = ", betas[4],"\n",
+   "OCC = ", betas[5],"\n",
+   "IND = ", betas[6],"\n",
+   "SOUTH = ", betas[7],"\n",
+   "SMSA = ", betas[8],"\n",
+   "MS = ", betas[9],"\n",
+   "UNION = ", betas[10],"\n",
+   "ED = ", betas[11],"\n",
+   "FEM = ", betas[12],"\n",
+   "BLK = ", betas[13])
+cat(" Standard Error: ","\n","\n",
+   "intercept = ", std_err[1],"\n",
+   "EXP = ", std_err[2],"\n",
+   "EXP**2 = ", std_err[3],"\n",
+   "WKS = ", std_err[4],"\n",
+   "OCC = ", std_err[5],"\n",
+   "IND = ", std_err[6],"\n",
+   "SOUTH = ", std_err[7],"\n",
+   "SMSA = ", std_err[8],"\n",
+   "MS = ", std_err[9],"\n",
+   "UNION = ", std_err[10],"\n",
+   "ED = ", std_err[11],"\n",
+   "FEM = ", std_err[12],"\n",
+   "BLK = ", std_err[13])
+cat(" Huber-White Robust Standard Errors: ","\n","\n",
+   "EXP = ", huber_white_se[1],"\n",
+   "EXP**2 = ", huber_white_se[2],"\n",
+   "WKS = ", huber_white_se[3],"\n",
+   "OCC = ", huber_white_se[4],"\n",
+   "IND = ", huber_white_se[5],"\n",
+   "SOUTH = ", huber_white_se[6],"\n",
+   "SMSA = ", huber_white_se[7],"\n",
+   "MS = ", std_err[8],"\n",
+   "UNION = ", huber_white_se[9],"\n",
+   "ED = ", huber_white_se[10],"\n",
+   "FEM = ", huber_white_se[11],"\n",
+   "BLK = ", huber_white_se[12])  
+```
