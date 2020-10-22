@@ -64,18 +64,97 @@ hometracking <- read_dta(file = "hometracking.dta")
 ```{r}
 merged <- studysample_allmerged %>% 
   inner_join(school_info, by = "schoolid") %>%
-  left_join(sampling_frame[,c("female","age03","pupilid")], by = c("pupilid")) %>%
-  mutate(schoolid = as.factor(schoolid)) 
+  inner_join(sampling_frame[, c("pupilid","age03")], by = "pupilid") %>%
+  mutate(Utreat03v1 = as.factor(Utreat03v1),
+         HIVtreat03v1 = as.factor(HIVtreat03v1),
+         HandUtreat03v1 = as.factor(HandUtreat03v1),
+         schoolid = as.factor(schoolid),
+         yrbirth = as.factor(yrbirth),
+         Q_year = as.factor(Q_year),
+         reached_8th_grade = case_when(Q_b1_13_school_years > 8 ~ 1,
+                                        TRUE ~ 0),
+         ever_married = case_when(Q_b4_114_marital_status %in% c(1,2,3) ~ 1,
+                                  TRUE ~ 0),
+         ever_pregnant = case_when((sex == 1 & Q_b6_183_total >= 1) ~ 1,
+                                   (sex == 2 & Q_b6_139_given_birth == 1) ~ 1,
+                                   TRUE ~ 0),
+         ever_pregnant_never_married = case_when((sex == 1 & ever_married == 0 & Q_b6_183_total >= 1) ~ 1,
+                                                 (sex == 2 & ever_married == 0 & Q_b6_139_given_birth == 1) ~ 1,
+                                                 TRUE ~ 0),
+         ever_married_never_pregnant = case_when((ever_married == 1 & Q_b6_183_total == 0) ~ 1,
+                                                 TRUE ~ 0))  %>%
+  dplyr::select(-stratum.y) %>%
+  rename("stratum" = stratum.x)
 males <- merged %>% filter(sex == 1)
 females <- merged %>% filter(sex == 2)
 ```
 
 ```{r}
-#mod_males <- lm( ~ HIVtreat03v1 + Utreat03v1 + HandUtreat03v1 + age03 + schoolid, 
-                 #data = males, weights = weight_sample)
+# Reached 8th grade as Response
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","reached_8th_grade","weight_sample")
+males2 <- males[, vars] %>% na.omit()
+females2 <- females[, vars] %>% na.omit()
 
-#mod_females <- lm( ~ HIVtreat03v1 + Utreat03v1 + HandUtreat03v1 + age03 + schoolid, 
-                 #data = females, weights = weight_sample)
+mod_males_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, 
+data = males2, weights = weight_sample)
+mod_females_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, 
+data = females2, weights = weight_sample)
+```
+
+```{r}
+# Education Years as Response
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","Q_b1_13_school_years","weight_sample")
+males2 <- males[, vars] %>% na.omit()
+females2 <- females[, vars] %>% na.omit()
+mod_males_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                          data = males2, weights = weight_sample)
+mod_females_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                            data = females2, weights = weight_sample)
+```
+
+```{r}
+# Ever Married as Response
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_married","weight_sample")
+males2 <- males[, vars] %>% na.omit()
+females2 <- females[, vars] %>% na.omit()
+mod_males_ever_married <- lm(ever_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                           data = males2, weights = weight_sample)
+mod_females_ever_married <- lm(ever_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                             data = females2, weights = weight_sample)
+```
+
+```{r}
+# Ever Pregnant as Response
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_pregnant","weight_sample")
+males2 <- males[, vars] %>% na.omit()
+females2 <- females[, vars] %>% na.omit()
+mod_males_ever_pregnant <- lm(ever_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                             data = males2, weights = weight_sample)
+mod_females_ever_pregnant <- lm(ever_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                               data = females2, weights = weight_sample)
+```
+
+```{r}
+# Ever Pregnant Never Married as Response
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_pregnant_never_married","weight_sample")
+males2 <- males[, vars] %>% na.omit()
+females2 <- females[, vars] %>% na.omit()
+mod_males_ever_pregnant_never_married <- lm(ever_pregnant_never_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                              data = males2, weights = weight_sample)
+mod_females_ever_pregnant_never_married <- lm(ever_pregnant_never_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                                data = females2, weights = weight_sample)
+
+```
+
+```{r}
+# Ever Married Never Pregnant as Response
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_married_never_pregnant","weight_sample")
+males2 <- males[, vars] %>% na.omit()
+females2 <- females[, vars] %>% na.omit()
+mod_males_ever_married_never_pregnant <- lm(ever_married_never_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                                            data = males2, weights = weight_sample)
+mod_females_ever_married_never_pregnant <- lm(ever_married_never_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
+                                              data = females2, weights = weight_sample)
 ```
 
 Screenshot Results From Paper:
