@@ -60,7 +60,6 @@ school_info <- read_dta(file = "school_info.dta")
 KAPboys <- read_dta(file = "KAPboys.dta")
 KAPgirls <- read_dta(file = "KAPgirls.dta")
 studysample_allmerged <- read_dta(file = "studysample_allmerged.dta")
-hometracking <- read_dta(file = "hometracking.dta")
 ```
 
 ```{r}
