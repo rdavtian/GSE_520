@@ -1,0 +1,84 @@
+---
+title: 'GSE 520: Problem Set #12'
+author: 
+  - "Laniah Lewis"
+  - "Ruslan Davtian"
+  - "Russel McIntosh"
+output: html_document
+---
+
+In this problem set we are recreating a table from "Education, HIV, and Early Fertility: Experimental Evidence from Kenya" by Esther Duflo; Pascaline Dupas; Michael Kremer. Citation provided below:
+
+Duflo, Esther, Pascaline Dupas, and Michael Kremer. 2015. "Education, HIV, and Early Fertility: Experimental Evidence from Kenya." American Economic Review, 105 (9): 2757-97
+
+This paper explores whether education subsidies and/or the current HIV curriculum (focused fully on abstinence until marriage) have an effect on the dropout, pregnancy, marriage, and HIV (and other STI) rates of adolescent girls in Kenya.
+
+We will be recreating Table 3 "Long-Run Impacts: Individual Long-Term Follow-Up Survey Data (After seven years)" from this paper.
+
+This table is created using the model:
+$$Y_{is} = \beta_0 + β_1S_s + \beta_2H_s + \beta_3SH_s + \beta_4Age_i + X_s'μ + \epsilon_{is}$$
+
+Description of variables in model:
+
+$Y_{is}$ is the outcome for student $i$ enrolled in school $s$ at baseline
+
+$Y_{is}$ changes between being all of the following variables:
+= Reached eighth grade
+= Grades completed
+= Ever married
+= Ever pregnant
+= Ever pregnant but never married
+= Ever married but never pregnant
+= Had started childbearing by age 16
+
+
+$S_s$ is a dummy variable equal to 1 for schools with stand-alone education subsidy
+
+$H_s$ is a dummy variable equal to 1 for schools with  stand-alone HIV education program
+
+$SH_S$ is a dummy variable equal to 1 for schools with education subsidy and HIV education program
+
+$Age_i$ is the age of student $i$
+
+$X_s$ is a vector of school-level controls (timing of the data collection, school size, and randomization stratum). Therefore, $X_s$ is school fixed effects.
+
+$\epsilon_{is}$ are errors terms that are assumed to be independent across schools. 
+
+Standard errors are clustered at school level.
+
+Replication:
+```{r, warning = FALSE, message = FALSE}
+library(haven)
+library(dplyr)
+setwd("C:/Users/rusla/OneDrive/GSE_520/Project/dataverse_files")
+
+hometracking <- read_dta(file = "hometracking.dta")
+sampling_frame <- read_dta(file = "sampling_frame.dta")
+school_info <- read_dta(file = "school_info.dta")
+KAPboys <- read_dta(file = "KAPboys.dta")
+KAPgirls <- read_dta(file = "KAPgirls.dta")
+studysample_allmerged <- read_dta(file = "studysample_allmerged.dta")
+hometracking <- read_dta(file = "hometracking.dta")
+```
+
+```{r}
+merged <- studysample_allmerged %>% 
+  inner_join(school_info, by = "schoolid") %>%
+  left_join(sampling_frame[,c("female","age03","pupilid")], by = c("pupilid")) %>%
+  mutate(schoolid = as.factor(schoolid)) 
+males <- merged %>% filter(sex == 1)
+females <- merged %>% filter(sex == 2)
+```
+
+```{r}
+#mod_males <- lm( ~ HIVtreat03v1 + Utreat03v1 + HandUtreat03v1 + age03 + schoolid, 
+                 #data = males)
+
+#mod_females <- lm( ~ HIVtreat03v1 + Utreat03v1 + HandUtreat03v1 + age03 + schoolid, 
+                 #data = females)
+```
+
+Screenshot Results From Paper:
+```{r pressure, echo=FALSE, fig.cap="Table 3 from Duflo Paper", out.width = '50%', fig.align='center'}
+knitr::include_graphics("Duflo_Results.PNG")
+```
