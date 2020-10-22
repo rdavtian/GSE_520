@@ -72,10 +72,10 @@ females <- merged %>% filter(sex == 2)
 
 ```{r}
 #mod_males <- lm( ~ HIVtreat03v1 + Utreat03v1 + HandUtreat03v1 + age03 + schoolid, 
-                 #data = males)
+                 #data = males, weights = weight_sample)
 
 #mod_females <- lm( ~ HIVtreat03v1 + Utreat03v1 + HandUtreat03v1 + age03 + schoolid, 
-                 #data = females)
+                 #data = females, weights = weight_sample)
 ```
 
 Screenshot Results From Paper:
