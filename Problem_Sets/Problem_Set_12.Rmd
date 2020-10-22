@@ -51,6 +51,7 @@ Replication:
 library(haven)
 library(dplyr)
 library(clubSandwich)
+library(AER)
 setwd("C:/Users/rusla/OneDrive/GSE_520/Project/dataverse_files")
 
 hometracking <- read_dta(file = "hometracking.dta")
@@ -66,10 +67,7 @@ hometracking <- read_dta(file = "hometracking.dta")
 merged <- studysample_allmerged %>% 
   inner_join(school_info, by = "schoolid") %>%
   inner_join(sampling_frame[, c("pupilid","age03")], by = "pupilid") %>%
-  mutate(Utreat03v1 = as.factor(Utreat03v1),
-         HIVtreat03v1 = as.factor(HIVtreat03v1),
-         HandUtreat03v1 = as.factor(HandUtreat03v1),
-         schoolid = as.factor(schoolid),
+  mutate(schoolid = as.factor(schoolid),
          yrbirth = as.factor(yrbirth),
          Q_year = as.factor(Q_year),
          reached_8th_grade = case_when(Q_b1_13_school_years > 8 ~ 1,
@@ -90,6 +88,8 @@ males <- merged %>% filter(sex == 1)
 females <- merged %>% filter(sex == 2)
 ```
 
+### Reached 8th Grade as Response
+
 ```{r}
 # Reached 8th grade as Response
 vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","reached_8th_grade","weight_sample","schoolid")
@@ -99,11 +99,15 @@ females2 <- females[, vars] %>% na.omit()
 mod_males_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, data = males2, weights = weight_sample)
 ClusV = vcovCR(mod_males_8th_grade, males2$schoolid,"CR1")
 head(round(coef_test(mod_males_8th_grade, vcov = ClusV),5))
+#linearHypothesis(mod_males_8th_grade,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
 
 mod_females_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, data = females2, weights = weight_sample)
 ClusV = vcovCR(mod_females_8th_grade, females2$schoolid,"CR1")
 head(round(coef_test(mod_females_8th_grade, vcov = ClusV),5))
+#linearHypothesis(mod_females_8th_grade,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
 ```
+
+### Education Years as Response
 
 ```{r}
 # Education Years as Response
@@ -114,33 +118,53 @@ females2 <- females[, vars] %>% na.omit()
 mod_males_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = males2, weights = weight_sample)
 ClusV = vcovCR(mod_males_educ_years, males2$schoolid,"CR1")
 head(round(coef_test(mod_males_educ_years, vcov = ClusV),5))
+#linearHypothesis(mod_males_educ_years,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
 
 mod_females_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = females2, weights = weight_sample)
 ClusV = vcovCR(mod_females_educ_years, females2$schoolid,"CR1")
 head(round(coef_test(mod_females_educ_years, vcov = ClusV),5))
+#linearHypothesis(mod_females_educ_years,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
 ```
+
+### Ever Married as Response
 
 ```{r}
 # Ever Married as Response
-vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_married","weight_sample")
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_married","weight_sample","schoolid")
 males2 <- males[, vars] %>% na.omit()
 females2 <- females[, vars] %>% na.omit()
-mod_males_ever_married <- lm(ever_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
-                           data = males2, weights = weight_sample)
-mod_females_ever_married <- lm(ever_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
-                             data = females2, weights = weight_sample)
+
+mod_males_ever_married <- lm(ever_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = males2, weights = weight_sample)
+ClusV = vcovCR(mod_males_ever_married, males2$schoolid,"CR1")
+head(round(coef_test(mod_males_ever_married, vcov = ClusV),5))
+#linearHypothesis(mod_males_ever_married,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
+
+mod_females_ever_married <- lm(ever_married ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = females2, weights = weight_sample)
+ClusV = vcovCR(mod_females_ever_married, females2$schoolid,"CR1")
+head(round(coef_test(mod_females_ever_married, vcov = ClusV),5))
+#linearHypothesis(mod_females_ever_married,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
 ```
+
+### Ever Pregnant as Response
 
 ```{r}
 # Ever Pregnant as Response
-vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_pregnant","weight_sample")
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","ever_pregnant","weight_sample","schoolid")
 males2 <- males[, vars] %>% na.omit()
 females2 <- females[, vars] %>% na.omit()
-mod_males_ever_pregnant <- lm(ever_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
-                             data = males2, weights = weight_sample)
-mod_females_ever_pregnant <- lm(ever_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
-                               data = females2, weights = weight_sample)
+
+mod_males_ever_pregnant <- lm(ever_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = males2, weights = weight_sample)
+ClusV = vcovCR(mod_males_ever_pregnant, males2$schoolid,"CR1")
+head(round(coef_test(mod_males_ever_pregnant, vcov = ClusV),5))
+#linearHypothesis(mod_males_ever_pregnant,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
+
+mod_females_ever_pregnant <- lm(ever_pregnant ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = females2, weights = weight_sample)
+ClusV = vcovCR(mod_females_ever_pregnant, females2$schoolid,"CR1")
+head(round(coef_test(mod_females_ever_pregnant, vcov = ClusV),5))
+#linearHypothesis(mod_females_ever_pregnant,c("Utreat03v1=HIVtreat03v1"),vcov=ClusV)
 ```
+
+### Ever Pregnant Never Married as Response
 
 ```{r}
 # Ever Pregnant Never Married as Response
@@ -153,6 +177,8 @@ mod_females_ever_pregnant_never_married <- lm(ever_pregnant_never_married ~ Utre
                                 data = females2, weights = weight_sample)
 
 ```
+
+### Ever Married Never Pregnant as Response
 
 ```{r}
 # Ever Married Never Pregnant as Response
