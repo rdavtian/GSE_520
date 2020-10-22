@@ -76,7 +76,8 @@ merged <- studysample_allmerged %>%
          ever_pregnant_never_married = case_when((sex == 1 & ever_married == 0 & Q_b6_183_total >= 1) ~ 1,
                                                  (sex == 2 & ever_married == 0 & Q_b6_139_given_birth == 1) ~ 1,
                                                  TRUE ~ 0),
-         ever_married_never_pregnant = case_when((ever_married == 1 & Q_b6_183_total == 0) ~ 1,
+         ever_married_never_pregnant = case_when((sex == 1 & ever_married == 1 & Q_b6_183_total == 0) ~ 1,
+                                                 (sex == 2 & ever_married == 1 & Q_b6_139_given_birth != 1) ~ 1,
                                                  TRUE ~ 0),
          age_of_first_child = Q_b6_154a_born_yr - yrbirth,
          childbearing_by_age_16 = case_when(age_of_first_child >= 16 ~ 1,
@@ -85,7 +86,8 @@ merged <- studysample_allmerged %>%
          yrbirth = as.factor(yrbirth),
          Q_year = as.factor(Q_year))  %>%
   dplyr::select(-stratum.y) %>%
-  rename("stratum" = stratum.x)
+  rename("stratum" = stratum.x) %>%
+  mutate(stratum = as.factor(stratum))
 males <- merged %>% filter(sex == 1)
 females <- merged %>% filter(sex == 2)
 ```
