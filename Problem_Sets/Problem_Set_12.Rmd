@@ -50,6 +50,7 @@ Replication:
 ```{r, warning = FALSE, message = FALSE}
 library(haven)
 library(dplyr)
+library(clubSandwich)
 setwd("C:/Users/rusla/OneDrive/GSE_520/Project/dataverse_files")
 
 hometracking <- read_dta(file = "hometracking.dta")
@@ -91,25 +92,32 @@ females <- merged %>% filter(sex == 2)
 
 ```{r}
 # Reached 8th grade as Response
-vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","reached_8th_grade","weight_sample")
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","reached_8th_grade","weight_sample","schoolid")
 males2 <- males[, vars] %>% na.omit()
 females2 <- females[, vars] %>% na.omit()
 
-mod_males_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, 
-data = males2, weights = weight_sample)
-mod_females_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, 
-data = females2, weights = weight_sample)
+mod_males_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, data = males2, weights = weight_sample)
+ClusV = vcovCR(mod_males_8th_grade, males2$schoolid,"CR1")
+head(round(coef_test(mod_males_8th_grade, vcov = ClusV),5))
+
+mod_females_8th_grade <- lm(reached_8th_grade ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum + age03, data = females2, weights = weight_sample)
+ClusV = vcovCR(mod_females_8th_grade, females2$schoolid,"CR1")
+head(round(coef_test(mod_females_8th_grade, vcov = ClusV),5))
 ```
 
 ```{r}
 # Education Years as Response
-vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","Q_b1_13_school_years","weight_sample")
+vars <- c("Utreat03v1","HIVtreat03v1","HandUtreat03v1","yrbirth","Q_year","schsize","stratum","age03","Q_b1_13_school_years","weight_sample","schoolid")
 males2 <- males[, vars] %>% na.omit()
 females2 <- females[, vars] %>% na.omit()
-mod_males_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
-                          data = males2, weights = weight_sample)
-mod_females_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, 
-                            data = females2, weights = weight_sample)
+
+mod_males_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = males2, weights = weight_sample)
+ClusV = vcovCR(mod_males_educ_years, males2$schoolid,"CR1")
+head(round(coef_test(mod_males_educ_years, vcov = ClusV),5))
+
+mod_females_educ_years <- lm(Q_b1_13_school_years ~ Utreat03v1 + HIVtreat03v1 + HandUtreat03v1 + yrbirth + Q_year + schsize + stratum, data = females2, weights = weight_sample)
+ClusV = vcovCR(mod_females_educ_years, females2$schoolid,"CR1")
+head(round(coef_test(mod_females_educ_years, vcov = ClusV),5))
 ```
 
 ```{r}
