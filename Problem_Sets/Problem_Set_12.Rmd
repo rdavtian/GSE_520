@@ -64,7 +64,7 @@ KAPgirls <- read_dta(file = "KAPgirls.dta")
 studysample_allmerged <- read_dta(file = "studysample_allmerged.dta")
 ```
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 merged <- studysample_allmerged %>% 
   inner_join(school_info[, c("schoolid","schsize")], by = "schoolid") %>%
   inner_join(sampling_frame[, c("pupilid","age03")], by = "pupilid") %>%
@@ -91,8 +91,11 @@ females <- merged %>% filter(sex == 2)
 # Reached 8th grade Females as Response
 mod1 <- lm(reached_8 ~ Uonly + Honly + UH + factor(yrbirth) + factor(Q_year) + schsize + factor(stratum), data = females, weights = weight_sample)
 ClusV = vcovCR(mod1, females$schoolid,"CR1")
-head(round(coef_test(mod1, vcov = ClusV),3),4) 
-#linearHypothesis(mod1,c("Uonly=UH","Honly=UH","Uonly=Honly","UH = Uonly + #Honly"),vcov=ClusV)
+head(round(coef_test(mod1, vcov = ClusV),3),4)
+linearHypothesis(mod1, c("UonlyTRUE=UHTRUE"))
+linearHypothesis(mod1, "HonlyTRUE=UHTRUE")
+linearHypothesis(mod1, "UonlyTRUE=HonlyTRUE")
+linearHypothesis(mod1, "UHTRUE = UonlyTRUE + HonlyTRUE")
 ```
 
 ### Grades Completed Females as Response
@@ -102,7 +105,10 @@ head(round(coef_test(mod1, vcov = ClusV),3),4)
 mod2 <- lm(an_grades_completed ~ Uonly + Honly + UH + factor(yrbirth) + factor(Q_year) + schsize + factor(stratum), data = females, weights = weight_sample)
 ClusV = vcovCR(mod2, females$schoolid,"CR1")
 head(round(coef_test(mod2, vcov = ClusV),3),4) 
-#linearHypothesis(mod2,c("Uonly=UH","Honly=UH","Uonly=Honly","UH = Uonly + #Honly"),vcov=ClusV)
+linearHypothesis(mod2, c("UonlyTRUE=UHTRUE"))
+linearHypothesis(mod2, "HonlyTRUE=UHTRUE")
+linearHypothesis(mod2, "UonlyTRUE=HonlyTRUE")
+linearHypothesis(mod2, "UHTRUE = UonlyTRUE + HonlyTRUE")
 ```
 
 
