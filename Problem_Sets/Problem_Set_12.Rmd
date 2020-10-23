@@ -16,29 +16,17 @@ This paper explores whether education subsidies and/or the current HIV curriculu
 We will be recreating Table 3 "Long-Run Impacts: Individual Long-Term Follow-Up Survey Data (After seven years)" from this paper.
 
 This table is created using the model:
-$$Y_{is} = \beta_0 + β_1S_s + \beta_2H_s + \beta_3SH_s + \beta_4Age_i + X_s'μ + \epsilon_{is}$$
+$$Y_{is} = \beta_0 + β_1S_s + \beta_2H_s + \beta_3SH_s + X_s'μ + \epsilon_{is}$$
 
 ### Description of Variables in Model:
 
-$Y_{is}$ is the outcome for student $i$ enrolled in school $s$ at baseline
-
-$Y_{is}$ changes between being all of the following variables:
-= Reached eighth grade
-= Grades completed
-= Ever married
-= Ever pregnant
-= Ever pregnant but never married
-= Ever married but never pregnant
-= Had started childbearing by age 16
-
+$Y_{is}$ is the outcome for student $i$ enrolled in school $s$ at baseline. We are only interested in replicating $Y_{is}$ for reached eight grade and grades completed. 
 
 $S_s$ is a dummy variable equal to 1 for schools with stand-alone education subsidy
 
 $H_s$ is a dummy variable equal to 1 for schools with  stand-alone HIV education program
 
 $SH_S$ is a dummy variable equal to 1 for schools with education subsidy and HIV education program
-
-$Age_i$ is the age of student $i$
 
 $X_s$ is a vector of school-level controls (timing of the data collection, school size, and randomization stratum). Therefore, $X_s$ is school fixed effects.
 
