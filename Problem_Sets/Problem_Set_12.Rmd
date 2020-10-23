@@ -18,7 +18,7 @@ We will be recreating Table 3 "Long-Run Impacts: Individual Long-Term Follow-Up 
 This table is created using the model:
 $$Y_{is} = \beta_0 + β_1S_s + \beta_2H_s + \beta_3SH_s + \beta_4Age_i + X_s'μ + \epsilon_{is}$$
 
-Description of variables in model:
+### Description of Variables in Model:
 
 $Y_{is}$ is the outcome for student $i$ enrolled in school $s$ at baseline
 
@@ -46,14 +46,16 @@ $\epsilon_{is}$ are errors terms that are assumed to be independent across schoo
 
 Standard errors are clustered at school level.
 
-Replication:
+### Replication
+
+We are going to replicate the first two regression models for females from table 3. The first model has the response variable reached 8th grade while the second model has the response variable grade completed. The reached 8th grade variable is an indicator variable while the grade completed variable is a continuous variable representing years of schooling. We provide one of the linear hypothesis tests as well, specifically where the null hypothesis is beta coefficient of the stand-alone education subsidy program is equal to the beta coefficient of the stand-alone HIV education program.
+
 ```{r, warning = FALSE, message = FALSE}
 library(haven)
 library(dplyr)
 library(clubSandwich)
 library(AER)
 library(stringr)
-options(scipen = 999)
 setwd("C:/Users/rusla/OneDrive/GSE_520/Project/dataverse_files")
 
 hometracking <- read_dta(file = "hometracking.dta")
@@ -71,6 +73,7 @@ merged <- studysample_allmerged %>%
   mutate(Honly = (HIVtreat == 1 & Utreat == 0),
          Uonly = (HIVtreat == 0 & Utreat == 1),
          UH = (HIVtreat == 1 & Utreat == 1)) %>%
+  mutate(Age = age03 - yrbirth) %>%
   mutate(an_grades_completed = Q_b1_12_edu_level,
          an_grades_completed = case_when(Q_b1_12_edu_level  == 'F1' ~ 9,
                                          Q_b1_12_edu_level  == 'F2' ~ 10,
@@ -92,10 +95,7 @@ females <- merged %>% filter(sex == 2)
 mod1 <- lm(reached_8 ~ Uonly + Honly + UH + factor(yrbirth) + factor(Q_year) + schsize + factor(stratum), data = females, weights = weight_sample)
 ClusV = vcovCR(mod1, females$schoolid,"CR1")
 head(round(coef_test(mod1, vcov = ClusV),3),4)
-linearHypothesis(mod1, c("UonlyTRUE=UHTRUE"))
-linearHypothesis(mod1, "HonlyTRUE=UHTRUE")
-linearHypothesis(mod1, "UonlyTRUE=HonlyTRUE")
-linearHypothesis(mod1, "UHTRUE = UonlyTRUE + HonlyTRUE")
+linearHypothesis(mod1, c("UonlyTRUE=UHTRUE")) #p-value (test: S = H)
 ```
 
 ### Grades Completed Females as Response
@@ -105,14 +105,11 @@ linearHypothesis(mod1, "UHTRUE = UonlyTRUE + HonlyTRUE")
 mod2 <- lm(an_grades_completed ~ Uonly + Honly + UH + factor(yrbirth) + factor(Q_year) + schsize + factor(stratum), data = females, weights = weight_sample)
 ClusV = vcovCR(mod2, females$schoolid,"CR1")
 head(round(coef_test(mod2, vcov = ClusV),3),4) 
-linearHypothesis(mod2, c("UonlyTRUE=UHTRUE"))
-linearHypothesis(mod2, "HonlyTRUE=UHTRUE")
-linearHypothesis(mod2, "UonlyTRUE=HonlyTRUE")
-linearHypothesis(mod2, "UHTRUE = UonlyTRUE + HonlyTRUE")
+linearHypothesis(mod2, c("UonlyTRUE=UHTRUE")) #p-value (test: S = H)
 ```
 
 
-Screenshot Results From Paper:
+### Screenshot Results From Paper:
 
 ```{r pressure, echo=FALSE, fig.cap="Table 3 from Duflo Paper", out.width = '50%', fig.align='center'}
 knitr::include_graphics("Duflo_Results.PNG")
