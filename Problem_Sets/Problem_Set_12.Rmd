@@ -111,6 +111,6 @@ linearHypothesis(mod2, c("UonlyTRUE=UHTRUE")) #p-value (test: S = H)
 
 ### Screenshot Results From Paper:
 
-```{r pressure, echo=FALSE, fig.cap="Table 3 from Duflo Paper", out.width = '50%', fig.align='center'}
+```{r pressure, echo=FALSE, fig.cap="Table 3 from Duflo Paper", out.width = '50%'}
 knitr::include_graphics("Duflo_Results.PNG")
 ```
