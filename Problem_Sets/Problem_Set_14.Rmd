@@ -1,0 +1,142 @@
+---
+title: 'GSE 520: Problem Set # 14 Randomized Trials Problem Set'
+author: 
+  - "Rus Adamovics-Davtian"
+  - "Amanda Walker"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+load('C:/Users/rusla/OneDrive/GSE_520/R Data/matDepr.RData')
+```
+
+The data set ```matDepr.Rdata``` contains data from the paper "Maternal Depression, Women's Empowerment, and Parental Investment: Evidence from a Randomized Control Trial".  This paper evaluates the medium-term impacts of treating maternal depression on women’s mental health, financial empowerment, and parenting decisions using a randomized control trial. The population includes prenatally depressed mothers in rural Pakistan.  In this study, a portion of the women were assigned to a treatment group, who received psychotherapy to treat depression, while the remaining women were assigned to the control group.  Follow-up outcomes for the women and their children were collected 6 months, 12 months, and 7 years after treatment.  
+
+### Question 1
+
+Before being able to proceed with the study and to accurately draw any conclusions on the causal effect of the depression therapy, it is necessary to check for balance.  
+
+a. Please explain how a failure to check for balance among the treatment and control group samples leave room for serious issues to arise in the nature of the experiment?
+
+>**Solution:**
+In order to draw any causal effect from a randomized control trial, selection bias must not be present. In order for selection bias to be eliminated, treatment and control groups on average must be similar or balanced assuming sample sizes are large enough. Failure to check for balance among the treatment and control groups leaves possibility for selection bias to exist which means estimates are biased and results from the experiment cannot be trusted. 
+
+
+b. An important variable to check for balance in this context is the baseline level of depression reported prior to treatment, which is the Hamilton Depression Rating (a measure of depression severity) reported in the variable $hamd\_baseline$.  Using the variable $treat$ what is the differences in the mean of the depression score between the treatment and the control group?
+
+>**Solution:**  
+>```{r, warning = FALSE, message = FALSE}
+library(dplyr)
+library(AER)
+data2 <- data[!is.na(data$hamd_baseline),]
+mean_rating <- data2 %>% group_by(treat) %>% summarise(avg_depression_rating = mean(hamd_baseline))
+```
+>```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(kableExtra)
+kable(mean_rating, row.names = F) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position = "left", fixed_thead = T)
+```
+>After removing rows with missing depression ratings, we can see that the difference in means of the Hamilton Depression Rating between the treatment and control group is 0.396 (Treatment minus Control). 
+
+c. Letting $\overline{Y}_1$ be the sample average for the treatment and $\overline{Y}_0$ be the sample average for the control, using the formula in equation 1.7 on page 45 in mastering metrics, what is $\widehat{SE}(\overline{Y}_1 - \overline{Y}_0)$
+
+> Sample sizes $n_1$ and $n_0$ for the treatment and control group and the pooled SD are calculated after removing observations with missing Hamilton Depression Rating.
+>**Solution:** 
+>```{r, echo = FALSE, warning = FALSE, message = FALSE}
+n <- data2 %>% group_by(treat) %>% summarize(n = n())
+kable(n, row.names = F) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position = "left", fixed_thead = T)
+pooled_sd <- sd(data$hamd_baseline, na.rm = T)
+paste0("Pooled SD: ", round(pooled_sd, 4))
+```
+>
+\begin{align*}
+\widehat{SE}(\overline{Y}_1 - \overline{Y}_0) = & S(Y_i)\sqrt{\frac{1}{n_1} + \frac{1}{n_0}}\\
+\widehat{SE}(\overline{Y}_1 - \overline{Y}_0) = & 4.0927\sqrt{\frac{1}{463} + \frac{1}{440}}\\
+\widehat{SE}(\overline{Y}_1 - \overline{Y}_0) = & 0.27248
+\end{align*}
+
+d. State the null hypothesis that the difference in the mean of baseline depression is equal to zero between the two groups.  What is the t statistic associated with this null hypothesis?  If we use a critical value of 2, do we reject or fail to reject the null?
+
+>**Solution:**  
+\begin{align*}
+H_0: \quad & \overline{Y}_1  - \overline{Y}_0 = 0 \\
+H_1: \quad & \overline{Y}_1  - \overline{Y}_0 \neq 0
+\end{align*}
+>
+\begin{align*}
+t = & \frac{0.396 - 0}{0.27248}\\
+t = & 1.453
+\end{align*}
+>```{r}
+pval = 2*(1-pt(abs(1.453), nrow(data2) - 1))
+paste0("p-value: ", round(pval, 4))
+```
+> Using a critical value of 2, we fail to reject the null hypothesis. There is not enough evidence to suggest that the difference in means of Hamilton Depression Rating between treatment and control group is significantly different from zero. 
+
+e. The function ```t.test(x,y,var.equal = TRUE)``` conducts a t-test on the equality of the means for the variables x and y.  Use this function to conduct the test you did in Part (d).  Is the t-stat the same?  Interpret the p-value reported in the output.
+
+>**Solution:**  
+```{r}
+x <- data2[data2$treat == 1, "hamd_baseline"]
+y <- data2[data2$treat == 0, "hamd_baseline"]
+t.test(x, y, var.equal = TRUE)
+```
+
+> Yes, the t-statistics is the same as in part (d). At the 1%, 5%, or 10% level, there is not enough evidence to reject the null hypothesis in favor of the alternative hypothesis. 
+
+f.  Another way to conduct a t-test is to run a simple regression of the outcome on the treatment.  The coefficient on the treatment will represent the differences in the means.  Estimate the simple regression
+$$hamd\_baseline = \beta_0 + \beta_1 treat + \varepsilon$$
+What is the t-value for the null hypothesis that $\beta_1=0$.  Is it similar to the values in Part (d) and Part (e)?
+
+>**Solution:**  
+>```{r}
+mod1 <- lm(hamd_baseline ~ treat, data = data)
+coeftest(mod1)
+```
+
+> The t-value for the null hypothesis that $\beta_1=0$ is 1.453 which is similar to part (d) and part (e).
+
+### Question 2
+
+Letting $Y_{i1} = \delta + Y_{i0}$ be the observed outcome of the treatment on person $i$ if they receive treatment, and $Y_{i0}$ be the outcome if they do not receive treatment.  Using mathematical expectations, show that under random assignment of the treatment, $E(Y_{i1} | treat) - E(Y_{i0} | control) = \delta$, i.e., the differences in the mean outcomes for the treatment and the control reveals the causal effect of the treatment.
+
+>**Solution:** 
+Since $Y_{i1} = \delta + Y_{i0}$ where $\delta$ represents the constant, average causal effect of  psychotherapy on depression...
+\begin{align*}
+& E(Y_{i1} | treat) - E(Y_{i0} | control)\\
+= & E(Y_{i0} + \delta | treat) - E(Y_{i0} | control)\\
+= & \delta + E(Y_{i0} | treat) - E(Y_{i0} | control)\\
+= & \delta \quad \quad \quad  \quad  \quad  \quad * selection \quad bias \quad disappears
+\end{align*}
+
+### Question 3
+
+The design of this study can address a number of important questions.  We will focus on two of these.  The first is does the treatment reduce later in life depression and the second is does the treatment increase child investment.  As we showed in Question (1), using linear regression is a straightforward way to conduct the t-test, so in your answers below, use the ```lm``` function.
+
+a. The variable $depindex\_7y$ is a depression index 7 years after the treatment (higher values correspond to more depression).  Use this variable to see if the treatment had any long-term effects on depression.  Conduct a hypothesis test that the treatment had no effect on the long-term depression rates.  What do you conclude from this test?
+
+>**Solution:**  
+>```{r}
+mod2 <- lm(depindex_7y ~ treat, data = data)
+coeftest(mod2)
+```
+
+b. The variable $parenttime$ quantifies how much time the parent interacts with their children.  Use this variable to see if the treatment (the reduction of depression) had any effects on the amount of time the mother spent with the child.  Conduct a hypothesis test that the treatment had no effect on the long-term depression rates.  What do you conclude from this test?
+
+>**Solution:**  
+>```{r}
+mod3 <- lm(parenttime ~ treat, data = data)
+coeftest(mod3)
+```
+
+c. The variable $incomeindex$ measures the income level of the family.  Redo the regression in Part (b) but add a control for income.  What are the main differences in the results?  Which results are more authoritative?  Explain.
+
+>**Solution:**  
+>```{r}
+mod4 <- lm(parenttime ~ treat + incomeindex, data = data)
+coeftest(mod4)
+```
+
+
+
