@@ -28,11 +28,13 @@ b. An important variable to check for balance in this context is the baseline le
 >```{r, warning = FALSE, message = FALSE}
 library(dplyr)
 library(AER)
+library(clubSandwich)
 data2 <- data[!is.na(data$hamd_baseline),]
 mean_rating <- data2 %>% group_by(treat) %>% summarise(avg_depression_rating = mean(hamd_baseline))
 ```
 >```{r, echo = FALSE, warning = FALSE, message = FALSE}
 library(kableExtra)
+options(scipen = 999)
 kable(mean_rating, row.names = F) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = F, position = "left", fixed_thead = T)
 ```
@@ -40,8 +42,9 @@ kable(mean_rating, row.names = F) %>%
 
 c. Letting $\overline{Y}_1$ be the sample average for the treatment and $\overline{Y}_0$ be the sample average for the control, using the formula in equation 1.7 on page 45 in mastering metrics, what is $\widehat{SE}(\overline{Y}_1 - \overline{Y}_0)$
 
-> Sample sizes $n_1$ and $n_0$ for the treatment and control group and the pooled SD are calculated after removing observations with missing Hamilton Depression Rating.
 >**Solution:** 
+Sample sizes $n_1$ and $n_0$ for the treatment and control group and the pooled SD are calculated after removing observations with missing Hamilton Depression Rating.
+
 >```{r, echo = FALSE, warning = FALSE, message = FALSE}
 n <- data2 %>% group_by(treat) %>% summarize(n = n())
 kable(n, row.names = F) %>%
@@ -77,7 +80,7 @@ paste0("p-value: ", round(pval, 4))
 e. The function ```t.test(x,y,var.equal = TRUE)``` conducts a t-test on the equality of the means for the variables x and y.  Use this function to conduct the test you did in Part (d).  Is the t-stat the same?  Interpret the p-value reported in the output.
 
 >**Solution:**  
-```{r}
+>```{r}
 x <- data2[data2$treat == 1, "hamd_baseline"]
 y <- data2[data2$treat == 0, "hamd_baseline"]
 t.test(x, y, var.equal = TRUE)
@@ -91,7 +94,7 @@ What is the t-value for the null hypothesis that $\beta_1=0$.  Is it similar to 
 
 >**Solution:**  
 >```{r}
-mod1 <- lm(hamd_baseline ~ treat, data = data)
+mod1 <- lm(hamd_baseline ~ treat, data = data2)
 coeftest(mod1)
 ```
 
@@ -118,25 +121,34 @@ a. The variable $depindex\_7y$ is a depression index 7 years after the treatment
 
 >**Solution:**  
 >```{r}
-mod2 <- lm(depindex_7y ~ treat, data = data)
+mod2 <- lm(depindex_7y ~ treat, data = data2)
 coeftest(mod2)
+cv <- qt(.05/2,nrow(data2) - 1,lower.tail = F)
+paste0("Critical Value at 5% significance level: ", round(cv, 4))
 ```
+> Since the absolute value of the t-statistic (-2.6919) is greater than the critical value of 1.9626 at a 5% significance level, we reject the null hypothesis and conclude that the treatment effect on depression 7 years later is significantly different from zero. There is enough evidence to suggest that the treatment has a statistically significant average negative effect of 0.209 on long term depression rating. 
 
 b. The variable $parenttime$ quantifies how much time the parent interacts with their children.  Use this variable to see if the treatment (the reduction of depression) had any effects on the amount of time the mother spent with the child.  Conduct a hypothesis test that the treatment had no effect on the long-term depression rates.  What do you conclude from this test?
 
 >**Solution:**  
 >```{r}
-mod3 <- lm(parenttime ~ treat, data = data)
+mod3 <- lm(parenttime ~ treat, data = data2)
 coeftest(mod3)
+cv <- qt(.05/2,nrow(data2) - 1,lower.tail = F)
+paste0("Critical Value at 5% significance level: ", round(cv, 4))
+```
+> Since the absolute value of the t-statistic (3.9587) is greater than the critical value of 1.9626 at a 5% significance level, we reject the null hypothesis and conclude that the treatment effect on parent time spent with child is significantly different from zero. There is enough evidence to suggest that the treatment has a statistically significant average positive effect of 0.3185 on parent time spent with child. 
+
+```{r}
+linearHypothesis(mod3,c("treat=0"))
 ```
 
 c. The variable $incomeindex$ measures the income level of the family.  Redo the regression in Part (b) but add a control for income.  What are the main differences in the results?  Which results are more authoritative?  Explain.
 
 >**Solution:**  
 >```{r}
-mod4 <- lm(parenttime ~ treat + incomeindex, data = data)
+mod4 <- lm(parenttime ~ treat + incomeindex, data = data2)
 coeftest(mod4)
+linearHypothesis(mod4,c("incomeindex=0"))
 ```
-
-
-
+> The model in part b (parenttime ~ treat) has a residual sum of squares of 551.88. After adding income as a control, the residual sum of squares drops to 490.24. Looking at the partial f-test and p-value, adding income as a control significantly improves the model fit on time parents spent with children. The simpler model has issues with selection bias so the results from the model (parentime ~ treat + incomeindex) is more authoritative. 
