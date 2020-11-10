@@ -1,0 +1,131 @@
+---
+title: 'GSE 520: Problem Set #16'
+author: 
+  - "Rus Adamovics-Davtian"
+  - "Student Name 2 (delete if only one student or add more if more than two)"
+output: html_document
+---
+
+### Question 1
+
+Consider a model for individual data to test whether nutrition affects worker productivity in a developing country:
+$$\ln(productivity) = \delta_0 + \delta_1 exper + \delta_2 exper^2 + \alpha_1 calories + \alpha_2 protein + \varepsilon$$
+where $productivity$ is some measure of worker productivity (i.e. units produced per day), $calories$ is caloric intake per day, and $protein$ is a measure of protein intake per day. Assume here that $exper$, $exper^2$ are all exogenous. The variables $calories$ and $protein$ are possibly correlated with $\varepsilon$. Possible instrumental variables for $calories$ and $protein$ are regional prices of various goods, such as grains, meats, breads, dairy products, etc..
+
+Under what circumstances do prices make good IVs for $calories$ and $proteins$?
+
+>**Solution:**
+>
+In order for a variable to be a good IV candidate for calories and protein, it needs to meet two criteria rules. First, the covariance between the IV and calories, protein must not equal 0. In other words, the IV must be able to predict some component of calories and protein. Second, mean independence $E[\varepsilon | IV] = 0$ must hold. In other words, the IV does not directly effect an individuals' productivity level through $\varepsilon$, only through calorie and protein intake. 
+
+>Therefore, regional prices of various goods make good IVs for calories and protein intake if changes in price of these goods have an effect on calorie, protein intake signficantly greater than $0$ as well as these prices have no influence on productivity levels through $\varepsilon$.  
+
+### Question 2
+Let $Z$ be a matrix of instruments for $X$ in the linear regression model $Y = X \beta + \pmb \varepsilon$ where the $rank(Z) > rank(X)$.  Let $\widehat{X} = P_Z X$, where $P^Z$ is the projection matrix with matrix $Z$.  The 2SLS estimator is 
+$$b^{2SLS} = \left(\widehat{X}'X\right)^{-1} \left(\widehat{X}'Y\right)$$
+
+(a) Show that the projection matrix is symmetric, i.e., $P_z = P_z'$
+
+>**Solution:**
+\begin{align*}
+P_z = & P_z^{'}\\
+Z(Z^{'}Z)^{-1}Z^{'} = & (Z(Z^{'}Z)^{-1}Z^{'})^{'}\\
+Z(Z^{-1}(Z^{'})^{-1})Z^{'} = & (Z(Z^{-1}(Z^{'})^{-1})Z^{'})^{'}\\
+Z(Z^{-1}(Z^{-1})^{'})Z^{'} = & (Z(Z^{-1}(Z^{-1})^{'})Z^{'})^{'}\\
+Z(Z^{-1}(Z^{-1})^{'})Z^{'} = & Z(Z^{-1}(Z^{-1})^{'})Z^{'}\\
+\end{align*}
+
+(b) Show that the projection matrix is an idempotent matrix, i.e., $P_z P_z = P_z$
+
+>**Solution:**
+\begin{align*}
+P_zP_z = & P_z\\
+(Z(Z^{'}Z)^{-1}Z^{'})(Z(Z^{'}Z)^{-1}Z^{'}) = & Z(Z^{'}Z)^{-1}Z^{'}\\
+\end{align*}
+
+(c) Use the properties of the projection matrix (symmetric and idempotent) to show that the 2SLS estimator can also be written as
+$$b^{2SLS} = \left(\widehat{X}'\widehat{X}\right)^{-1} \left(\widehat{X}'Y\right)$$
+That is, the 2SLS estimator can be calculated by applying OLS to the equation
+$$Y = \widehat{X} \beta + \pmb \varepsilon$$
+(Note: this is were 2SLS gets its name.  You run a first least squares to get $\widehat{X}$ then a second least squares of $\widehat{X}$ on $Y$)
+
+**Solution:**  
+
+(d) In fact, it can also be shown that the $Var(b^{IV})$ can be written as 
+$$Var(b^{IV}) = \sigma^2 \left(\widehat{X}'\widehat{X}\right)^{-1}$$
+Which is the OLS variance-covariance matrix from $Y = \widehat{X} \beta + \pmb \varepsilon$.
+
+    Suppose that after seeing these results, a naive technician makes the following suggestion:  To estimate 2SLS, retrieve $\text{x_hat} = \widehat{X}$, then use ```lm(y ~ x_hat)``` to get the 2SLS estimates.  While the coefficients from this ```lm``` will be the 2SLS estimates, the variances and standard errors will be wrong.  Explain why these standard errors will be wrong.  In particular, explain how the $\sigma^2$ from this least squares is incorrect and how it differs from the correct estimate of $\sigma^2$ needed for the instrumental variable estimator.
+
+**Solution:**  
+
+### Question 3
+
+The data in ```FERTIL``` are a pooled cross section on more than a thousand U.S. women for the even years between 1972 and 1984, inclusive. These data can be used to study the relationship between women's education and fertility.
+
+(a) Use OLS to estimate a model relating number of children ever born to a woman ($kids$) to years of education, age, region, race, and type of environment reared in. You should use a quadratic in age and should include year fixed effects. What is the estimated relationship between fertility and education? 
+
+>**Solution:**  
+>```{r, warning = FALSE, message = FALSE}
+library(AER)
+library(clubSandwich)
+load("C:/Users/rusla/OneDrive/GSE_520/R Data/FERTIL.Rdata")
+ols <- lm(kids ~ educ + age + I(age^2) + black + east + northcen + west + farm + othrural + town + smcity + factor(year), data = data)
+coeftest(ols)
+```
+> Adjusting for all other variables, each additional year of education for women is associated with an estimated average decrease of 0.128 children. 
+
+(b) Holding other factors fixed, was there any notable secular change in fertility over the time period?  Use an F-test on the the results in part (a) to test the hypothesis of no change in fertility patterns across year at the 5\% significance level.
+
+>**Solution:**
+>
+Holding all other factors fixed, there is enough evidence to suggest that on average, women in 1982 and 1984 had significantly less children than in previous years.
+
+>```{r}
+linearHypothesis(ols, c("factor(year)74=0","factor(year)76=0","factor(year)78=0","factor(year)80=0","factor(year)82=0","factor(year)84=0"))
+```
+> At the 5% significance level, there is strong evidence (p-value $\approx$ 0) to reject the null hypothesis in favor of the alternative that at least one of the years has fertilty significantly different from 0. In other words, at least one of the years has a significant change in fertility compared to other years.   
+
+(c) Explain why it is inappropriate to estimate this model using OLS if we think $educ$ is correlated with the error term.  What are the consequences of using OLS to estimate the parameters of this model?
+
+>**Solution:**  
+We can only use OLS to estimate parameters if assumptions such as mean independence are met. This means that every variable in the model is exogenuous. However, intuition suggests that there are other variables not present in the model but present in $\varepsilon$ that can be predicted by education. We have reason to believe that $E[\varepsilon | education] \neq 0$. If this is true, then we cannot define a pure causal effect relationship between education and fertility as education is also correlated with $\varepsilon$. This means that the beta coefficient is biased with incorrect standard errors.  
+
+(d) Re-estimate the model in part (a), but use $meduc$ and $feduc$ as instruments for $educ$.  Did you observe large changes in your estimate of the affect of education on number of kids.  
+
+>**Solution:**  
+>```{r}
+iv <- ivreg(kids ~ educ + age + I(age^2) + black + east + northcen + west + farm + othrural + town + smcity + factor(year) | meduc + feduc + age + I(age^2) + black + east + northcen + west + farm + othrural + town + smcity + factor(year), data = data)
+coeftest(iv)
+```
+
+(e) Check to see if the instruments for $educ$ pass the weak instruments test.  Run a regression with 
+    ```
+lm(educ~meduc+feduc+age+I(age^2)+black+east+northcen+west+farm+othrural+town+smcity+factor(year))
+```
+    Test the null hypothesis that both coefficients for parents education equals zero.  What is the F statistic from this test?  What do you conclude from this test?
+
+>**Solution:**  
+>```{r}
+weak <- lm(educ ~ meduc + feduc + age + I(age^2) + black + east + northcen + west + farm + othrural + town + smcity + factor(year), data = data)
+linearHypothesis(weak, c("meduc=0","feduc=0"))
+```
+
+(f) Use ```diagnostics = TRUE``` to the ```summary``` statement with your original IV model to check that the test statistic for the weak instrument test is the same as you calculated in Part (e)
+
+>**Solution:**
+>```{r}
+summary(iv,diagnostics = TRUE)$diagnostics
+```
+
+(g) Finally, in the diagnostic section there is a line called Wu-Hausman.  Let's learn about how this test statistic is constructed, see what it is testing, and see if we can get any information from the data about the relationship we are interested in studying.
+
+    The Durbin-Wu-Hausman test (Hausman test) is a test for endogeneity.  Suppose it is assumed that $educ$ is endogenous when in fact it is not.  If we use IV when $educ$ is in fact exogenous, the IV estimates are still consistent, however they are inefficient.  Suppose we want to test the null hypothesis that there is no endogeneity.  Under the null, the OLS estimator and the IV estimator should be close.  Let $d = b^{IV}-b^{OLS}$ be the difference between the two estimators.  Under the null the difference should be zero.  The Hausman test uses a Wald test to test the null.  The test statistic is 
+$$ H = d' \left[ \widehat{Var(d)} \right]^{-1} d$$
+Hausman showed that surprisingly, $\widehat{Var(d)} = \widehat{Var(b^{IV})} -  \widehat{Var(b^{OLS})}$
+Under the null, $H \sim \chi^2[J]$, where $J$ is the degrees of freedom, which is the number of endogenous variables.  In our case we have one endogenous variable, $educ$, so $J=1$.
+
+    Try and create the test statistic using these formulas.  See if they match the results from the summary output using ```diagnostics = TRUE``` (they should be close, but not exact).  State in words your conclusion from the hypothesis test.  Why are we more likely to fail to reject the null hypothesis with a weak instrument?
+
+>**Solution:**  
+
