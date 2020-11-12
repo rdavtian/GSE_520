@@ -27,7 +27,7 @@ births <- births %>%
                           (semanas > 43 & !is.na(semanas)) ~ m - 10,
                           TRUE ~ m - 9))
 
-n <- births %>% group_by(mc3) %>% tally() %>% rename(mc = "mc3") %>%
+births <- births %>% group_by(mc3) %>% tally() %>% rename(mc = "mc3") %>%
   mutate(month = case_when(mc %in% c(-30,-18,-6,6,18,30,-42,-54,-66,-87,-99) ~ 1,
                            mc %in% c(-29,-17,-5,7,19,31,-41,-53,-65,-86,-98) ~ 2,
                            mc %in% c(-28,-16,-4,8,20,32,-40,-52,-64,-85,-97) ~ 3,
@@ -51,23 +51,23 @@ n <- births %>% group_by(mc3) %>% tally() %>% rename(mc = "mc3") %>%
          mc3 = mc*mc*mc,
          ln = log(n))
 
-first_subset <- n %>% filter(mc > -91 & mc < 30)
+first_subset <- births %>% filter(mc > -91 & mc < 30)
 mod1 = lm(ln ~ mc + mc2 + mc3 + post + days, data = first_subset)
 round(coeftest(mod1, vcov = vcovHC(mod1, "HC0")),5)
 
-second_subset = n %>% filter(mc > -31 & mc < 30)
+second_subset = births %>% filter(mc > -31 & mc < 30)
 mod2 = lm(ln ~ mc + mc2 + mc3 + post + days, data = second_subset)
 round(coeftest(mod2, vcov = vcovHC(mod2, "HC0")),5)
 
-third_subset = n %>% filter(mc > -13 & mc < 12)
+third_subset = births %>% filter(mc > -13 & mc < 12)
 mod3 = lm(ln ~ mc + mc2 + mc3 + post + days, data = third_subset)
 round(coeftest(mod3, vcov = vcovHC(mod3, "HC0")),5)
 
-fourth_subset = n %>% filter(mc > -10 & mc < 9)
+fourth_subset = births %>% filter(mc > -10 & mc < 9)
 mod4 = lm(ln ~ mc + mc2 + mc3 + post + days, data = fourth_subset)
 round(coeftest(mod4, vcov = vcovHC(mod4, "HC0")),5)
 
-fifth_subset = n %>% filter(mc > -4 & mc < 3)
+fifth_subset = births %>% filter(mc > -4 & mc < 3)
 mod5 = lm(ln ~ mc + mc2 + mc3 + post + days, data = fifth_subset)
 round(coeftest(mod5, vcov = vcovHC(mod5, "HC0")),5)
 ################################################################################
@@ -109,7 +109,7 @@ fifth_set = abortions %>% filter(m > -4 & m < 3)
 mod5 = lm(log_ive ~ post + days, data = fifth_set)
 coeftest(mod5, vcov. = vcovHC(mod5, type = "HC0"))
 
-save(n, file = 'births.Rdata')
+save(births, file = 'births.Rdata')
 save(abortions, file = 'abortions.Rdata')
 
 #load('births.Rdata')
