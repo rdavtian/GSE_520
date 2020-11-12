@@ -7,12 +7,6 @@ library(clubSandwich)
 births <- read_dta(file = "data_births_20110196.dta")
 abortions <- read_dta(file = "data_abortions_20110196.dta")
 
-save(births, file = 'births.Rdata')
-save(abortions, file = 'abortions.Rdata')
-
-load("births.Rdata")
-load("abortions.Rdata")
-
 births <- births %>%
   mutate(m = case_when(year == 2010 ~ mesp + 29,
                        year == 2009 ~ mesp + 17,
@@ -116,5 +110,8 @@ fifth_set = abortions %>% filter(m > -4 & m < 3)
 mod5 = lm(log_ive ~ post + days, data = fifth_set)
 coeftest(mod5, vcov. = vcovHC(mod5, type = "HC0"))
 
-#save(n, file = "births.RData")
-#save(abortions, file = "abortions.RData")
+save(n, file = 'births.Rdata')
+save(abortions, file = 'abortions.Rdata')
+
+#load('births.Rdata')
+#load('abortions.Rdata')
