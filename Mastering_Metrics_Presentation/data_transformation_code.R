@@ -75,8 +75,8 @@ ggplot(first_subset, aes(x = mc, y = ln, colour = post)) +
 # Plot using actual predicted values and interval band from model
 ggplot(first_subset, aes(x = mc, y = ln, colour = post)) + 
   geom_point() + 
-  geom_ribbon( aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
-  geom_line( aes(y = fit), size = 1) + 
+  geom_ribbon(aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
+  geom_line(aes(y = fit), size = 1) + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
   ggtitle("Number of Estimated Log Conceptions Per Month")  
@@ -100,8 +100,8 @@ ggplot(second_subset, aes(x = mc, y = ln, colour = post)) +
 # Plot using actual predicted values and interval band from model
 ggplot(second_subset, aes(x = mc, y = ln, colour = post)) + 
   geom_point() + 
-  geom_ribbon( aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
-  geom_line( aes(y = fit), size = 1) + 
+  geom_ribbon(aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
+  geom_line(aes(y = fit), size = 1) + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
   ggtitle("Number of Estimated Log Conceptions Per Month")  
@@ -125,8 +125,8 @@ ggplot(third_subset, aes(x = mc, y = ln, colour = post)) +
 # Plot using actual predicted values and interval band from model
 ggplot(third_subset, aes(x = mc, y = ln, colour = post)) + 
   geom_point() + 
-  geom_ribbon( aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
-  geom_line( aes(y = fit), size = 1) + 
+  geom_ribbon(aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
+  geom_line(aes(y = fit), size = 1) + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
   ggtitle("Number of Estimated Log Conceptions Per Month")  
