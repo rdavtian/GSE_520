@@ -3,10 +3,14 @@ library(haven)
 library(dplyr)
 library(AER)
 library(clubSandwich)
+library(ggplot2)
 
 births <- read_dta(file = "data_births_20110196.dta")
 abortions <- read_dta(file = "data_abortions_20110196.dta")
 
+
+#############################################################################
+# Cleaning births data
 births <- births %>%
   mutate(m = case_when(year == 2010 ~ mesp + 29,
                        year == 2009 ~ mesp + 17,
@@ -47,30 +51,107 @@ births <- births %>% group_by(mc3) %>% tally() %>% rename(mc = "mc3") %>%
                           TRUE ~ 31),
          post = case_when(mc >= 0 ~ 1,
                           TRUE ~ 0),
+         post = as.factor(post),
          mc2 = mc*mc,
          mc3 = mc*mc*mc,
          ln = log(n))
 
-first_subset <- births %>% filter(mc > -91 & mc < 30)
+##################################################################################
+# Modeling Log Conceptions, first subset
+first_subset <- births %>% filter(mc > -91 & mc < 30) 
 mod1 = lm(ln ~ mc + mc2 + mc3 + post + days, data = first_subset)
 round(coeftest(mod1, vcov = vcovHC(mod1, "HC0")),5)
+pred1 <- predict(mod1, first_subset, interval = "confidence")
+first_subset <- cbind(first_subset, pred1)
 
+# Plot using loess smoother
+ggplot(first_subset, aes(x = mc, y = ln, colour = post)) + 
+  geom_point() + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Number of Estimated Log Conceptions Per Month") + 
+  stat_smooth(method = loess)
+
+# Plot using actual predicted values and interval band from model
+ggplot(first_subset, aes(x = mc, y = ln, colour = post)) + 
+  geom_point() + 
+  geom_ribbon( aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
+  geom_line( aes(y = fit), size = 1) + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Number of Estimated Log Conceptions Per Month")  
+
+##################################################################################
+# Modeling Log Conceptions, second subset
 second_subset = births %>% filter(mc > -31 & mc < 30)
 mod2 = lm(ln ~ mc + mc2 + mc3 + post + days, data = second_subset)
 round(coeftest(mod2, vcov = vcovHC(mod2, "HC0")),5)
+pred2 <- predict(mod2, second_subset, interval = "confidence")
+second_subset <- cbind(second_subset, pred2)
 
+# Plot using loess smoother
+ggplot(second_subset, aes(x = mc, y = ln, colour = post)) + 
+  geom_point() + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Number of Estimated Log Conceptions Per Month") + 
+  stat_smooth(method = loess)
+
+# Plot using actual predicted values and interval band from model
+ggplot(second_subset, aes(x = mc, y = ln, colour = post)) + 
+  geom_point() + 
+  geom_ribbon( aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
+  geom_line( aes(y = fit), size = 1) + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Number of Estimated Log Conceptions Per Month")  
+
+##################################################################################
+# Modeling Log Conceptions, third subset
 third_subset = births %>% filter(mc > -13 & mc < 12)
 mod3 = lm(ln ~ mc + mc2 + mc3 + post + days, data = third_subset)
 round(coeftest(mod3, vcov = vcovHC(mod3, "HC0")),5)
+pred3 <- predict(mod3, third_subset, interval = "confidence")
+second_subset <- cbind(third_subset, pred3)
 
+# Plot using loess smoother
+ggplot(third_subset, aes(x = mc, y = ln, colour = post)) + 
+  geom_point() + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Number of Estimated Log Conceptions Per Month") + 
+  stat_smooth(method = loess)
+
+# Plot using actual predicted values and interval band from model
+ggplot(third_subset, aes(x = mc, y = ln, colour = post)) + 
+  geom_point() + 
+  geom_ribbon( aes(ymin = lwr, ymax = upr, color = post), alpha = .15) +
+  geom_line( aes(y = fit), size = 1) + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Number of Estimated Log Conceptions Per Month")  
+
+##################################################################################
+# Modeling Log Conceptions, fourth subset
 fourth_subset = births %>% filter(mc > -10 & mc < 9)
 mod4 = lm(ln ~ mc + mc2 + mc3 + post + days, data = fourth_subset)
 round(coeftest(mod4, vcov = vcovHC(mod4, "HC0")),5)
+pred4 <- predict(mod4, fourth_subset, interval = "confidence")
+fourth_subset <- cbind(fourth_subset, pred4)
 
+##################################################################################
+# Modeling Log Conceptions, fifth subset
 fifth_subset = births %>% filter(mc > -4 & mc < 3)
 mod5 = lm(ln ~ mc + mc2 + mc3 + post + days, data = fifth_subset)
 round(coeftest(mod5, vcov = vcovHC(mod5, "HC0")),5)
+pred5 <- predict(mod5, fifth_subset, interval = "confidence")
+fifth_subset <- cbind(fifth_subset, pred5)
+
+
 ################################################################################
+################################################################################
+###############################################################################
+# # Cleaning abortionbs data 
 vars <- c("n_ive_and","n_ive_val","n_ive_rioja","n_ive_cat","n_ive_can",
           "n_ive_mad","n_ive_gal","n_ive_bal","n_ive_pv","n_ive_castlm",
           "n_ive_ast","n_ive_arag")
@@ -86,9 +167,12 @@ abortions <- abortions %>%
          m2 = m * m,
          m3 = m * m * m,
          post = case_when(m >= 0 ~ 1,
-                          TRUE ~ 0)) %>%
+                          TRUE ~ 0),
+         post = as.factor(post)) %>%
   filter(m <= 29 & m >= -90)
 
+############################################################################
+# Modeling abortions
 options(scipen = 999)
 mod1 = lm(log_ive ~ post + m + m2 + m3 + days, data = abortions)
 coeftest(mod1, vcov. = vcovHC(mod1, type = "HC0"))
@@ -109,8 +193,9 @@ fifth_set = abortions %>% filter(m > -4 & m < 3)
 mod5 = lm(log_ive ~ post + days, data = fifth_set)
 coeftest(mod5, vcov. = vcovHC(mod5, type = "HC0"))
 
+#############################################################################
+# Save files
 save(births, file = 'births.Rdata')
 save(abortions, file = 'abortions.Rdata')
-
-#load('births.Rdata')
+load('births.Rdata')
 #load('abortions.Rdata')
