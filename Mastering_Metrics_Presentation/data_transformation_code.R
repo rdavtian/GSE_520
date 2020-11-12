@@ -89,7 +89,6 @@ abortions <- abortions %>%
                           TRUE ~ 0)) %>%
   filter(m <= 29 & m >= -90)
 
-
 options(scipen = 999)
 mod1 = lm(log_ive ~ post + m + m2 + m3 + days, data = abortions)
 coeftest(mod1, vcov. = vcovHC(mod1, type = "HC0"))
