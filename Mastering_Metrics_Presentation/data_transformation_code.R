@@ -8,7 +8,6 @@ library(ggplot2)
 births <- read_dta(file = "data_births_20110196.dta")
 abortions <- read_dta(file = "data_abortions_20110196.dta")
 
-
 #############################################################################
 # Cleaning births data
 births <- births %>%
@@ -69,7 +68,7 @@ ggplot(first_subset, aes(x = mc, y = ln, colour = post)) +
   geom_point() + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
-  ggtitle("Number of Estimated Log Conceptions Per Month") + 
+  ggtitle("Estimated Number of Log Conceptions Per Month") + 
   stat_smooth(method = loess)
 
 # Plot using actual predicted values and interval band from model
@@ -79,7 +78,7 @@ ggplot(first_subset, aes(x = mc, y = ln, colour = post)) +
   geom_line(aes(y = fit), size = 1) + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
-  ggtitle("Number of Estimated Log Conceptions Per Month")  
+  ggtitle("Estimated Number of Log Conceptions Per Month")  
 
 ##################################################################################
 # Modeling Log Conceptions, second subset
@@ -94,7 +93,7 @@ ggplot(second_subset, aes(x = mc, y = ln, colour = post)) +
   geom_point() + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
-  ggtitle("Number of Estimated Log Conceptions Per Month") + 
+  ggtitle("Estimated Number of Log Conceptions Per Month") + 
   stat_smooth(method = loess)
 
 # Plot using actual predicted values and interval band from model
@@ -104,7 +103,7 @@ ggplot(second_subset, aes(x = mc, y = ln, colour = post)) +
   geom_line(aes(y = fit), size = 1) + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
-  ggtitle("Number of Estimated Log Conceptions Per Month")  
+  ggtitle("Estimated Number of Log Conceptions Per Month")  
 
 ##################################################################################
 # Modeling Log Conceptions, third subset
@@ -119,7 +118,7 @@ ggplot(third_subset, aes(x = mc, y = ln, colour = post)) +
   geom_point() + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
-  ggtitle("Number of Estimated Log Conceptions Per Month") + 
+  ggtitle("Estimated Number of Log Conceptions Per Month") + 
   stat_smooth(method = loess)
 
 # Plot using actual predicted values and interval band from model
@@ -129,7 +128,7 @@ ggplot(third_subset, aes(x = mc, y = ln, colour = post)) +
   geom_line(aes(y = fit), size = 1) + 
   xlab("Month of Conception Before/After July 2007") + 
   ylab("Log Number of Conceptions") + 
-  ggtitle("Number of Estimated Log Conceptions Per Month")  
+  ggtitle("Estimated Number of Log Conceptions Per Month")  
 
 ##################################################################################
 # Modeling Log Conceptions, fourth subset
