@@ -2,7 +2,9 @@
 title: 'GSE 520: Problem Set #16'
 author: 
   - "Rus Adamovics-Davtian"
-  - "Student Name 2 (delete if only one student or add more if more than two)"
+  - "Amanda Walker"
+  - "Adam Gockel"
+  - "Michael Chan"
 output: html_document
 ---
 
@@ -30,9 +32,12 @@ $$b^{2SLS} = \left(\widehat{X}'X\right)^{-1} \left(\widehat{X}'Y\right)$$
 \begin{align*}
 P_z = & P_z^{'}\\
 Z(Z^{'}Z)^{-1}Z^{'} = & (Z(Z^{'}Z)^{-1}Z^{'})^{'}\\
-Z(Z^{-1}(Z^{'})^{-1})Z^{'} = & (Z(Z^{-1}(Z^{'})^{-1})Z^{'})^{'}\\
-Z(Z^{-1}(Z^{-1})^{'})Z^{'} = & (Z(Z^{-1}(Z^{-1})^{'})Z^{'})^{'}\\
-Z(Z^{-1}(Z^{-1})^{'})Z^{'} = & Z(Z^{-1}(Z^{-1})^{'})Z^{'}\\
+Z(Z^{'}Z)^{-1}Z^{'} = & (Z^{'})^{'}((Z^{'}Z)^{-1})^{'}Z^{'}\\
+Z(Z^{'}Z)^{-1}Z^{'} = & Z(Z^{-1}(Z^{'})^{-1})^{'}Z^{'}\\ 
+Z(Z^{'}Z)^{-1}Z^{'} = & Z((Z^{'})^{-1})^{'}(Z^{-1})^{'}Z^{'}\\ 
+Z(Z^{'}Z)^{-1}Z^{'} = & Z((Z^{'})^{'})^{-1}(Z^{'})^{-1}Z^{'}\\ 
+Z(Z^{'}Z)^{-1}Z^{'} = & Z(Z^{-1}(Z^{'})^{-1})Z^{'}\\  
+Z(Z^{'}Z)^{-1}Z^{'} = & Z(Z^{'}Z)^{-1}Z^{'}\\
 \end{align*}
 
 (b) Show that the projection matrix is an idempotent matrix, i.e., $P_z P_z = P_z$
@@ -40,7 +45,10 @@ Z(Z^{-1}(Z^{-1})^{'})Z^{'} = & Z(Z^{-1}(Z^{-1})^{'})Z^{'}\\
 >**Solution:**
 \begin{align*}
 P_zP_z = & P_z\\
-(Z(Z^{'}Z)^{-1}Z^{'})(Z(Z^{'}Z)^{-1}Z^{'}) = & Z(Z^{'}Z)^{-1}Z^{'}\\
+(Z(Z'Z)^{-1}Z') (Z(Z'Z)^{-1}Z') = &  Z(Z'Z)^{-1}Z'\\
+(Z(Z'Z)^{-1}(Z'Z)(Z'Z)^{-1}Z') = & Z(Z'Z)^{-1}Z'\\
+Z(Z'Z)^{-1}I_{n \times n}Z' = & Z(Z'Z)^{-1}Z'\\
+Z(Z'Z)^{-1}Z' = & Z(Z'Z)^{-1}Z'\\
 \end{align*}
 
 (c) Use the properties of the projection matrix (symmetric and idempotent) to show that the 2SLS estimator can also be written as
@@ -49,7 +57,14 @@ That is, the 2SLS estimator can be calculated by applying OLS to the equation
 $$Y = \widehat{X} \beta + \pmb \varepsilon$$
 (Note: this is were 2SLS gets its name.  You run a first least squares to get $\widehat{X}$ then a second least squares of $\widehat{X}$ on $Y$)
 
-**Solution:**  
+>**Solution:**  
+\begin{align}
+\hat X = & P_z X\\
+\hat X = & Z(Z^{'}Z)^{-1}Z^{'}X\\
+X = & Z \alpha + \varepsilon \\
+Y = & Z(Z^{'}Z)^{-1}Z^{'}X \beta + \varepsilon\\
+Y = & P_z X \beta + \varepsilon\\
+\end{align}
 
 (d) In fact, it can also be shown that the $Var(b^{IV})$ can be written as 
 $$Var(b^{IV}) = \sigma^2 \left(\widehat{X}'\widehat{X}\right)^{-1}$$
@@ -57,7 +72,8 @@ Which is the OLS variance-covariance matrix from $Y = \widehat{X} \beta + \pmb \
 
     Suppose that after seeing these results, a naive technician makes the following suggestion:  To estimate 2SLS, retrieve $\text{x_hat} = \widehat{X}$, then use ```lm(y ~ x_hat)``` to get the 2SLS estimates.  While the coefficients from this ```lm``` will be the 2SLS estimates, the variances and standard errors will be wrong.  Explain why these standard errors will be wrong.  In particular, explain how the $\sigma^2$ from this least squares is incorrect and how it differs from the correct estimate of $\sigma^2$ needed for the instrumental variable estimator.
 
-**Solution:**  
+>**Solution:**  
+
 
 ### Question 3
 
@@ -98,6 +114,8 @@ We can only use OLS to estimate parameters if assumptions such as mean independe
 iv <- ivreg(kids ~ educ + age + I(age^2) + black + east + northcen + west + farm + othrural + town + smcity + factor(year) | meduc + feduc + age + I(age^2) + black + east + northcen + west + farm + othrural + town + smcity + factor(year), data = data)
 coeftest(iv)
 ```
+>
+There is not a large difference in effect of education on number of children when comparing the OLS estimate and the IV estimate using the mother's and father's education levels as instruments. The OLS method gave an estimated beta coefficient of -0.1284 and the IV regression gave an estimated beta coefficient of -0.1527 for education. Both esimates are statistically significant at the 1% level. 
 
 (e) Check to see if the instruments for $educ$ pass the weak instruments test.  Run a regression with 
     ```
@@ -108,8 +126,12 @@ lm(educ~meduc+feduc+age+I(age^2)+black+east+northcen+west+farm+othrural+town+smc
 >**Solution:**  
 >```{r}
 weak <- lm(educ ~ meduc + feduc + age + I(age^2) + black + east + northcen + west + farm + othrural + town + smcity + factor(year), data = data)
+coeftest(weak)
 linearHypothesis(weak, c("meduc=0","feduc=0"))
+cat("F-Statistic: ", 155.79)
 ```
+>
+There is significant evidence based on the f statistic and p-value of the hypothesis test that the instruments mother's education and father's education are not weak, but that they are good estimators for education. The variance of the education estimate does not blow up. 
 
 (f) Use ```diagnostics = TRUE``` to the ```summary``` statement with your original IV model to check that the test statistic for the weak instrument test is the same as you calculated in Part (e)
 
@@ -128,4 +150,10 @@ Under the null, $H \sim \chi^2[J]$, where $J$ is the degrees of freedom, which i
     Try and create the test statistic using these formulas.  See if they match the results from the summary output using ```diagnostics = TRUE``` (they should be close, but not exact).  State in words your conclusion from the hypothesis test.  Why are we more likely to fail to reject the null hypothesis with a weak instrument?
 
 >**Solution:**  
+>```{r}
+d <- coef(iv) - coef(ols)
+hausman <- t(d) %*% solve(vcov(iv) - vcov(ols)) %*% d
+cat("Wu-Hausman Test Statistic: ", round(hausman, 4))
+```
 
+> Given the Wu-Hausman test statistic and p-value from the hypothesis test, there is not enough evidence to reject the null hypothesis in favor of the alternative. In other words, there is not enough evidence to suggest that endogeneity exists. It is plausible that there is no endogeneity.
