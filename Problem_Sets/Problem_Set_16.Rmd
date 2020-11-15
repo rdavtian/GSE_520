@@ -73,7 +73,7 @@ Which is the OLS variance-covariance matrix from $Y = \widehat{X} \beta + \pmb \
     Suppose that after seeing these results, a naive technician makes the following suggestion:  To estimate 2SLS, retrieve $\text{x_hat} = \widehat{X}$, then use ```lm(y ~ x_hat)``` to get the 2SLS estimates.  While the coefficients from this ```lm``` will be the 2SLS estimates, the variances and standard errors will be wrong.  Explain why these standard errors will be wrong.  In particular, explain how the $\sigma^2$ from this least squares is incorrect and how it differs from the correct estimate of $\sigma^2$ needed for the instrumental variable estimator.
 
 >**Solution:**  
-
+The standard errors will be wrong because they do not account for variation from the first stage least squares regression. $\text{x_hat}$ is only a component of $\widehat{X}$ without any error term. The standard errors for the naive technician is only a component of the $\sigma^2$ from the second regression. Therefore, his standard errors will most likely be smaller than it really should.
 
 ### Question 3
 
@@ -156,4 +156,4 @@ hausman <- t(d) %*% solve(vcov(iv) - vcov(ols)) %*% d
 cat("Wu-Hausman Test Statistic: ", round(hausman, 4))
 ```
 
-> Given the Wu-Hausman test statistic and p-value from the hypothesis test, there is not enough evidence to reject the null hypothesis in favor of the alternative. In other words, there is not enough evidence to suggest that endogeneity exists. It is plausible that there is no endogeneity.
+> Given the Wu-Hausman test statistic and p-value from the hypothesis test, there is not enough evidence to reject the null hypothesis in favor of the alternative. In other words, there is not enough evidence to suggest that endogeneity exists. It is plausible that there is no endogeneity and that the beta coefficients from the IV regression are not statistically different than the beta coefficients from the OLS regression. 
