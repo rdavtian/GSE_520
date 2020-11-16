@@ -16,7 +16,7 @@ The data contains a mix of housing unit characteristics and city characteristics
 Explain how the presence of housing vouchers could lead to an increase in the rental price of housing in a city?
 
 >**Solution:**  
-Landlords have an ability to raise or lower rent for tenants at any time. If they disagree with housing voucher programs offered to low-income families, they could theoretically raise prices to those tenants to offset the housing voucher stimulus package.  
+Landlords have an ability to raise or lower rent for tenants at any time. If they observe an increase in demand for rent due to the vouchers, they could raise prices to offset the housing voucher stimulus package.  
 
 ### Question 2
 
@@ -29,6 +29,7 @@ Print the coefficients, standard errors, t-values and p-values for this regressi
 load("C:/Users/rusla/OneDrive/GSE_520/R Data/housing.Rdata")
 library(AER)
 library(clubSandwich)
+library(fixest)
 data <- regression_data
 mod1 <- lm(lrent_ut ~ lvouch + ltotpop + lvacancy + linc,data = data)
 round(coeftest(mod1),6)
@@ -83,11 +84,11 @@ The results in Question 2 may not reflect true causal effects because there migh
 
 >**Solution:**  
 >```{r}
-mod3 <- lm(lrent_ut ~ lvouch + ltotpop + lvacancy + linc + control + factor(year), data = data)
-round(coeftest(mod3, vcov=vcovCR(mod3, data$smsa,"CR1")),6)
+mod3 <- feols(lrent_ut ~ lvouch + ltotpop + lvacancy + linc | year + control, data=data)
+summary(mod3, cluster = data$smsa)
 ```
 >
-Yes, the results from question 2 are robust to the inclusion of the housing unit fixed effects as seen from the estimated beta coefficient of 0 on control. There are no major changes from adding the housing unit fixed effects. 
+The results from question 2 are not robust to the inclusion of the housing unit fixed effects. Only the coefficient on lvouch remains similar to the cofficient from the model without control fixed effects. Now, the sign on ltotpop is positive and statistically significant which makes sense. We expect increases in population to also increase rent prices holding all other variables constant. Also, lvacancy is now not significantly different from 0 and linc has a larger, more positive statistically significant coefficient. 
 
 ### Question 4 (Regression Theory)
 
@@ -107,36 +108,16 @@ SSE = & \sum_{i=1}^n (Y_i - \alpha - \sum_{i=1}^k \beta_k X_{ki})^{2}\\
 \begin{align*}
 \frac{\partial_{SSE}}{\partial_{\alpha}} = & -2\sum_{i=1}^n (Y_i - \alpha - \sum_{i=1}^k \beta_k X_{ki})\\ 
 0 = & \sum_{i=1}^n (Y_i - \alpha - \sum_{i=1}^k \beta_k X_{ki})\\
-0 = & \sum_{i=1}^n Y_i - n \alpha - \sum_{i=1}^k \beta_k \sum_{i=1}^n X_{ki}\\
-n \alpha = & \sum_{i=1}^n Y_i - \sum_{i=1}^k \beta_k \sum_{i=1}^n X_{ki}\\ 
-\alpha = & \overline Y - \sum_{i=1}^k \beta_k \overline X_k\\
+0 = & \sum_{i=1}^n e_i\\
+0 = & \frac{1}{n} \sum_{i=1}^n e_i\\
 \end{align*}
 
 
 >
 \begin{align*}
 \frac{\partial_{SSE}}{\partial_{\beta_k}} = & -2\sum_{i=1}^n X_{ki}(Y_i - \alpha - \sum_{i=1}^k \beta_k X_{ki})\\ 
-0 = & \sum_{i=1}^n X_{ki}(Y_i - \overline Y + \sum_{i=1}^k \beta_k \overline X_k - \sum_{i=1}^k \beta_k X_{ki})\\
-0 = & \sum_{i=1}^n X_{ki} [Y_i - \overline Y - \sum_{i=1}^k \beta_k(X_{ki} - \overline X_k)]\\
-0 = & \sum_{i=1}^n X_{ki} (Y_i - \overline Y) - \sum_{i=1}^k \beta_k \sum_{i=1}^n X_{ki}(X_{ki} - \overline X_k)\\
-0 = & \sum_{i=1}^n(X_{ki} - \overline X_k)(Y_i - \overline Y) - \sum_{i=1}^k \beta_k \sum_{i=1}^n (X_{ki} - \overline X_k)(X_{ki} - \overline X_k)\\
-\sum_{i=1}^k \beta_k = & \frac{\sum_{i=1}^n(X_{ki} - \overline X_k)(Y_i - \overline Y)}{\sum_{i=1}^n (X_{ki} - \overline X_k)(X_{ki} - \overline X_k)}
-\end{align*}
-
->
-\begin{align*}
-0 = & (1/n)\sum_{i=1}^n[e_i]\\
-0 = & \sum_{i=1}^n[e_i]\\
-0 = & \sum_{i=1}^n(Y_i - \hat Y_i)\\
-0 = & \sum_{i=1}^n (Y_i - \alpha - \sum_{i=1}^k \beta_k X_{ki})\\
-\end{align*}
-
->
-\begin{align*}
-0 = & (1/n)\sum_{i=1}^n[X_{ki}e_i]\\
-0 = & \sum_{i=1}^n[X_{ki}e_i]\\
-0 = & \sum_{i=1}^n[X_{ki}(Y_i - \hat Y_i)]\\
-0 = & \sum_{i=1}^n[X_{ki}(Y_i - \alpha - \sum_{i=1}^k \beta_k X_{ki})]\\
+0 = & \sum_{i=1}^n (X_{ki}e_i)\\
+0 = & \frac{1}{n} \sum_{i=1}^n (X_{ki}e_i)
 \end{align*}
 
 >
