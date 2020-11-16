@@ -59,11 +59,13 @@ $$Y = \widehat{X} \beta + \pmb \varepsilon$$
 
 >**Solution:**  
 \begin{align}
-\hat X = & P_z X\\
-\hat X = & Z(Z^{'}Z)^{-1}Z^{'}X\\
-X = & Z \alpha + \varepsilon \\
-Y = & Z(Z^{'}Z)^{-1}Z^{'}X \beta + \varepsilon\\
-Y = & P_z X \beta + \varepsilon\\
+\text{Using} \space\space Y = \widehat{X} \beta + \pmb \varepsilon \\
+\frac{\partial_{SSE}}{\partial_{\beta}} = & \widehat{X}'(Y - \widehat{X}\beta) =0\\
+0= & \widehat{X}'Y - \widehat{X}'\widehat{X}\beta \\
+\widehat{X}'\widehat{X}\beta = & \widehat{X}'Y \\
+(\widehat{X}'\widehat{X})^{-1}  \widehat{X}'\widehat{X}\beta = & (\widehat{X}'\widehat{X})^{-1} \widehat{X}'Y \\
+I\beta = & (\widehat{X}'\widehat{X})^{-1} \widehat{X}'Y \\
+\beta = & (\widehat{X}'\widehat{X})^{-1} ( \widehat{X}'Y )\\
 \end{align}
 
 (d) In fact, it can also be shown that the $Var(b^{IV})$ can be written as 
