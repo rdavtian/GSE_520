@@ -58,11 +58,11 @@ $y = \rho_0 + \rho_1 z + e$
 \   
 $y = \lambda_0 + \lambda_1 \hat x + e$\
 \
-$$\phi_1 = 2.4$$     
-$$\rho_1 = 0.2$$      
-$$\lambda_1 = \frac{\rho_1}{\phi_1}$$      
-$$\lambda_1 = \frac{0.2}{2.4}$$       
-$$\lambda_1 = 0.0833$$ 
+$$\phi_1 = 2.4$$
+$$\rho_1 = 0.2$$
+$$\lambda_1 = \frac{\rho_1}{\phi_1}$$
+$$\lambda_1 = \frac{0.2}{2.4}$$
+$$\lambda_1 = 0.0833$$
 A one year increase in education is associated with an estimated average $8\%$ increase in wages.
 
 ### Question 2
