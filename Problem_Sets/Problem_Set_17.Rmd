@@ -132,11 +132,11 @@ From this, we can examine whether cities that were observationaly similar in 195
 >**Solution:**
 >```{r}
 mod3 <- ivreg(lnfaminc80 ~ app_funds_pc50 + pownocc50 + lnmedval50 + pdilap50 + poldunits50 + punitswoplumb50 + pcrowd50 + lnpop50 + pnonwht50 + plf_manuf_50 + pemp50 + pemp50 + medsch50 + lnfaminc50 + pinc_under2g_50 + factor(Census) | yrsexposure_UR + pownocc50 + lnmedval50 + pdilap50 + poldunits50 + punitswoplumb50 + pcrowd50 + lnpop50 + pnonwht50 + plf_manuf_50 + pemp50 + pemp50 + medsch50 + lnfaminc50 + pinc_under2g_50 + factor(Census), data = data)
-round(coeftest(mod3, vcov = vcovCR(mod3, data$statefip, "CR1")),5)
+round(coeftest(mod3, vcov = vcovCR(mod3, data$Census, "CR1")),5)
 ```
 
 >
-After implementing the two stage least squares, $app\_funds\_pc50$ is now significant at the 5% level with a p-value of 0.03 using $yrsexposure\_UR$ as the instrument. Adjusting for all other variables, a 1 unit increase in urban renewal funds per capita ($100) in 1950 is associated with an average increase of 2.4% in median familly income in 1980.
+After implementing the two stage least squares, $app\_funds\_pc50$ is now significant at the 5% level with a p-value of 0.025 using $yrsexposure\_UR$ as the instrument. Adjusting for all other variables, a 1 unit increase in urban renewal funds per capita ($100) in 1950 is associated with an average increase of 2.4% in median familly income in 1980.
 
 (g) Conduct a Weak Instruments test. State what rejecting or failing to reject the null hypothesis means. Is $yrsexposure\_UR$ a weak instrument? Almost a weak instrument?
 
