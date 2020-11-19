@@ -124,7 +124,7 @@ There seems to be little evidence to suggest that urban renewal proposal had a s
 1) $Cov(app\_funds\_pc50, yrsexposure\_UR) \neq 0$\           
 2) $E[\varepsilon |$ $yrsexposure\_UR] = 0$
 >
-$yrsexposure\_UR$ must be exogenous and relevant. Meaning it cannot be correlated with the error term of the regression and must have a nonzero correlation with $app\_funds\_pc50$. 
+$yrsexposure\_UR$ must be exogenous and relevant. In other words, it cannot be correlated with the error term of the regression and must have a nonzero correlation with $app\_funds\_pc50$. 
 
 (f) With the same control variables used in Part (c), now estimate the model with 2SLS using the instrument of years of potential participation in the Urban Renewal program ($yrsexposure\_UR$) for the endogenous variable urban renewal funds per capita ($app\_funds\_pc50$). Cluster the standard errors on the census division level.   
 From this, we can examine whether cities that were observationaly similar in 1950 experienced different median family incomes depending on the intensity of urban renewal activity. What are the results from the 2SLS model? 
