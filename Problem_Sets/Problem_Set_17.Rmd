@@ -34,11 +34,10 @@ $y = \gamma_0 + \gamma_1 z + e$
 \      
 2SLS:
 \   
-$y = \rho_0 + \rho_1 \hat x + e$\      
-$y = \rho_0 + \rho_1 (\pi_0 + \pi_1 z + \eta) + e$
+$y = \beta_0 + \beta_1 \hat x + \mu$\      
 
 >
-$\gamma = \pi_1 * z$
+Using the LATE formula, the relationsip betweem parameters $\beta$, $\gamma$, and $\pi$ can be described as $\text{LATE} = \beta_1 = \frac{\gamma_1}{\pi_1}$
 
 (c)  Suppose you have data on a random sample of people who applied for education scholarships and scholarship winners were chosen completely at random.  Let $y$ be log wage, $x$ years of education, and $z$ be an indicator if they were a scholarship winner.  It scholarship winners on average completed 2.4 additional years of schooling than those that did not when the scholarship, and scholarship winners had on average 20\% higher incomes compared to those that did not win scholarships.  What is the estimate of the causal effect of a year of education on wages?
 
