@@ -144,6 +144,6 @@ After implementing the two stage least squares, $app\_funds\_pc50$ is now signif
 summary(mod3, diagnostics = TRUE)$diagnostics
 ```
 >
-Since we observe an F-statistic approximately 10 for the weak instruments test with a p-value of 0.00188, there is enough evidence to suggest that $yrsexposure\_UR$ is a strong instrument. But, the Wu-Hausman test is shows less convincing results. The instrument is only significant at the $10\%$ significance level. This suggests we may have a potentially weak instrument in $yrsexposure\_UR$.
+Since we observe an F-statistic approximately 10 for the weak instruments test with a p-value of 0.00188, there is enough evidence to suggest that $yrsexposure\_UR$ is a strong instrument. But, the Wu-Hausman test shows less convincing results. The instrument is only significant at the $10\%$ significance level. This suggests we may have a potentially weak instrument in $yrsexposure\_UR$.
 
 
