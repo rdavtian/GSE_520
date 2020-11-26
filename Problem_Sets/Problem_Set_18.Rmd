@@ -1,0 +1,130 @@
+---
+title: 'GSE 520: Problem Set #18'
+author: 
+  - "Student Name 1"
+  - "Student Name 2 (delete if only one student or add more if more than two)"
+output: html_document
+---
+
+Governments of countries with low or declining birth rates will often offer their citizens an incentive to have children. This was the case in Spain, so in 2007 the Spanish government implemented a universal child benefit. This benefit gave new mothers a one-time payment of around $\$3,900$ almost immediately after child birth. The universal child benefit went into effect in July of 2007 and after it was announced, any mother who had given birth on or after July 1, 2007 was eligible to receive the benefit. In "The Effect of a Universal Child Benefit on Conceptions, Abortions, and Early Maternal Labor Supply", author Libertad Gonzalez uses a regression discontinuity design to see if the number of conceptions (among other things, you'll be replicating the conception estimates for this problem set) increased following the implementation of the benefit. You can find the data set for this paper in data file titled: ```births.RData```.
+
+The data set consists of estimated conceptions per month from 2000 to 2009, this is represented as the variable $n$ in the data set. The variable $log\_n$ is the log number of estimated conceptions per month. The month of conception variable $mc$, has been centered using the July 2007 policy implementation date (so for July of 2007 $mc=0$, August of 2007 $mc=1$, June of 2007 $mc=-1$, etc.). There are also $mc2$ and $mc3$ variables which represent the quadratic and cubic trends of the linear $mc$ variable. Another variable is the $days$ variable which represents the number of days in the month of conception. The variable of interest in the paper is the $post$ variable, a binary variable which is $1$ if the $mc$ is after July 2007 and $0$ if the $mc$ is before July 2007.
+
+### Question 1
+
+(a) Explain what aspects of this econometric question makes it suitable for using regression discontinuity (RD), i.e., what important element(s) must be observed in your data for your RD to work?
+
+>**Solution:**
+Instead of randomly assigning units to treatment and control groups like in randomized control trials or OLS, we observe pre (control) and post (treatment) cutoff values of some variable x for each unit and record the change in variable y. There needs to be a variable that determines the cut-off from which we can compare before/after cutoff values. That is exactly what we have in this econometric question. The running variable is the enactment of the child benefit policy which occurs on July 2007 (cutoff) and we compare before/after estimated number of conceptions at the cutoff. 
+
+(b) Suppose a researcher specifies a very simple regression of the form:
+$$Y_i = \alpha + \rho D_b + \gamma b + \varepsilon_b$$
+The variable $D_b$ is a binary variable which is 1 when the running variable $b$ passes some cutoff figure and 0 otherwise. Why do we need to $b$ the running variable itself as a control variable?
+
+>**Solution:**
+Without including variable b as a control, this model would suffer from omitted variable bias and not have the mean independence assumption satisfied. This is true because without controling for b, b would be included in $\varepsilon$ and would result in $\varepsilon$ being correlated with $D_b$. The dummy variable $D_b$ is only dependent on variable b so including b makes sure that nothing in $\varepsilon$ can be predicted by knowing $D_b$. 
+
+### Question 2  
+
+(a) Let's start by getting summary statistics for monthly conceptions.  For this analysis and the analysis below, subset the data from $mc=-90$ to $mc = 29$. Your subset should consist of 120 observations.  What is the average number of conceptions per month?  What is the correlation between $mc$ and monthly conceptions pre-July 2007?  What does this suggest about the trend in conceptions over time before the policy?
+
+>**Solution:**  
+>```{r, warning = FALSE, message = FALSE}
+library(dplyr)
+library(AER)
+library(clubSandwich)
+library(ggplot2)
+load("C:/Users/rusla/OneDrive/GSE_520/R Data/births.Rdata")
+subset1 <- n %>% filter(mc >= -90 & mc <= 29)
+cat("Average estimated number of conceptions per month for the subsetted data is", mean(subset1$n))
+subset2 <- n %>% filter(mc >= -90 & mc < 0)
+cat("Correlation between mc and monthly conceptions prior to July 2007 is", round(cor(subset2$mc, subset2$n), 3))
+```
+
+> A correlation between of 0.9 between time (months) and number of conceptions leading up to July 2007 suggests that there is a strong, positive, and linear trend in conceptions over time. 
+
+(b) Estimate a regression of the form: 
+$$log\_n = \beta_0 + \beta_1 post + \beta_2 mc + \beta_3 mc2 + \beta_4 mc3 + \beta_5 days$$
+Print the summary of the coefficients, t-scores, and p-values (make sure you use robust standard errors) from the regression you ran. Interpret the coefficient for the estimate of $\beta_1$. What effect does the universal child benefit appear to have on conceptions in Spain? Does this effect make economic sense?
+
+>**Solution:**
+>```{r}
+mod1 = lm(log_n ~ factor(post) + mc + mc2 + mc3 + days, data = subset1)
+round(coeftest(mod1, vcov. = vcovHC(mod1, "HC0")), 5)
+```
+
+> Adjusting for the cubic trends in monthly conceptions and day of the month, the implementation of the universal child benefit on July 2007 in Spain is estimated to have had an average 5% increase in number of conceptions. Yes, this coefficient estimate makes economic sense. We expect to see individuals who were already thinking about having a baby to be convinced from the money incentive.  
+
+(c) In the regression you ran above you should fail to reject the null hypothesis that the coefficient on $mc$=0 at the 5\% level.  State as best you can what it means to reject this null hypothesis.  Does this variable have any economic importance at all? 
+
+>**Solution:**
+There is not enough evidence at a 5% significance level to reject the null hypothesis that the estimate for $mc$ is significantly different than zero. However, this variable does not have much importance because we are including higher order terms (quadratic and cubic). It does not make sense to look at the linear term of mc separately from the quadratic and cubic terms.  
+
+(d) Let's graph the data and regression lines and see if a clear discontinuity shows itself in the graph. The lines generated will be done using the loess smoother, both for aesthetic and ease of code reasons. For this question you will need to download and attach the ```ggplot2``` package in R. Here is an example of the code you can use to plot the data: 
+
+```
+ggplot(first_subset (this should be whatever the name of your subset is), aes(x = mc, y = log_n, colour = factor(post))) + 
+  geom_point() + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Estimated Number of Log Conceptions Per Month") + 
+  stat_smooth(method = loess)
+```
+
+Plot the graph and then interpret what you see. Is there a clear discontinuity following the policy implementation (is there a jump in estimated conceptions)? What are the implications if a clear discontinuity does not appear graphically?
+
+>**Solution:**
+>```{r}
+ggplot(subset1, aes(x = mc, y = log_n, colour = factor(post))) + 
+  geom_point() + 
+  xlab("Month of Conception Before/After July 2007") + 
+  ylab("Log Number of Conceptions") + 
+  ggtitle("Estimated Number of Log Conceptions Per Month") + 
+  stat_smooth(method = loess)
+```
+
+> Yes. There appears to be a clear discontinuity following implementation of the policy. The graph shows a jump in log estimated conceptions following the policy implementation. If there appears to be no discontinuity graphically, a researcher will likely need to revaluate their method, as their research question may not fit a RD design. Or, find a new cutoff point or variable to model the discontinuity. Nonetheless, a lack of clear discontinuity should be a red flag for the researcher.
+
+(e) A strategy to limit RD mistakes is to focus on observations near the cutoff. In the paper, the author restricts the data set multiple times and reports what happens to the estimate of the variable of interest $post$. Another way to check the robustness of the estimates is to change the model, whether that be adding or removing a variable.  
+For this next regression, repeat what you did in part (a), but remove the cubic term $mc3$ and restrict the data set from $mc=-30$ to $mc=29$. You should have 60 observations. Again, use robust standard errors. Report on any changes in the estimates from part (a). Do your estimates (particularly for the treatment variable) appear to be robust? Create a 99\% confidence interval for $\beta_1$ (note the you cannot supply a variance-covariance matrix with the ```confint``` command).
+
+>**Solution:**
+>```{r}
+subset3 <- n %>% filter(mc >= -30 & mc <= 29)
+mod2 = lm(log_n ~ factor(post) + mc + mc2 + days, data = subset3)
+round(coeftest(mod2, vcov. = vcovHC(mod2, "HC0")), 5)
+```
+
+> 
+The coefficient estimate on $post$ appears to be robust as the estimate only changed very slightly and is still significant at the $1\%$ significance level.
+
+(f) Finally, restrict the data set from $mc=-12$ to $mc=11$. Run the same regression from part (d) with robust standard errors. What are the results, any changes from part (d)? Do our estimators seem robust as we restrict the sample size, and change the model specification?
+
+>**Solution:**
+>```{r}
+subset4 <- n %>% filter(mc >= -12 & mc <= 11)
+mod3 = lm(log_n ~ factor(post) + mc + mc2 + days, data = subset4)
+round(coeftest(mod3, vcov. = vcovHC(mod3, "HC0")), 5)
+```
+
+> 
+$post$ and $mc2$ are still significant. $post$ is still significant at $5\%$ significance level, but no longer at the $1\%$ significance level. The estimates seem to be robust, as the variable of interest $post$ is significant in each regression, and the sign is what we would expect it to be each time.
+
+(g) Explain a potential issue with using non-parametric RD like we just did for the past two regressions? Use equation 4.5 from the book (on p.162) to help answer this question.
+
+>**Solution:**
+Non-parametric RD allows for a trade off in the bias for an increase in variance due to the decrease in number of observations. However, as you decrease the bandwidth there are not enough observations to make accurate estimates. 
+$$ a_0 - b \leq a \leq a_0 + b$$
+This is the equation for picking a non-parametric RD. As the bandwidth ($b$) gets smaller, the number of observations of $a$ decreases. While this can reduce bias (and non-linear trends), this also limits the number of observations that can be used for analysis around the cutoff leading to less accurate estimates.
+
+### Question 3
+
+(a) The regressions you just replicated are an example of a sharp RD design. Sharp RD is not the only kind of regression discontinuity design, a researcher can also use a fuzzy regression discontinuity design. From what you read in the chapter, when should researchers use a fuzzy RD as opposed to a sharp RD?
+
+>**Solution:**
+A fuzzy RD is used when the cutoff point leads to a higher intensity treatment, as opposed to a sharp RD where the cutoff differentiated between the control and the treatment. In the book, the fuzzy RD was shown through exam schools in Boston where the cutoff was test scores to get into the most prestigious exam school.
+
+(b) When using a Fuzzy RD as compared to a Sharp RD, which regression would you expect to give you more significant estimates (estimates that are significantly different than zero) and why? Explain why one design will likely be superior in generating more significant estimates.
+
+>**Solution:**
+We would expect the Sharp RD to give us more significant estimates. This is because Fuzzy RD uses instrumental variables and two stage least squares regression, and that process increases the size of standard errors (as the variance of $\sigma^2$ is greater in 2SLS). Sharp RD uses straightforward OLS regression, and those standard errors will typically be smaller than any 2SLS regression standard errors.
