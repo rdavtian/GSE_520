@@ -1,8 +1,8 @@
 ---
 title: 'GSE 520: Problem Set #18'
 author: 
-  - "Student Name 1"
-  - "Student Name 2 (delete if only one student or add more if more than two)"
+  - "Rus Adamovics-Davtian"
+  - "Taymour Siddiqui"
 output: html_document
 ---
 
