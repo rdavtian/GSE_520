@@ -50,7 +50,7 @@ Print the summary of the coefficients, t-scores, and p-values (make sure you use
 >**Solution:**
 >```{r}
 mod1 = lm(log_n ~ factor(post) + mc + mc2 + mc3 + days, data = subset1)
-round(coeftest(mod1, vcov. = vcovHC(mod1, "HC0")), 5)
+round(coeftest(mod1, vcov. = vcovHC(mod1, "HC1")), 5)
 ```
 
 > Adjusting for the cubic trends in monthly conceptions and day of the month, the implementation of the universal child benefit on July 2007 in Spain is estimated to have had an average 5% increase in number of conceptions. Yes, this coefficient estimate makes economic sense. We expect to see individuals who were already thinking about having a baby to be convinced from the money incentive.  
@@ -92,7 +92,19 @@ For this next regression, repeat what you did in part (a), but remove the cubic 
 >```{r}
 subset3 <- n %>% filter(mc >= -30 & mc <= 29)
 mod2 = lm(log_n ~ factor(post) + mc + mc2 + days, data = subset3)
-round(coeftest(mod2, vcov. = vcovHC(mod2, "HC0")), 5)
+round(coeftest(mod2, vcov. = vcovHC(mod2, "HC1")), 5)
+X = as.matrix(cbind(rep(1,nobs(mod2)),subset3$post,subset3$mc,subset3$mc2, subset3$days))
+XX = t(X)%*%X
+XXi = solve(t(X)%*%X)
+Cov = XXi %*% (t(X)%*%diag(mod2$residuals^2)%*%X)%*%XXi
+Cov = (nobs(mod2)/mod2$df.residual)*Cov
+#Cov = vcovHC(mod2, "HC1")
+SEhat = sqrt(diag(Cov))
+C = 1 - .01
+df = nobs(mod2) - length(mod2$coefficients)
+CV = abs(qt((1-C)/2, df))
+conf_int <- mod2$coefficients['factor(post)1'] + c(-1,1)*CV*SEhat[2]
+cat("The 99% confidence interval for beta_1 is", conf_int)
 ```
 
 > 
@@ -104,7 +116,7 @@ The coefficient estimate on $post$ appears to be robust as the estimate only cha
 >```{r}
 subset4 <- n %>% filter(mc >= -12 & mc <= 11)
 mod3 = lm(log_n ~ factor(post) + mc + mc2 + days, data = subset4)
-round(coeftest(mod3, vcov. = vcovHC(mod3, "HC0")), 5)
+round(coeftest(mod3, vcov = vcovHC(mod3, "HC1")), 5)
 ```
 
 > 
